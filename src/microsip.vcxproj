@@ -1,0 +1,345 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BB46A3FD-3E25-44BF-9DED-36A8E838A095}</ProjectGuid>
+    <RootNamespace>microsip</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Static</UseOfMfc>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Static</UseOfMfc>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140_xp</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\pjlib\include;..\pjsip\include;..\pjmedia\include;..\pjnath\include;..\pjlib-util\include;..\third_party\sdl\include;..\third_party\openssl\Win32\include;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>vpxmt.lib;opus.lib;Wtsapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\lib\;..\third_party\lib\;..\third_party\openssl\$(Platform)\lib\;..\third_party\ipp\$(Platform)\;..\third_party\opus\$(Platform)\;..\third_party\silk\$(Platform)\$(Configuration)\;..\third_party\ffmpeg\$(Platform)\;..\third_party\vpx\$(Platform)\;..\third_party\sdl\$(Platform)\;..\third_party\opencore-amrnb\$(Platform)\;..\third_party\vo-amrwbenc\$(Platform)\;..\third_party\opencore-amrwb\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>Windows</SubSystem>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <AdditionalOptions>/OPT:NOLBR %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <Manifest />
+    <Manifest />
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\pjlib\include;..\pjsip\include;..\pjmedia\include;..\pjnath\include;..\pjlib-util\include;..\third_party\sdl\include;..\third_party\openssl\Win32\include;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>vpxmt.lib;opus.lib;Wtsapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\lib\;..\third_party\lib\;..\third_party\openssl\$(Platform)\lib\;..\third_party\ipp\$(Platform)\;..\third_party\opus\$(Platform)\;..\third_party\silk\$(Platform)\$(Configuration)\;..\third_party\ffmpeg\$(Platform)\;..\third_party\vpx\$(Platform)\;..\third_party\sdl\$(Platform)\;..\third_party\opencore-amrnb\$(Platform)\;..\third_party\vo-amrwbenc\$(Platform)\;..\third_party\opencore-amrwb\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalOptions>/OPT:NOLBR %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <Manifest />
+    <Manifest />
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\pjlib\include;..\pjsip\include;..\pjmedia\include;..\pjnath\include;..\pjlib-util\include;..\third_party\sdl\include;..\third_party\openssl\Win32\include;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>vpxmt.lib;opus.lib;Wtsapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\lib\;..\third_party\lib\;..\third_party\openssl\$(Platform)\lib\;..\third_party\ipp\$(Platform)\;..\third_party\opus\$(Platform)\;..\third_party\silk\$(Platform)\$(Configuration)\;..\third_party\ffmpeg\$(Platform)\;..\third_party\vpx\$(Platform)\;..\third_party\sdl\$(Platform)\;..\third_party\opencore-amrnb\$(Platform)\;..\third_party\vo-amrwbenc\$(Platform)\;..\third_party\opencore-amrwb\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalOptions>/OPT:NOLBR %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <Manifest />
+    <Manifest />
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\pjlib\include;..\pjsip\include;..\pjmedia\include;..\pjnath\include;..\pjlib-util\include;..\third_party\sdl\include;..\third_party\openssl\Win32\include;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>vpxmt.lib;opus.lib;Wtsapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\lib\;..\third_party\lib\;..\third_party\openssl\$(Platform)\lib\;..\third_party\ipp\$(Platform)\;..\third_party\opus\$(Platform)\;..\third_party\silk\$(Platform)\$(Configuration)\;..\third_party\ffmpeg\$(Platform)\;..\third_party\vpx\$(Platform)\;..\third_party\sdl\$(Platform)\;..\third_party\opencore-amrnb\$(Platform)\;..\third_party\vo-amrwbenc\$(Platform)\;..\third_party\opencore-amrwb\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalOptions>/OPT:NOLBR %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <Manifest />
+    <Manifest />
+    <Manifest>
+      <EnableDpiAwareness>false</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AccountDlg.cpp" />
+    <ClCompile Include="AddDlg.cpp" />
+    <ClCompile Include="addons.cpp" />
+    <ClCompile Include="BaseDialog.cpp" />
+    <ClCompile Include="ButtonDialer.cpp" />
+    <ClCompile Include="Calls.cpp" />
+    <ClCompile Include="CLevelsSliderCtrl.cpp" />
+    <ClCompile Include="CListCtrl_Sortable.cpp" />
+    <ClCompile Include="CListCtrl_SortItemsEx.cpp" />
+    <ClCompile Include="ClosableTabCtrl.cpp" />
+    <ClCompile Include="Contacts.cpp" />
+    <ClCompile Include="Crypto.cpp" />
+    <ClCompile Include="CSVFile.cpp" />
+    <ClCompile Include="Dialer.cpp" />
+    <ClCompile Include="global.cpp" />
+    <ClCompile Include="IconButton.cpp" />
+    <ClCompile Include="jumplist.cpp" />
+    <ClCompile Include="langpack.cpp" />
+    <ClCompile Include="mainDlg.cpp" />
+    <ClCompile Include="MessagesDlg.cpp" />
+    <ClCompile Include="microsip.cpp" />
+    <ClCompile Include="ModelessMessageBox.cpp" />
+    <ClCompile Include="Preview.cpp" />
+    <ClCompile Include="RinginDlg.cpp" />
+    <ClCompile Include="settings.cpp" />
+    <ClCompile Include="SettingsDlg.cpp" />
+    <ClCompile Include="ShortcutsDlg.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="StdioFileEx.cpp" />
+    <ClCompile Include="Transfer.cpp" />
+    <ClCompile Include="utf.cpp" />
+    <ClCompile Include="VisualStylesXP.cpp" />
+    <ClCompile Include="zip.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AccountDlg.h" />
+    <ClInclude Include="AddDlg.h" />
+    <ClInclude Include="addons.h" />
+    <ClInclude Include="BaseDialog.h" />
+    <ClInclude Include="ButtonDialer.h" />
+    <ClInclude Include="Calls.h" />
+    <ClInclude Include="CLevelsSliderCtrl.h" />
+    <ClInclude Include="CListCtrl_DataModel.h" />
+    <ClInclude Include="CListCtrl_Sortable.h" />
+    <ClInclude Include="CListCtrl_SortItemsEx.h" />
+    <ClInclude Include="ClosableTabCtrl.h" />
+    <ClInclude Include="const.h" />
+    <ClInclude Include="Contacts.h" />
+    <ClInclude Include="Crypto.h" />
+    <ClInclude Include="CSVFile.h" />
+    <ClInclude Include="define.h" />
+    <ClInclude Include="Dialer.h" />
+    <ClInclude Include="global.h" />
+    <ClInclude Include="IconButton.h" />
+    <ClInclude Include="jumplist.h" />
+    <ClInclude Include="langpack.h" />
+    <ClInclude Include="mainDlg.h" />
+    <ClInclude Include="MessagesDlg.h" />
+    <ClInclude Include="microsip.h" />
+    <ClInclude Include="MMNotificationClient.h" />
+    <ClInclude Include="ModelessMessageBox.h" />
+    <ClInclude Include="Preview.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="RinginDlg.h" />
+    <ClInclude Include="settings.h" />
+    <ClInclude Include="SettingsDlg.h" />
+    <ClInclude Include="ShortcutsDlg.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StdioFileEx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Transfer.h" />
+    <ClInclude Include="utf.h" />
+    <ClInclude Include="VisualStylesXP.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\active.ico" />
+    <Image Include="res\away.ico" />
+    <Image Include="res\blank.ico" />
+    <Image Include="res\busy.ico" />
+    <Image Include="res\callin.ico" />
+    <Image Include="res\callmiss.ico" />
+    <Image Include="res\callout.ico" />
+    <Image Include="res\close.ico" />
+    <Image Include="res\close2.ico" />
+    <Image Include="res\error.ico" />
+    <Image Include="res\exit.ico" />
+    <Image Include="res\icon1.ico" />
+    <Image Include="res\icon2.ico" />
+    <Image Include="res\inactive.ico" />
+    <Image Include="res\microsip.ico" />
+    <Image Include="res\offline.ico" />
+    <Image Include="res\online.ico" />
+    <Image Include="res\ringing.ico" />
+    <Image Include="res\toolbar1.bmp" />
+    <Image Include="res\unknown.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="res\dialog.rc2" />
+    <None Include="res\main.rc2" />
+    <None Include="res\menu.rc2" />
+    <None Include="StatusBar.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="main.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="res\Ringin.wav" />
+    <Media Include="res\Ringin2.wav" />
+    <Media Include="res\Ringout.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="main.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

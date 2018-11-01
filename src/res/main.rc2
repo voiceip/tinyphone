@@ -1,0 +1,118 @@
+//
+// resources Microsoft Visual C++ does not edit directly
+//
+
+#ifdef APSTUDIO_INVOKED
+#error this file is not editable by Microsoft Visual C++
+#endif //APSTUDIO_INVOKED
+
+
+#include "define.h"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    _GLOBAL_ICON
+IDI_EXIT                ICON                    "res\\exit.ico"
+IDI_DEFAULT             ICON                    "res\\default.ico"
+IDI_UNKNOWN             ICON                    "res\\unknown.ico"
+IDI_OFFLINE             ICON                    "res\\offline.ico"
+IDI_BUSY                ICON                    "res\\busy.ico"
+IDI_AWAY                ICON                    "res\\away.ico"
+IDI_ON_THE_PHONE        ICON                    "res\\on-the-phone.ico"
+IDI_ONLINE              ICON                    "res\\online.ico"
+IDI_SECURE              ICON                    "res\\secure.ico"
+IDI_ACTIVE_SECURE              ICON                    "res\\active-secure.ico"
+IDI_CONFERENCE_SECURE              ICON                    "res\\conference-secure.ico"
+IDI_ACTIVE              ICON                    "res\\active.ico"
+IDI_BLANK               ICON                    "res\\blank.ico"
+IDI_CALL_OUT            ICON                    "res\\callout.ico"
+IDI_CALL_IN             ICON                    "res\\callin.ico"
+IDI_CALL_MISS           ICON                    "res\\callmiss.ico"
+IDI_MUTE_OUTPUT         ICON                    "res\\muteout.ico"
+IDI_MUTED_OUTPUT        ICON                    "res\\mutedout.ico"
+IDI_MUTE_INPUT          ICON                    "res\\mutein.ico"
+IDI_MUTED_INPUT         ICON                    "res\\mutedin.ico"
+IDI_SEARCH         ICON                    "res\\search.ico"
+IDI_HOLD				ICON                    "res\\hold.ico"
+IDI_CONFERENCE			ICON                    "res\\conference.ico"
+IDI_DROPDOWN			ICON                    "res\\dropdown.ico"
+IDI_TRANSFER			ICON                    "res\\transfer.ico"
+IDI_MESSAGE_IN			ICON                    "res\\message-in.ico"
+IDI_ON_HOLD			ICON                    "res\\on-hold.ico"
+IDI_ON_REMOTE_HOLD			ICON                    "res\\on-remote-hold.ico"
+IDI_ON_REMOTE_HOLD_CONFERENCE	ICON                    "res\\on-remote-hold-conference.ico"
+#ifdef _GLOBAL_VIDEO
+IDI_VIDEO				ICON                    "res\\video.ico"
+#endif
+IDI_MESSAGE				ICON                    "res\\message.ico"
+
+IDI_CLOSE               ICON                    "res\\close.ico"
+IDI_CLOSE_2             ICON                    "res\\close2.ico"
+	IDI_INACTIVE            ICON                    "res\\inactive.ico"
+
+IDI_MISSED            ICON                    "res\\missed.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Text
+//
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_DOWNARROW           BITMAP                  "res\\downarrow.bmp"
+IDB_UPARROW             BITMAP                  "res\\uparrow.bmp"
+IDB_VMAIL               BITMAP                  "res\\voicemail.bmp"
+IDB_VMAIL_FOCUS         BITMAP                  "res\\voicemail-focus.bmp"
+IDB_VMAIL_DOWN          BITMAP                  "res\\voicemail-down.bmp"
+IDB_VMAIL_GREY               BITMAP                  "res\\voicemail-grey.bmp"
+IDB_VMAIL_GREY_FOCUS         BITMAP                  "res\\voicemail-grey-focus.bmp"
+IDB_VMAIL_GREY_DOWN          BITMAP                  "res\\voicemail-grey-down.bmp"
+IDB_DELETE          BITMAP                  "res\\delete.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION _GLOBAL_VERSION_COMMA
+ PRODUCTVERSION _GLOBAL_VERSION_COMMA
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+			VALUE "CompanyName", _GLOBAL_COMPANY
+            VALUE "FileDescription", _GLOBAL_NAME
+            VALUE "FileVersion", _GLOBAL_VERSION
+            VALUE "LegalCopyright", _GLOBAL_COMPANY
+			VALUE "ProductDescription", _GLOBAL_NAME
+			VALUE "ProductName", _GLOBAL_NAME
+            VALUE "ProductVersion", _GLOBAL_VERSION
+            VALUE "OriginalFilename", _GLOBAL_NAME ".exe"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
