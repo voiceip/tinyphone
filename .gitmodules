@@ -1,3 +1,9 @@
 [submodule "lib/pjproject"]
 	path = lib/pjproject
 	url = https://github.com/pjsip/pjproject.git
+[submodule "lib/vp8vfw"]
+	path = lib/vp8vfw
+	url = https://github.com/XhmikosR/vp8vfw.git
+[submodule "lib/opus"]
+	path = lib/opus
+	url = https://github.com/xiph/opus.git
