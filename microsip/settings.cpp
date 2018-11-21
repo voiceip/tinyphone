@@ -122,7 +122,7 @@ void AccountSettings::Init()
 			CString pathCurrent;
 			ptr = pathCurrent.GetBuffer(MAX_PATH);
 			::GetCurrentDirectory(MAX_PATH, ptr);
-			pathCurrent.ReleaseBuffer();
+			pathCurrent.ReleaseBuffer();		
 			if (pathCurrent.CompareNoCase(pathExe) != 0) {
 				pathCurrent.Append(_T("\\"));
 				if (CopyFile(pathCurrent + iniFile, pathRoaming + iniFile, TRUE)) {

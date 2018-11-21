@@ -43,7 +43,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>Static</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -97,7 +97,7 @@
       <ValidateAllParameters>true</ValidateAllParameters>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\pjlib\include;..\pjsip\include;..\pjmedia\include;..\pjnath\include;..\pjlib-util\include;..\third_party\sdl\include;..\third_party\openssl\Win32\include;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\pjproject\pjlib\include;..\lib\pjproject\pjsip\include;..\lib\pjproject\pjmedia\include;..\lib\pjproject\pjnath\include;..\lib\pjproject\pjlib-util\include;..\lib\pjproject\third_party\sdl\include;..\lib\pjproject\third_party\openssl\Win32\include;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -111,7 +111,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>vpxmt.lib;opus.lib;Wtsapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\lib\;..\third_party\lib\;..\third_party\openssl\$(Platform)\lib\;..\third_party\ipp\$(Platform)\;..\third_party\opus\$(Platform)\;..\third_party\silk\$(Platform)\$(Configuration)\;..\third_party\ffmpeg\$(Platform)\;..\third_party\vpx\$(Platform)\;..\third_party\sdl\$(Platform)\;..\third_party\opencore-amrnb\$(Platform)\;..\third_party\vo-amrwbenc\$(Platform)\;..\third_party\opencore-amrwb\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib\opus\win32\VS2015\Win32\Debug\;..\lib\vp8vfw\vp8\lib\x64;..\lib\pjproject\lib;..\lib\pjproject\third_party\lib\;..\lib\pjproject\third_party\openssl\$(Platform)\lib\;..\lib\pjproject\third_party\ipp\$(Platform)\;..\lib\pjproject\third_party\opus\$(Platform)\;..\lib\pjproject\third_party\silk\$(Platform)\$(Configuration)\;..\lib\pjproject\third_party\ffmpeg\$(Platform)\;..\lib\pjproject\third_party\vpx\$(Platform)\;..\lib\pjproject\third_party\sdl\$(Platform)\;..\lib\pjproject\third_party\opencore-amrnb\$(Platform)\;..\lib\pjproject\third_party\vo-amrwbenc\$(Platform)\;..\lib\pjproject\third_party\opencore-amrwb\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <AdditionalOptions>/OPT:NOLBR %(AdditionalOptions)</AdditionalOptions>

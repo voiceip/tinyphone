@@ -894,13 +894,15 @@ static void on_buddy_state(pjsua_buddy_id buddy_id)
 					image = MSIP_CONTACT_ICON_OFFLINE;
 					break;
 				case PJSUA_BUDDY_STATUS_ONLINE:
+					/*
 					if (buddy_info.rpid.activity == PJRPID_ACTIVITY_ON_THE_PHONE) {				
 						image = MSIP_CONTACT_ICON_ON_THE_PHONE;
 						if (PjToStr(&buddy_info.status_text).Left(4) == _T("Ring")) {
 							ringing = true;
 						}
 					}
-					else if (buddy_info.rpid.activity == PJRPID_ACTIVITY_AWAY)
+					else*/
+					if (buddy_info.rpid.activity == PJRPID_ACTIVITY_AWAY)
 					{
 						image = MSIP_CONTACT_ICON_AWAY;
 					}
