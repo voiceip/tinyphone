@@ -1,13 +1,12 @@
 // tinyphone.cpp : Defines the entry point for the console application.
-//
 
 #include "stdafx.h"
-#include <pjsua-lib/pjsua.h>
 #include <crow.h>
 #include "server.h"
 #include "utils.h"
 #include <pjsua2.hpp>
 #include <iostream>
+#include "phone.h"
 
 using namespace std;
 using namespace pj;
@@ -17,145 +16,6 @@ using namespace pj;
 #pragma comment(lib, "libpjproject-i386-Win32-vc14-Debug-Static.lib")
 
 #define THIS_FILE	"tinyphone"
-
-class SIPAccount;
-
-class SIPCall : public Call
-{
-private:
-	SIPAccount *myAcc;
-
-public:
-	SIPCall(Account &acc, int call_id = PJSUA_INVALID_ID)
-		: Call(acc, call_id)
-	{
-		myAcc = (SIPAccount *)&acc;
-	}
-
-	virtual void onCallState(OnCallStateParam &prm);
-};
-
-class SIPAccount : public Account
-{
-public:
-	std::vector<Call *> calls;
-
-public:
-	SIPAccount()
-	{}
-
-	~SIPAccount()
-	{
-		std::cout << "*** Account is being deleted: No of calls=" << calls.size() << std::endl;
-	}
-
-	void removeCall(Call *call)
-	{
-		for (std::vector<Call *>::iterator it = calls.begin(); it != calls.end(); ++it) {
-			if (*it == call) {
-				calls.erase(it);
-				break;
-			}
-		}
-	}
-
-	virtual void onRegState(OnRegStateParam &prm)
-	{
-		AccountInfo ai = getInfo();
-		std::cout << (ai.regIsActive ? "*** Register: code=" : "*** Unregister: code=")
-			<< prm.code << std::endl;
-	}
-
-	virtual void onIncomingCall(OnIncomingCallParam &iprm)
-	{
-		Call *call = new SIPCall(*this, iprm.callId);
-		CallInfo ci = call->getInfo();
-		CallOpParam prm;
-
-		std::cout << "*** Incoming Call: " << ci.remoteUri << " ["
-			<< ci.stateText << "]" << std::endl;
-
-		calls.push_back(call);
-		prm.statusCode = (pjsip_status_code)200;
-		call->answer(prm);
-	}
-};
-
-void SIPCall::onCallState(OnCallStateParam &prm)
-{
-	PJ_UNUSED_ARG(prm);
-
-	CallInfo ci = getInfo();
-	std::cout << "*** Call: " << ci.remoteUri << " [" << ci.stateText
-		<< "]" << std::endl;
-
-	if (ci.state == PJSIP_INV_STATE_DISCONNECTED) {
-		myAcc->removeCall(this);
-		/* Delete the call */
-		delete this;
-	}
-}
-
-class TinyPhone
-{
-	map<pjsua_acc_id, SIPAccount*> accounts;
-	// std::vector<SIPAccount *> accounts;
-
-public:
-	TinyPhone() {
-	}
-
-	~TinyPhone() {
-		std::cout << "Shutting Down TinyPhone" << std::endl;
-		logout();
-	}
-
-	bool hasAccounts() {
-		return accounts.size() > 0;
-	}
-
-	SIPAccount* getPrimaryAccount() {
-		if (!hasAccounts())
-			return NULL;
-		else {
-			return accounts.begin()->second;
-		}
-	}
-
-	void logout() {
-		auto it = accounts.begin();
-		while (it != accounts.end()) {
-			it->second->shutdown();
-			it++;
-		}
-	}
-
-	void addAccount(string username, string domain, string password) {
-
-		string account_name = username + "@" + domain;
-
-		AccountConfig acc_cfg;
-		acc_cfg.idUri = ("sip:" + account_name);
-		acc_cfg.regConfig.registrarUri = ("sip:" + domain);
-		acc_cfg.sipConfig.authCreds.push_back(AuthCredInfo("digest", "*", username, 0, password));
-
-		acc_cfg.regConfig.timeoutSec = 180;
-		acc_cfg.regConfig.retryIntervalSec = 30;
-		acc_cfg.regConfig.firstRetryIntervalSec = 15;
-		acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
-		acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
-
-		SIPAccount *acc(new SIPAccount);
-		acc->create(acc_cfg);
-
-		accounts.insert(pair<pjsua_acc_id, SIPAccount*>(acc->getId(), acc));
-	}
-
-	void makeCall(string destination) {
-
-	}
-
-};
 
 
 int main(int argc, char *argv[])
