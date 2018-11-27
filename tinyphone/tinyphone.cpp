@@ -5,7 +5,9 @@
 #include <pjsua-lib/pjsua.h>
 #include <crow.h>
 #include "server.h"
+#include "utils.h"
 
+using namespace std;
 
 #pragma comment(lib, "ws2_32.lib") 
 //#pragma comment(lib, "libpjproject-i386-Win32-vc14-Release-Static-NoVideo.lib")
@@ -71,6 +73,28 @@ static void error_exit(const char *title, pj_status_t status)
     exit(1);
 }
 
+pj_status_t add_account(string user, string domain,  string password, pjsua_acc_id *acc_id) {
+	/* Register to SIP server by creating SIP account. */
+	pjsua_acc_config cfg;
+
+	pjsua_acc_config_default(&cfg);
+	string _id = "sip:" + user + "@" + domain;
+	cfg.id = pj_str((char *) _id.c_str());
+	string _reg_uri = "sip:" + domain;
+	cfg.reg_uri = pj_str((char *)_reg_uri.c_str());
+	cfg.cred_count = 1;
+	cfg.cred_info[0].realm = pj_str((char *)domain.c_str());
+	cfg.cred_info[0].scheme = pj_str("digest");
+	cfg.cred_info[0].username = pj_str((char *)user.c_str());
+	cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
+	cfg.cred_info[0].data = pj_str((char *)password.c_str());
+	cfg.reg_retry_interval = 30;
+	cfg.reg_first_retry_interval = 15;
+	cfg.reg_timeout = 180;
+
+	return pjsua_acc_add(&cfg, PJ_TRUE, acc_id);
+}
+
 /*
  * main()
  *
@@ -84,16 +108,9 @@ int main(int argc, char *argv[])
 	crow::App<TinyPhoneMiddleware> app;
 	//app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
 
-
     /* Create pjsua first! */
     status = pjsua_create();
     if (status != PJ_SUCCESS) error_exit("Error in pjsua_create()", status);
-
-    /* If argument is specified, it's got to be a valid SIP URL */
-    if (argc > 1) {
-	status = pjsua_verify_url(argv[1]);
-	if (status != PJ_SUCCESS) error_exit("Invalid URL in argv", status);
-    }
 
     /* Init pjsua */
     {
@@ -141,10 +158,53 @@ int main(int argc, char *argv[])
     status = pjsua_start();
     if (status != PJ_SUCCESS) error_exit("Error starting pjsua", status);
 
-
-	// Addin http routes
+	/* Define HTTP Endpoints */
 	CROW_ROUTE(app, "/")([]() {
 		return "Hello world";
+	});
+
+	CROW_ROUTE(app, "/add_account")
+		.methods("POST"_method)
+	([&acc_id](const crow::request& req) {
+		auto x = crow::json::load(req.body);
+		if (!x)
+			return crow::response(400, "Bad Request");
+		auto username = x["username"].s();
+		auto domain = x["domain"].s();
+		auto password = x["password"].s();
+
+		pj_thread_auto_register();
+		auto status = add_account(username, domain, password, &acc_id);
+		if (status != PJ_SUCCESS) {
+			return crow::response(500, "Failed to Add Account");
+		}
+		else {
+			return crow::response(200, "Account added succesfully");
+		}
+	});
+
+	CROW_ROUTE(app, "/dial")
+		.methods("POST"_method)
+		([&acc_id](const crow::request& req) {
+		auto dial_uri = (char *)req.body.c_str();
+		
+		pj_thread_auto_register();
+
+		/* If argument is specified, it's got to be a valid SIP URL */
+		 auto status = pjsua_verify_url(dial_uri);
+		 if (status != PJ_SUCCESS) {
+			 return crow::response(400, "Invalid URL");
+		 }
+		 
+		pj_str_t uri = pj_str(dial_uri);
+		status = pjsua_call_make_call(acc_id, &uri, 0, NULL, NULL, NULL);
+		if (status != PJ_SUCCESS) {
+			return crow::response(500, "Error making call" + status );
+		}
+		else {
+			return crow::response(200, "Dialed");
+		}
+
 	});
 
 	CROW_ROUTE(app, "/exit")
@@ -159,40 +219,14 @@ int main(int argc, char *argv[])
 		([]() {
 		pjsua_call_hangup_all();
 		return "Hangup Calls";
-	});
-
-
-    /* Register to SIP server by creating SIP account. */
-    {
-	pjsua_acc_config cfg;
-
-	pjsua_acc_config_default(&cfg);
-	cfg.id = pj_str("sip:" SIP_USER "@" SIP_DOMAIN);
-	cfg.reg_uri = pj_str("sip:" SIP_DOMAIN);
-	cfg.cred_count = 1;
-	cfg.cred_info[0].realm = pj_str(SIP_DOMAIN);
-	cfg.cred_info[0].scheme = pj_str("digest");
-	cfg.cred_info[0].username = pj_str(SIP_USER);
-	cfg.cred_info[0].data_type = PJSIP_CRED_DATA_PLAIN_PASSWD;
-	cfg.cred_info[0].data = pj_str(SIP_PASSWD);
- 	cfg.reg_retry_interval = 30;
-  	cfg.reg_first_retry_interval = 15;
-	cfg.reg_timeout = 180;
-	status = pjsua_acc_add(&cfg, PJ_TRUE, &acc_id);
-	if (status != PJ_SUCCESS) error_exit("Error adding account", status);
-    }
-
-    /* If URL is specified, make call to the URL. */
-    if (argc > 1) {
-	pj_str_t uri = pj_str(argv[1]);
-	status = pjsua_call_make_call(acc_id, &uri, 0, NULL, NULL, NULL);
-	if (status != PJ_SUCCESS) error_exit("Error making call", status);
-    }
+	});		
 
 	app.loglevel(crow::LogLevel::Info);
 	//crow::logger::setHandler(std::make_shared<TinyPhoneHTTPLogHandler>());	
 
-	app.port(6060).multithreaded().run();
+	app.port(6060)
+		.multithreaded()
+		.run();
 
 	std::cout << "Server has been shutdown... Will Exit now...." << std::endl;
 		 
