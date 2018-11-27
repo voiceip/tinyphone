@@ -6,6 +6,10 @@
 #include <string.h>
 #include <pjsua-lib/pjsua.h>
 #include <crow.h>
+#include <windows.h>
+#include <stdio.h>
+
+#define FOREGROUND_WHITE (FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN)
 
 void print_thread_name()
 {
@@ -19,6 +23,14 @@ PJ_IDEF(pj_str_t) pj_str(std::string str)
 	dst.ptr = (char *) str.c_str();
 	dst.slen =  str.length();
 	return dst;	
+}
+
+void PrintErr(std::string message) {
+	HANDLE hConsoleErr = GetStdHandle(STD_ERROR_HANDLE);
+	SetConsoleTextAttribute(hConsoleErr, FOREGROUND_RED);
+	fprintf(stderr, "%s\n", message.c_str());
+	SetConsoleTextAttribute(hConsoleErr, FOREGROUND_WHITE);
+
 }
 
 /*
@@ -46,4 +58,32 @@ static PJ_DEF(pj_status_t) pj_thread_auto_register(void)
 		rc = PJ_SUCCESS;
 	}
 	return rc;
+}
+
+bool tcp_port_in_use(unsigned short port) {
+	using namespace boost::asio;
+	using ip::tcp;
+
+	io_service svc;
+	tcp::acceptor a(svc);
+
+	boost::system::error_code ec;
+	a.open(tcp::v4(), ec) || a.bind({ tcp::v4(), port }, ec);
+
+	return ec == error::address_in_use;
+	 
+}
+
+bool udp_port_in_use(unsigned short port) {
+	using namespace boost::asio;
+	using ip::udp;
+
+	io_service svc;
+	udp::socket a(svc);
+
+	boost::system::error_code ec;
+	a.open(udp::v4(), ec) || a.bind({ udp::v4(), port }, ec);
+
+	return ec == error::address_in_use;
+
 }

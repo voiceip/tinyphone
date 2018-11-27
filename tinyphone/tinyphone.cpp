@@ -6,6 +6,7 @@
 #include "utils.h"
 #include <pjsua2.hpp>
 #include <iostream>
+#include <string>
 #include "phone.h"
 
 using namespace std;
@@ -15,7 +16,6 @@ using namespace pj;
 //#pragma comment(lib, "libpjproject-i386-Win32-vc14-Release-Static-NoVideo.lib")
 #pragma comment(lib, "libpjproject-i386-Win32-vc14-Debug-Static.lib")
 
-#define THIS_FILE	"tinyphone"
 
 
 int main(int argc, char *argv[])
@@ -25,6 +25,10 @@ int main(int argc, char *argv[])
 
 	crow::App<TinyPhoneMiddleware> app;
 	//app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
+	app.loglevel(crow::LogLevel::Info);
+	//crow::logger::setHandler(std::make_shared<TinyPhoneHTTPLogHandler>());	
+	int http_port = 6060;
+
 
 	/* Create pjsua instance! */
 	try {
@@ -37,7 +41,14 @@ int main(int argc, char *argv[])
 
 		// Transport
 		TransportConfig tcfg;
-		tcfg.port = 5060;
+		int port = 5060;
+		while (udp_port_in_use(port)) {
+			port++;
+		}
+
+		CROW_LOG_INFO << "Using Transport Port: " << port;
+
+		tcfg.port = port;
 		ep.transportCreate(PJSIP_TRANSPORT_UDP, tcfg);
 	}
 	catch (Error & err) {
@@ -63,7 +74,7 @@ int main(int argc, char *argv[])
 	/* Initialization is done, now start pjsua */
 	try {
 		ep.libStart();
-		std::cout << "*** PJSUA2 STARTED ***" << std::endl;
+		std::cout << "PJSUA2 Started..." << std::endl;
 	}
 	catch (Error & err) {
 		std::cout << "Exception: " << err.info() << std::endl;
@@ -78,22 +89,27 @@ int main(int argc, char *argv[])
 	CROW_ROUTE(app, "/login")
 		.methods("POST"_method)
 		([&phone](const crow::request& req) {
-		auto x = crow::json::load(req.body);
-		if (!x)
-			return crow::response(400, "Bad Request");
+		try {
+			auto x = crow::json::load(req.body);
+			if (!x)
+				return crow::response(400, "Bad Request");
 
-		string username = x["username"].s();
-		string domain = x["domain"].s();
-		string password = x["password"].s();
-		string account_name = username + "@" + domain;
+			string username = x["username"].s();
+			string domain = x["domain"].s();
+			string password = x["password"].s();
+			string account_name = username + "@" + domain;
 
-		// Add account
-		pj_thread_auto_register();
-		phone.addAccount(username, domain, password);
+			// Add account
+			pj_thread_auto_register();
+			phone.addAccount(username, domain, password);
 
-		CROW_LOG_INFO << "Registered account " << account_name;
-		return crow::response(200, "Account added succesfully");
-
+			CROW_LOG_INFO << "Registered account " << account_name;
+			return crow::response(200, "Account added succesfully");
+		}
+		catch (std::exception& e) {
+			CROW_LOG_ERROR << "Exception catched : " << e.what();
+			return crow::response(500, "Something Went Wrong");
+		}
 	});
 
 	CROW_ROUTE(app, "/dial")
@@ -124,7 +140,7 @@ int main(int argc, char *argv[])
 		}
 		catch (std::exception& e) {
 			CROW_LOG_ERROR << "Exception catched : " << e.what();
-			return crow::response(500, "Dial Failed, Something Went Wrong");
+			return crow::response(500, "Something Went Wrong");
 		}
 
 	});
@@ -160,10 +176,14 @@ int main(int argc, char *argv[])
 		return "Hangup Calls";
 	});
 
-	app.loglevel(crow::LogLevel::Info);
-	//crow::logger::setHandler(std::make_shared<TinyPhoneHTTPLogHandler>());	
 
-	app.port(6060)
+	if (tcp_port_in_use(http_port)) {
+		PrintErr(("HTTP Port " + to_string(http_port) + " already in use!"));
+		ep.libDestroy();
+		exit(1);
+	}
+		
+	app.port(http_port)
 		//.multithreaded()
 		.run();
 
