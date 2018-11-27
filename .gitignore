@@ -3,3 +3,8 @@ Release
 ipch
 .vs
 a*.sln
+.vscode
+*.vcxproj.user
+*.vcxproj.filters
+*.VC.db
+*.VC.opendb
