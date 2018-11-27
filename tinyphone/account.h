@@ -21,6 +21,10 @@ public:
 		myAcc = (SIPAccount *)&acc;
 	}
 
+	SIPAccount* getAccount() {
+		return myAcc;
+	}
+
 	virtual void onCallState(OnCallStateParam &prm);
 };
 

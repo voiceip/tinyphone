@@ -17,7 +17,6 @@ using namespace pj;
 #pragma comment(lib, "libpjproject-i386-Win32-vc14-Debug-Static.lib")
 
 
-
 int main(int argc, char *argv[])
 {
 	TinyPhone phone;
@@ -120,21 +119,13 @@ int main(int argc, char *argv[])
 		if (!phone.hasAccounts())
 			return crow::response(400, "No Account Registed Yet");
 
-		SIPAccount* account = phone.getPrimaryAccount();
-		string account_name = account->getInfo().uri;
-
-		CROW_LOG_INFO << ("Dial Request to " + req.body + " via account " + account_name);
+		CROW_LOG_INFO << "Dial Request to " << req.body ;
 
 		try {
 			pj_thread_auto_register();
 
-			// Make outgoing call
-			Call *call = new SIPCall(*account);
-			account->calls.push_back(call);
-			CallOpParam prm(true);
-			prm.opt.audioCount = 1;
-			prm.opt.videoCount = 0;
-			call->makeCall(dial_uri, prm);
+			SIPCall *call = phone.makeCall(dial_uri);
+			string account_name = call->getAccount()->getInfo().uri;
 
 			return crow::response(200, ("Dialed via " + account_name));
 		}

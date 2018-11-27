@@ -26,6 +26,34 @@ public:
 		}
 	}
 
+	SIPAccount* getAccountById(int pos) {
+		if (!hasAccounts())
+			return NULL;
+		else {
+			return accounts.find(pos)->second;
+		}
+	}
+
+	SIPAccount* getAccountByURI(string uri) {
+		if (!hasAccounts())
+			return NULL;
+		else {
+			string full_uri = "sip:" + uri;
+			SIPAccount* account = NULL;
+			auto it = accounts.begin();
+			while (it != accounts.end())
+			{
+				if (it->second->getInfo().uri == full_uri)
+				{
+					account = it->second;
+					break;
+				}
+				it++;
+			}
+			return account;
+		}
+	}
+
 	void logout() {
 		auto it = accounts.begin();
 		while (it != accounts.end()) {
@@ -55,8 +83,19 @@ public:
 		accounts.insert(pair<pjsua_acc_id, SIPAccount*>(acc->getId(), acc));
 	}
 
-	void makeCall(string destination) {
+	SIPCall* makeCall(string uri) {
+		SIPAccount* account = getPrimaryAccount();
+		return makeCall(uri, account);
+	}
 
+	SIPCall* makeCall(string uri, SIPAccount* account) {
+		SIPCall *call = new SIPCall(*account);
+		account->calls.push_back(call);
+		CallOpParam prm(true);
+		prm.opt.audioCount = 1;
+		prm.opt.videoCount = 0;
+		call->makeCall(uri, prm);
+		return call;
 	}
 
 };
