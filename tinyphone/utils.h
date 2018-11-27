@@ -15,7 +15,6 @@ PJ_IDEF(pj_str_t) pj_str(std::string str)
 	return dst;
 }
 
-
 /*
 * pj_thread_auto_register(void)
 */

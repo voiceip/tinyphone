@@ -92,17 +92,17 @@ pj_status_t add_account(string user, string domain,  string password, pjsua_acc_
 	cfg.reg_first_retry_interval = 15;
 	cfg.reg_timeout = 180;
 
+	if (*acc_id >= 0) {
+		cout << "UnRegistering from existing account " << *acc_id << endl;
+		pjsua_acc_del(*acc_id);
+	}
 	return pjsua_acc_add(&cfg, PJ_TRUE, acc_id);
 }
 
-/*
- * main()
- *
- * argv[1] may contain URL to call.
- */
 int main(int argc, char *argv[])
 {
-    pjsua_acc_id acc_id;
+    pjsua_acc_id acc_id(-1);
+	string domain;
     pj_status_t status;
 
 	crow::App<TinyPhoneMiddleware> app;
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
 	cfg.cb.on_call_state = &on_call_state;
 
 	pjsua_logging_config_default(&log_cfg);
-	log_cfg.console_level = 4;
+	log_cfg.console_level = 3; //4
 
 	status = pjsua_init(&cfg, &log_cfg, NULL);
 	if (status != PJ_SUCCESS) error_exit("Error in pjsua_init()", status);
@@ -132,7 +132,6 @@ int main(int argc, char *argv[])
     /* Add UDP transport. */
     {
 	pjsua_transport_config cfg;
-
 	pjsua_transport_config_default(&cfg);
 	cfg.port = 5060;
 	status = pjsua_transport_create(PJSIP_TRANSPORT_UDP, &cfg, NULL);
@@ -165,16 +164,18 @@ int main(int argc, char *argv[])
 
 	CROW_ROUTE(app, "/add_account")
 		.methods("POST"_method)
-	([&acc_id](const crow::request& req) {
+	([&acc_id, &domain](const crow::request& req) {
 		auto x = crow::json::load(req.body);
 		if (!x)
 			return crow::response(400, "Bad Request");
 		auto username = x["username"].s();
-		auto domain = x["domain"].s();
+		domain = x["domain"].s();
 		auto password = x["password"].s();
 
 		pj_thread_auto_register();
 		auto status = add_account(username, domain, password, &acc_id);
+		CROW_LOG_INFO << "Registered account " << to_string(acc_id);
+
 		if (status != PJ_SUCCESS) {
 			return crow::response(500, "Failed to Add Account");
 		}
@@ -185,24 +186,35 @@ int main(int argc, char *argv[])
 
 	CROW_ROUTE(app, "/dial")
 		.methods("POST"_method)
-		([&acc_id](const crow::request& req) {
+		([&acc_id, &domain](const crow::request& req) {
 		auto dial_uri = (char *)req.body.c_str();
-		
-		pj_thread_auto_register();
 
-		/* If argument is specified, it's got to be a valid SIP URL */
-		 auto status = pjsua_verify_url(dial_uri);
-		 if (status != PJ_SUCCESS) {
-			 return crow::response(400, "Invalid URL");
-		 }
-		 
-		pj_str_t uri = pj_str(dial_uri);
-		status = pjsua_call_make_call(acc_id, &uri, 0, NULL, NULL, NULL);
-		if (status != PJ_SUCCESS) {
-			return crow::response(500, "Error making call" + status );
+		CROW_LOG_INFO << "Dial Request to " << req.body;
+		CROW_LOG_INFO << "via account " <<  to_string(acc_id);
+		CROW_LOG_INFO << "Domain " << domain;
+	
+		try {
+			pj_thread_auto_register();
+
+			/* If argument is specified, it's got to be a valid SIP URL
+			auto status = pjsua_verify_url(dial_uri);
+			if (status != PJ_SUCCESS) {
+				 return crow::response(400, "Invalid URL");
+			} */
+
+			//TODO: verify or create valid sip uri or this would crash :(
+
+			pj_str_t uri = pj_str(dial_uri);
+			auto status = pjsua_call_make_call(acc_id, &uri, 0, NULL, NULL, NULL);
+			if (status != PJ_SUCCESS) {
+				return crow::response(500, "Error making call" + status);
+			}
+			else {
+				return crow::response(200, "Dialed");
+			}
 		}
-		else {
-			return crow::response(200, "Dialed");
+		catch (...) {
+			return crow::response(500, "Something Went Wrong");
 		}
 
 	});
@@ -225,7 +237,7 @@ int main(int argc, char *argv[])
 	//crow::logger::setHandler(std::make_shared<TinyPhoneHTTPLogHandler>());	
 
 	app.port(6060)
-		.multithreaded()
+		//.multithreaded()
 		.run();
 
 	std::cout << "Server has been shutdown... Will Exit now...." << std::endl;
