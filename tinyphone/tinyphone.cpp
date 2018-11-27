@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
 		return "Hello world";
 	});
 
-	CROW_ROUTE(app, "/add_account")
+	CROW_ROUTE(app, "/login")
 		.methods("POST"_method)
 	([&acc_id, &domain](const crow::request& req) {
 		auto x = crow::json::load(req.body);
@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
 
 	CROW_ROUTE(app, "/dial")
 		.methods("POST"_method)
-		([&acc_id, &domain](const crow::request& req) {
+	([&acc_id, &domain](const crow::request& req) {
 		auto dial_uri = (char *)req.body.c_str();
 
 		CROW_LOG_INFO << "Dial Request to " << req.body;
@@ -219,16 +219,30 @@ int main(int argc, char *argv[])
 
 	});
 
+	CROW_ROUTE(app, "/logout")
+		.methods("POST"_method)
+	([&acc_id]() {
+		cout << "Logout from  account " << acc_id << endl;
+		pj_thread_auto_register();
+		auto status = pjsua_acc_del(acc_id);
+		if (status != PJ_SUCCESS) {
+			return crow::response(500, "Error logging out :" + status);
+		}
+		else {
+			return crow::response(200, "Logged Out");
+		}
+	});
+
 	CROW_ROUTE(app, "/exit")
-		.methods("GET"_method, "POST"_method)
+		.methods("POST"_method)
 	([&app](const crow::request& req) {
 		CROW_LOG_INFO << "Shutdown Request from client: " << req.body;
 		app.stop();
 		return "Server shutdown";
 	});
 
-	CROW_ROUTE(app, "/hangup")
-		([]() {
+	CROW_ROUTE(app, "/hangup_all")
+	([]() {
 		pjsua_call_hangup_all();
 		return "Hangup Calls";
 	});		
