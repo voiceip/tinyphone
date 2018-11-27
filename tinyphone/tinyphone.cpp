@@ -3,6 +3,9 @@
 
 #include "stdafx.h"
 #include <pjsua-lib/pjsua.h>
+#include <crow.h>
+#include "server.h"
+
 
 #pragma comment(lib, "ws2_32.lib") 
 //#pragma comment(lib, "libpjproject-i386-Win32-vc14-Release-Static-NoVideo.lib")
@@ -78,6 +81,10 @@ int main(int argc, char *argv[])
     pjsua_acc_id acc_id;
     pj_status_t status;
 
+	crow::App<TinyPhoneMiddleware> app;
+	//app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
+
+
     /* Create pjsua first! */
     status = pjsua_create();
     if (status != PJ_SUCCESS) error_exit("Error in pjsua_create()", status);
@@ -134,6 +141,27 @@ int main(int argc, char *argv[])
     status = pjsua_start();
     if (status != PJ_SUCCESS) error_exit("Error starting pjsua", status);
 
+
+	// Addin http routes
+	CROW_ROUTE(app, "/")([]() {
+		return "Hello world";
+	});
+
+	CROW_ROUTE(app, "/exit")
+		.methods("GET"_method, "POST"_method)
+	([&app](const crow::request& req) {
+		CROW_LOG_INFO << "Shutdown Request from client: " << req.body;
+		app.stop();
+		return "Server shutdown";
+	});
+
+	CROW_ROUTE(app, "/hangup")
+		([]() {
+		pjsua_call_hangup_all();
+		return "Hangup Calls";
+	});
+
+
     /* Register to SIP server by creating SIP account. */
     {
 	pjsua_acc_config cfg;
@@ -161,25 +189,16 @@ int main(int argc, char *argv[])
 	if (status != PJ_SUCCESS) error_exit("Error making call", status);
     }
 
-    /* Wait until user press "q" to quit. */
-    for (;;) {
-	char option[10];
+	app.loglevel(crow::LogLevel::Info);
+	//crow::logger::setHandler(std::make_shared<TinyPhoneHTTPLogHandler>());	
 
-	puts("Press 'h' to hangup all calls, 'q' to quit");
-	if (fgets(option, sizeof(option), stdin) == NULL) {
-	    puts("EOF while reading stdin, will quit now..");
-	    break;
-	}
+	app.port(6060).multithreaded().run();
 
-	if (option[0] == 'q')
-	    break;
-
-	if (option[0] == 'h')
-	    pjsua_call_hangup_all();
-    }
-
-    /* Destroy pjsua */
-    pjsua_destroy();
+	std::cout << "Server has been shutdown... Will Exit now...." << std::endl;
+		 
+	/* Destroy pjsua */
+	pjsua_destroy();
 
     return 0;
 }
+
