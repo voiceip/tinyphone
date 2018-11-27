@@ -91,6 +91,8 @@ pj_status_t add_account(string user, string domain,  string password, pjsua_acc_
 	cfg.reg_retry_interval = 30;
 	cfg.reg_first_retry_interval = 15;
 	cfg.reg_timeout = 180;
+	cfg.vid_out_auto_transmit = PJ_FALSE;
+	cfg.vid_in_auto_show = PJ_FALSE;
 
 	if (*acc_id >= 0) {
 		cout << "UnRegistering from existing account " << *acc_id << endl;
@@ -193,6 +195,9 @@ int main(int argc, char *argv[])
 		CROW_LOG_INFO << "via account " <<  to_string(acc_id);
 		CROW_LOG_INFO << "Domain " << domain;
 	
+		if (acc_id <0 )
+			return crow::response(400, "No Account Registed Yet");
+
 		try {
 			pj_thread_auto_register();
 
@@ -205,6 +210,9 @@ int main(int argc, char *argv[])
 			//TODO: verify or create valid sip uri or this would crash :(
 
 			pj_str_t uri = pj_str(dial_uri);
+			pjsua_call_setting settings;
+			settings.vid_cnt = 0;
+
 			auto status = pjsua_call_make_call(acc_id, &uri, 0, NULL, NULL, NULL);
 			if (status != PJ_SUCCESS) {
 				return crow::response(500, "Error making call" + status);
@@ -242,7 +250,9 @@ int main(int argc, char *argv[])
 	});
 
 	CROW_ROUTE(app, "/hangup_all")
+		.methods("POST"_method)
 	([]() {
+		pj_thread_auto_register();
 		pjsua_call_hangup_all();
 		return "Hangup Calls";
 	});		

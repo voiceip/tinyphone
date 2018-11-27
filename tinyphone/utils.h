@@ -5,11 +5,17 @@
 #include <pj/string.h>
 #include <string.h>
 #include <pjsua-lib/pjsua.h>
+#include <crow.h>
 
+void print_thread_name()
+{
+	std::thread::id this_id = std::this_thread::get_id();
+	CROW_LOG_INFO << "Thread id: #" << this_id ;
+}
 
 PJ_IDEF(pj_str_t) pj_str(std::string str)
 {
-	pj_str_t dst;
+	pj_str_t dst;	
 	dst.ptr = (char *) str.c_str();
 	dst.slen =  str.length();
 	return dst;
@@ -20,6 +26,7 @@ PJ_IDEF(pj_str_t) pj_str(std::string str)
 */
 PJ_DEF(pj_status_t) pj_thread_auto_register(void)
 {
+	print_thread_name();
 	pj_status_t rc;
 
 	if (!pj_thread_is_registered())
@@ -36,3 +43,4 @@ PJ_DEF(pj_status_t) pj_thread_auto_register(void)
 
 	return rc;
 }
+
