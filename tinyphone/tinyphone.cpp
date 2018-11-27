@@ -103,8 +103,8 @@ pj_status_t add_account(string user, string domain,  string password, pjsua_acc_
 
 int main(int argc, char *argv[])
 {
+	map<pjsua_acc_id, string> accounts;
     pjsua_acc_id acc_id(-1);
-	string domain;
     pj_status_t status;
 
 	crow::App<TinyPhoneMiddleware> app;
@@ -159,6 +159,8 @@ int main(int argc, char *argv[])
     status = pjsua_start();
     if (status != PJ_SUCCESS) error_exit("Error starting pjsua", status);
 
+
+
 	/* Define HTTP Endpoints */
 	CROW_ROUTE(app, "/")([]() {
 		return "Hello world";
@@ -166,37 +168,40 @@ int main(int argc, char *argv[])
 
 	CROW_ROUTE(app, "/login")
 		.methods("POST"_method)
-	([&acc_id, &domain](const crow::request& req) {
+	([&acc_id, &accounts](const crow::request& req) {
 		auto x = crow::json::load(req.body);
 		if (!x)
 			return crow::response(400, "Bad Request");
-		auto username = x["username"].s();
-		domain = x["domain"].s();
-		auto password = x["password"].s();
+		string username = x["username"].s();
+		string domain = x["domain"].s();
+		string password = x["password"].s();
+		string account_name = username + "@" + domain;
 
 		pj_thread_auto_register();
 		auto status = add_account(username, domain, password, &acc_id);
-		CROW_LOG_INFO << "Registered account " << to_string(acc_id);
 
 		if (status != PJ_SUCCESS) {
 			return crow::response(500, "Failed to Add Account");
 		}
 		else {
+			CROW_LOG_INFO << ("Registered account " + to_string(acc_id) + " : " + account_name);
+			accounts.insert(pair<pjsua_acc_id, string>(acc_id, account_name));
 			return crow::response(200, "Account added succesfully");
 		}
 	});
 
 	CROW_ROUTE(app, "/dial")
 		.methods("POST"_method)
-	([&acc_id, &domain](const crow::request& req) {
+	([&acc_id, &accounts](const crow::request& req) {
 		auto dial_uri = (char *)req.body.c_str();
-
-		CROW_LOG_INFO << "Dial Request to " << req.body;
-		CROW_LOG_INFO << "via account " <<  to_string(acc_id);
-		CROW_LOG_INFO << "Domain " << domain;
 	
-		if (acc_id <0 )
+		if (acc_id < 0 )
 			return crow::response(400, "No Account Registed Yet");
+
+		auto account_name = accounts.find(acc_id)->second;
+
+		CROW_LOG_INFO << ("Dial Request to " + req.body + " via account " + account_name);
+
 
 		try {
 			pj_thread_auto_register();
@@ -218,10 +223,11 @@ int main(int argc, char *argv[])
 				return crow::response(500, "Error making call" + status);
 			}
 			else {
-				return crow::response(200, "Dialed");
+				return crow::response(200, ("Dialed via "+ account_name));
 			}
 		}
-		catch (...) {
+		catch (std::exception& e) {
+			CROW_LOG_ERROR << "Exception catched : " << e.what();
 			return crow::response(500, "Something Went Wrong");
 		}
 
@@ -230,14 +236,20 @@ int main(int argc, char *argv[])
 	CROW_ROUTE(app, "/logout")
 		.methods("POST"_method)
 	([&acc_id]() {
-		cout << "Logout from  account " << acc_id << endl;
-		pj_thread_auto_register();
-		auto status = pjsua_acc_del(acc_id);
-		if (status != PJ_SUCCESS) {
-			return crow::response(500, "Error logging out :" + status);
-		}
-		else {
-			return crow::response(200, "Logged Out");
+		CROW_LOG_INFO << "Logout from  account " << acc_id ;
+		try{
+			pj_thread_auto_register();
+			CROW_LOG_INFO << "Atempting logout " << acc_id;
+			auto status = pjsua_acc_del(acc_id);
+			if (status != PJ_SUCCESS) {
+				return crow::response(500, "Error logging out :" + status);
+			}
+			else {
+				return crow::response(200, "Logged Out");
+			}
+		} catch (std::exception& e) {
+			CROW_LOG_ERROR << "Exception catched : " << e.what();
+			return crow::response(500, "Something Went Wrong");
 		}
 	});
 

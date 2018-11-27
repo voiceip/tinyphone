@@ -18,7 +18,7 @@ PJ_IDEF(pj_str_t) pj_str(std::string str)
 	pj_str_t dst;	
 	dst.ptr = (char *) str.c_str();
 	dst.slen =  str.length();
-	return dst;
+	return dst;	
 }
 
 /*
@@ -40,6 +40,8 @@ PJ_DEF(pj_status_t) pj_thread_auto_register(void)
 	{
 		rc = PJ_SUCCESS;
 	}
+
+	CROW_LOG_INFO << "Thread Registered: " << rc;
 
 	return rc;
 }
