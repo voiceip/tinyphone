@@ -1,11 +1,13 @@
 #pragma once
 
+#ifndef ACCOUNT_HEADER_FILE_H
+#define ACCOUNT_HEADER_FILE_H
+
 #include <pjsua2.hpp>
 #include <iostream>
 
 using namespace std;
 using namespace pj;
-
 
 class SIPAccount;
 
@@ -88,3 +90,5 @@ void SIPCall::onCallState(OnCallStateParam &prm)
 		delete this;
 	}
 }
+
+#endif

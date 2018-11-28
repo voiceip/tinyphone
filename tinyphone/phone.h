@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef PHONE_HEADER_FILE_H
+#define PHONE_HEADER_FILE_H
+
 #include "account.h"
 
 class TinyPhone
@@ -62,6 +66,10 @@ public:
 		}
 	}
 
+	void hangupAllCalls() {
+		//ep.hangupAllCalls()
+	}
+
 	void addAccount(string username, string domain, string password) {
 
 		string account_name = username + "@" + domain;
@@ -99,3 +107,5 @@ public:
 	}
 
 };
+
+#endif

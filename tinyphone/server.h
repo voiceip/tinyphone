@@ -1,7 +1,11 @@
 #pragma once
 
-#include "crow.h"
-#include <sstream>
+#ifndef SERVER_HEADER_FILE_H
+#define SERVER_HEADER_FILE_H
+
+#include <crow.h>
+#include <iostream>
+#include <pjsua2.hpp>
 
 class TinyPhoneHTTPLogHandler : public crow::ILogHandler {
 public:
@@ -38,3 +42,31 @@ struct TinyPhoneMiddleware
 		// no-op
 	}
 };
+
+class TinyPhoneHttpServer {
+private:
+	pj::Endpoint* m_ep;
+public:
+	TinyPhoneHttpServer(pj::Endpoint* ep) {
+		SetEndpoint(ep);
+	}
+
+	~TinyPhoneHttpServer() {
+		std::cout << "Shutting Down TinyPhone HTTP Service" << std::endl;
+	}
+
+	void SetEndpoint(pj::Endpoint* ep) {
+		m_ep = ep;
+	}
+
+	pj::Endpoint* getEndpoint() {
+		return m_ep;
+	}
+
+
+
+	void Start();
+};
+
+#endif
+ 
