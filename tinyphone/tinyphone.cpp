@@ -18,6 +18,8 @@ using json = nlohmann::json;
 #pragma comment(lib, "libpjproject-i386-Win32-vc14-Debug-Static.lib")
 //#define _CRT_SECURE_NO_WARNINGS 1
 
+#define DEFAULT_HTTP_SERVER_ERROR_REPONSE  {{ "message", "Something went Wrong :(" }}
+
 
 int main(int argc, char *argv[])
 {
@@ -82,14 +84,13 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
+
 	/* Define HTTP Endpoints */
 	CROW_ROUTE(app, "/")([]() {
 		json response = {
 			{ "message", "Hello World" },
 		};
-		//tp::json_response  jsonresponse{ 200, return_json };
-		//return json_response;
-		return crow::response(response.dump());
+		return tp::response(200,response);
 	});
 
 	CROW_ROUTE(app, "/login")
@@ -97,8 +98,11 @@ int main(int argc, char *argv[])
 		([&phone](const crow::request& req) {
 		try {
 			auto x = crow::json::load(req.body);
-			if (!x)
-				return crow::response(400, "Bad Request");
+			if (!x) {
+				return tp::response(400, {
+					{ "message", "Bad Request" },
+				});
+			}
 
 			string username = x["username"].s();
 			string domain = x["domain"].s();
@@ -114,11 +118,11 @@ int main(int argc, char *argv[])
 			json response = {
 				{ "message", "Account added succesfully" },
 			};
-			return crow::response(200, response.dump());
+			return tp::response(200, response);
 		}
 		catch (std::exception& e) {
 			CROW_LOG_ERROR << "Exception catched : " << e.what();
-			return crow::response(500, "Something Went Wrong");
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 	});
 
@@ -127,8 +131,11 @@ int main(int argc, char *argv[])
 		([&phone](const crow::request& req) {
 		auto dial_uri = (char *)req.body.c_str();
 
-		if (!phone.hasAccounts())
-			return crow::response(400, "No Account Registed Yet");
+		if (!phone.hasAccounts()) {
+			return tp::response(400, {
+				{ "message", "No Account Registed Yet" },
+			});
+		}
 
 		CROW_LOG_INFO << "Dial Request to " << req.body ;
 
@@ -141,11 +148,11 @@ int main(int argc, char *argv[])
 			json response = {
 				{ "message",  ("Dialed via " + account_name) },
 			};
-			return crow::response(200, response.dump());
+			return tp::response(200, response);
 		}
 		catch (std::exception& e) {
 			CROW_LOG_ERROR << "Exception catched : " << e.what();
-			return crow::response(500, "Something Went Wrong");
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 
 	});
@@ -160,11 +167,11 @@ int main(int argc, char *argv[])
 			json response = {
 				{ "message",  "Logged Out" },
 			};
-			return crow::response(200, response.dump());
+			return tp::response(200, response);
 		}
 		catch (std::exception& e) {
 			CROW_LOG_ERROR << "Exception catched : " << e.what();
-			return crow::response(500, "Something Went Wrong");
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 	});
 
@@ -176,7 +183,7 @@ int main(int argc, char *argv[])
 		json response = {
 			{ "message",  "Server Shutdown Triggered" },
 		};
-		return crow::response(200, response.dump());
+		return tp::response(200, response);
 	});
 
 	CROW_ROUTE(app, "/hangup_all")
@@ -187,7 +194,7 @@ int main(int argc, char *argv[])
 		json response = {
 			{ "message",  "Hangup All Calls Triggered" },
 		};
-		return crow::response(200, response.dump());
+		return tp::response(200, response);
 	});
 
 
