@@ -11,10 +11,12 @@
 
 using namespace std;
 using namespace pj;
+using json = nlohmann::json;
 
 #pragma comment(lib, "ws2_32.lib") 
 //#pragma comment(lib, "libpjproject-i386-Win32-vc14-Release-Static-NoVideo.lib")
 #pragma comment(lib, "libpjproject-i386-Win32-vc14-Debug-Static.lib")
+//#define _CRT_SECURE_NO_WARNINGS 1
 
 
 int main(int argc, char *argv[])
@@ -82,7 +84,12 @@ int main(int argc, char *argv[])
 
 	/* Define HTTP Endpoints */
 	CROW_ROUTE(app, "/")([]() {
-		return "Hello world";
+		json response = {
+			{ "message", "Hello World" },
+		};
+		//tp::json_response  jsonresponse{ 200, return_json };
+		//return json_response;
+		return crow::response(response.dump());
 	});
 
 	CROW_ROUTE(app, "/login")
@@ -103,7 +110,11 @@ int main(int argc, char *argv[])
 			phone.addAccount(username, domain, password);
 
 			CROW_LOG_INFO << "Registered account " << account_name;
-			return crow::response(200, "Account added succesfully");
+
+			json response = {
+				{ "message", "Account added succesfully" },
+			};
+			return crow::response(200, response.dump());
 		}
 		catch (std::exception& e) {
 			CROW_LOG_ERROR << "Exception catched : " << e.what();
@@ -127,7 +138,10 @@ int main(int argc, char *argv[])
 			SIPCall *call = phone.makeCall(dial_uri);
 			string account_name = call->getAccount()->getInfo().uri;
 
-			return crow::response(200, ("Dialed via " + account_name));
+			json response = {
+				{ "message",  ("Dialed via " + account_name) },
+			};
+			return crow::response(200, response.dump());
 		}
 		catch (std::exception& e) {
 			CROW_LOG_ERROR << "Exception catched : " << e.what();
@@ -143,7 +157,10 @@ int main(int argc, char *argv[])
 			pj_thread_auto_register();
 			CROW_LOG_INFO << "Atempting logout of TinyPhone";
 			phone.logout();
-			return crow::response(200, "Logged Out");
+			json response = {
+				{ "message",  "Logged Out" },
+			};
+			return crow::response(200, response.dump());
 		}
 		catch (std::exception& e) {
 			CROW_LOG_ERROR << "Exception catched : " << e.what();
@@ -156,7 +173,10 @@ int main(int argc, char *argv[])
 		([&app](const crow::request& req) {
 		CROW_LOG_INFO << "Shutdown Request from client: " << req.body;
 		app.stop();
-		return "Server shutdown";
+		json response = {
+			{ "message",  "Server Shutdown Triggered" },
+		};
+		return crow::response(200, response.dump());
 	});
 
 	CROW_ROUTE(app, "/hangup_all")
@@ -164,7 +184,10 @@ int main(int argc, char *argv[])
 		([&ep]() {
 		pj_thread_auto_register();
 		ep.hangupAllCalls();
-		return "Hangup Calls";
+		json response = {
+			{ "message",  "Hangup All Calls Triggered" },
+		};
+		return crow::response(200, response.dump());
 	});
 
 

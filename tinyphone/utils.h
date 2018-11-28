@@ -8,8 +8,20 @@
 #include <crow.h>
 #include <windows.h>
 #include <stdio.h>
+#undef snprintf
+#include <nlohmann/json.hpp>
 
 #define FOREGROUND_WHITE (FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN)
+
+namespace tp {
+	struct jsonresponse : crow::response {
+		jsonresponse(const nlohmann::json& _body) : crow::response{ _body.dump() } {
+			add_header("Access-Control-Allow-Origin", "*");
+			add_header("Access-Control-Allow-Headers", "Content-Type");
+			add_header("Content-Type", "application/json");
+		}
+	};
+}
 
 void print_thread_name()
 {
