@@ -33,7 +33,7 @@ public:
 class SIPAccount : public Account
 {
 public:
-	std::vector<Call *> calls;
+	std::vector<SIPCall *> calls;
 
 public:
 	SIPAccount()
@@ -44,14 +44,18 @@ public:
 		std::cout << "*** Account is being deleted: No of calls=" << calls.size() << std::endl;
 	}
 
-	void removeCall(Call *call)
+	void removeCall(SIPCall *call)
 	{
-		for (std::vector<Call *>::iterator it = calls.begin(); it != calls.end(); ++it) {
+		for (auto it = calls.begin(); it != calls.end(); ++it) {
 			if (*it == call) {
 				calls.erase(it);
 				break;
 			}
 		}
+	}
+
+	std::vector<SIPCall *> getCalls() {
+		return calls;
 	}
 
 	virtual void onRegState(OnRegStateParam &prm)
@@ -63,7 +67,7 @@ public:
 
 	virtual void onIncomingCall(OnIncomingCallParam &iprm)
 	{
-		Call *call = new SIPCall(*this, iprm.callId);
+		SIPCall *call = new SIPCall(*this, iprm.callId);
 		CallInfo ci = call->getInfo();
 		CallOpParam prm;
 

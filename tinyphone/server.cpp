@@ -66,14 +66,21 @@ void TinyPhoneHttpServer::Start() {
 
 			// Add account
 			pj_thread_auto_register();
-			phone.addAccount(username, domain, password);
+			
 
 			CROW_LOG_INFO << "Registered account " << account_name;
 
-			json response = {
-				{ "message", "Account added succesfully" },
-			};
-			return tp::response(200, response);
+			if (phone.addAccount(username, domain, password)) {
+				return tp::response(200, {
+					{ "message", "Account added succesfully" },
+				});
+			}
+			else {
+				return tp::response(400, {
+					{ "message", "Account already exits" },
+				});
+			}
+			
 		}
 		catch (std::exception& e) {
 			CROW_LOG_ERROR << "Exception catched : " << e.what();
@@ -110,6 +117,24 @@ void TinyPhoneHttpServer::Start() {
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 
+	});
+
+	CROW_ROUTE(app, "/calls")
+		.methods("GET"_method)
+		([&phone]() {
+		try {
+			pj_thread_auto_register();
+			auto calls = phone.Calls();
+			json response = {
+				{ "message",  "Current Calss" },
+				{ "data", ""},
+			};
+			return tp::response(200, response);
+		}
+		catch (std::exception& e) {
+			CROW_LOG_ERROR << "Exception catched : " << e.what();
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
+		}
 	});
 
 	CROW_ROUTE(app, "/logout")

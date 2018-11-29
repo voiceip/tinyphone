@@ -70,8 +70,8 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 	InitNotifyIconData();
 
 	RedirectIOToConsole();
-	InitPJSUAEndpoint();
 
+	InitPJSUAEndpoint();
 	TinyPhoneHttpServer server(&ep);
 
 	//Run the server in non-ui thread.
@@ -93,33 +93,25 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 }
 
 
-
-
 /*  This function is called by the Windows function DispatchMessage()  */
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 
-	switch (message)                  /* handle the messages */
+	switch (message)
 	{
 
 	case WM_CREATE:
-
-		//ShowWindow(Hwnd, SW_HIDE);
-		//Hmenu = CreatePopupMenu();
-		//AppendMenu(Hmenu, MF_STRING, ID_TRAY_EXIT, TEXT("Exit"));
-
 		break;
 
 	case WM_CLOSE:
 		return 0;
 		break;
 
-	case WM_DESTROY:
-		
+	case WM_DESTROY:		
 		ExitApplication();
 		break;
 
-		// Our user defined WM_SYSICON message.
+	// Our user defined WM_SYSICON message.
 	case WM_SYSICON:
 	{
 
@@ -134,6 +126,8 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 		case WM_RBUTTONDOWN:
 
 			Hmenu = CreatePopupMenu();
+			AppendMenu(Hmenu, MF_STRING | MF_DISABLED, ID_TRAY_IP, TEXT("Local IP: 127.0.0.1"));
+			AppendMenu(Hmenu, MF_SEPARATOR,0 ,TEXT(""));
 			AppendMenu(Hmenu, MF_STRING, ID_TRAY_EXIT, TEXT("Exit"));
 			//DestroyMenu(hMenu);
 
@@ -143,18 +137,14 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 			SetForegroundWindow(Hwnd);
 
 			// TrackPopupMenu blocks the app until TrackPopupMenu returns
-
 			UINT clicked = TrackPopupMenu(Hmenu, TPM_RETURNCMD | TPM_NONOTIFY, curPoint.x, curPoint.y, 0, hwnd, NULL);
-
 
 			SendMessage(hwnd, WM_NULL, 0, 0); // send benign message to window to make sure the menu goes away.
 			if (clicked == ID_TRAY_EXIT)
 			{
 				ExitApplication();
-
 				PostQuitMessage(0);
 				exit(0);
-
 			}
 		}
 

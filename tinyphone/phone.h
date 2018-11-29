@@ -64,7 +64,7 @@ public:
 		auto it = accounts.begin();
 		while (it != accounts.end()) {
 			it->second->shutdown();
-			it++;
+			it = accounts.erase(it);
 		}
 	}
 
@@ -75,22 +75,29 @@ public:
 	bool addAccount(string username, string domain, string password) {
 
 		string account_name = username + "@" + domain;
+		auto exits = getAccountByURI(account_name);
+		if (exits) {
+			return false;
+		}
+		else {
 
-		AccountConfig acc_cfg;
-		acc_cfg.idUri = ("sip:" + account_name);
-		acc_cfg.regConfig.registrarUri = ("sip:" + domain);
-		acc_cfg.sipConfig.authCreds.push_back(AuthCredInfo("digest", "*", username, 0, password));
+			AccountConfig acc_cfg;
+			acc_cfg.idUri = ("sip:" + account_name);
+			acc_cfg.regConfig.registrarUri = ("sip:" + domain);
+			acc_cfg.sipConfig.authCreds.push_back(AuthCredInfo("digest", "*", username, 0, password));
 
-		acc_cfg.regConfig.timeoutSec = 180;
-		acc_cfg.regConfig.retryIntervalSec = 30;
-		acc_cfg.regConfig.firstRetryIntervalSec = 15;
-		acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
-		acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
+			acc_cfg.regConfig.timeoutSec = 180;
+			acc_cfg.regConfig.retryIntervalSec = 30;
+			acc_cfg.regConfig.firstRetryIntervalSec = 15;
+			acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
+			acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
 
-		SIPAccount *acc(new SIPAccount);
-		acc->create(acc_cfg);
+			SIPAccount *acc(new SIPAccount);
+			acc->create(acc_cfg);
 
-		accounts.insert(pair<pjsua_acc_id, SIPAccount*>(acc->getId(), acc));
+			accounts.insert(pair<pjsua_acc_id, SIPAccount*>(acc->getId(), acc));
+			return true;
+		}
 	}
 
 	SIPCall* makeCall(string uri) {
@@ -106,6 +113,17 @@ public:
 		prm.opt.videoCount = 0;
 		call->makeCall(uri, prm);
 		return call;
+	}
+
+	std::vector<SIPCall*> Calls() {
+		std::vector<SIPCall *> calls;
+		auto it = accounts.begin();
+		while (it != accounts.end()) {
+			auto account_calls = it->second->getCalls();
+			calls.insert(std::end(calls), std::begin(account_calls), std::end(account_calls));
+			it++;
+		}
+		return calls;
 	}
 
 };
