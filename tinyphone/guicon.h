@@ -6,6 +6,8 @@
 
 void RedirectIOToConsole();
 
+void CloseConsole();
+
 #endif
 #endif
 

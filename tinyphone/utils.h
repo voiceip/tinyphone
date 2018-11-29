@@ -13,7 +13,7 @@
 
 #define FOREGROUND_WHITE (FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN)
 
-void PrintErr(std::string message);
+void DisplayError(std::string message);
 
 void print_thread_name();
 

@@ -9,6 +9,7 @@
 #ifndef _USE_OLD_IOSTREAMS
 using namespace std;
 #endif
+
 //#ifdef _DEBUG
 void RedirectIOToConsole()
 {
@@ -51,5 +52,8 @@ void RedirectIOToConsole()
 	std::cin.clear();
 }
 
+void CloseConsole() {
+	//Close the console
+	FreeConsole();
+}
 //#endif
-//End of File

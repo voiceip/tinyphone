@@ -32,7 +32,7 @@ using namespace tp;
 void TinyPhoneHttpServer::Start() {
 
 	std::cout << "Starting the HTTP server" << std::endl;
-	TinyPhone phone;
+	TinyPhone phone(getEndpoint());
 
 	crow::App<TinyPhoneMiddleware> app;
 	//app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
@@ -152,9 +152,10 @@ void TinyPhoneHttpServer::Start() {
 		return tp::response(200, response);
 	});
 
+	pj_thread_auto_register();
 
 	if (is_tcp_port_in_use(http_port)) {
-		PrintErr(("HTTP Port " + to_string(http_port) + " already in use!"));
+		DisplayError(("HTTP Port " + to_string(http_port) + " already in use!"));
 		getEndpoint()->libDestroy();
 		exit(1);
 	}

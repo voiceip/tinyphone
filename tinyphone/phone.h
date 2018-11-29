@@ -8,9 +8,11 @@
 class TinyPhone
 {
 	map<pjsua_acc_id, SIPAccount*> accounts;
+	pj::Endpoint* endpoint;
 
 public:
-	TinyPhone() {
+	TinyPhone(pj::Endpoint* ep) {
+		endpoint = ep;
 	}
 
 	~TinyPhone() {
@@ -67,10 +69,10 @@ public:
 	}
 
 	void hangupAllCalls() {
-		//ep.hangupAllCalls()
+		endpoint->hangupAllCalls();
 	}
 
-	void addAccount(string username, string domain, string password) {
+	bool addAccount(string username, string domain, string password) {
 
 		string account_name = username + "@" + domain;
 
