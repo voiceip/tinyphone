@@ -124,11 +124,25 @@ void TinyPhoneHttpServer::Start() {
 		([&phone]() {
 		try {
 			pj_thread_auto_register();
-			auto calls = phone.Calls();
+			
 			json response = {
-				{ "message",  "Current Calss" },
-				{ "data", ""},
+				{ "message",  "Current Calls" },
+				{ "data", {}},
 			};
+			auto calls = phone.Calls();
+			auto it = calls.begin();
+			while (it != calls.end()) {
+				SIPCall* call = *it;
+				json callinfo = {
+					{"id", call->getInfo().id },
+					{"party" , call->getInfo().remoteUri},
+					{"state" ,  call->getInfo().stateText }
+				};
+				response["data"].push_back(callinfo);
+				it++;
+			}
+
+
 			return tp::response(200, response);
 		}
 		catch (std::exception& e) {
