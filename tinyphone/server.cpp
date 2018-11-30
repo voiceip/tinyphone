@@ -31,7 +31,7 @@ void TinyPhoneHttpServer::Start() {
 
 	std::cout << "Starting the TinyPhone HTTP API" << std::endl;
 	TinyPhone phone(getEndpoint());
-	phone.SetCodecs();
+	phone.SetCodecs();	
 
 	crow::App<TinyPhoneMiddleware> app;
 	//app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
@@ -112,7 +112,12 @@ void TinyPhoneHttpServer::Start() {
 	CROW_ROUTE(app, "/dial")
 		.methods("POST"_method)
 		([&phone](const crow::request& req) {
-		auto dial_uri = (char *)req.body.c_str();
+
+		std::string dial_uri =  "sip:"+req.body;
+
+
+
+		auto sip_dial_uri = (char *)dial_uri.c_str();
 
 		if (!phone.HasAccounts()) {
 			return tp::response(400, {
@@ -120,18 +125,18 @@ void TinyPhoneHttpServer::Start() {
 			});
 		}
 
-		CROW_LOG_INFO << "Dial Request to " << req.body;
+		CROW_LOG_INFO << "Dial Request to " << sip_dial_uri;
 
 		try {
 			pj_thread_auto_register();
 
-			SIPCall *call = phone.MakeCall(dial_uri);
+			SIPCall *call = phone.MakeCall(sip_dial_uri);
 			string account_name = call->getAccount()->Name();
 
 			json response = {
 				{ "message", ("Dialed via " + account_name) },
 				{ "call_id", call->getId() },
-				{ "party", dial_uri }
+				{ "party", sip_dial_uri }
 			};
 			return tp::response(202, response);
 		}
@@ -155,6 +160,7 @@ void TinyPhoneHttpServer::Start() {
 			BOOST_FOREACH(SIPCall* call, phone.Calls()) {
 				json callinfo = {
 					{ "id", call->getInfo().id },
+					{ "sid", call->getInfo().callIdString },
 					{ "party" , call->getInfo().remoteUri },
 					{ "state" ,  call->getInfo().stateText }
 				};

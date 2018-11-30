@@ -21,6 +21,7 @@ public:
 
 	~TinyPhone() {
 		std::cout << "Shutting Down TinyPhone" << std::endl;
+		HangupAllCalls();
 		Logout();
 	}
 
@@ -123,7 +124,7 @@ public:
 
 			SIPAccount *acc(new SIPAccount(account_name));
 			acc->create(acc_cfg);
-
+			
 			accounts.insert(pair<pjsua_acc_id, SIPAccount*>(acc->getId(), acc));
 			return true;
 		}

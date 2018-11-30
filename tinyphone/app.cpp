@@ -56,7 +56,7 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 		server.Start();
 		ExitApplication();
 		PostQuitMessage(0);
-		//exit(0);
+		exit(0);
 	});
 
 
@@ -89,6 +89,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 
 	case WM_DESTROY:		
 		ExitApplication();
+		exit(0);
 		break;
 
 	// Our user defined WM_SYSICON message.
@@ -106,7 +107,8 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 		case WM_RBUTTONDOWN:
 
 			Hmenu = CreatePopupMenu();
-			AppendMenu(Hmenu, MF_STRING | MF_DISABLED, ID_TRAY_IP, TEXT("Local IP: 127.0.0.1"));
+			auto local_address = "Local IP: " + local_ip_address();
+			AppendMenu(Hmenu, MF_STRING | MF_DISABLED, ID_TRAY_IP, TEXT(local_address.c_str()));
 			AppendMenu(Hmenu, MF_SEPARATOR,0 ,TEXT(""));
 			AppendMenu(Hmenu, MF_STRING, ID_TRAY_EXIT, TEXT("Exit"));
 			//DestroyMenu(hMenu);
@@ -219,10 +221,6 @@ void InitPJSUAEndpoint() {
 		printf("%d. %s (in=%d, out=%d)\n", dev_idx, info.name, info.input_count, info.output_count);
 	}
 
-	/* Set audio device*/
-	//pjmedia_aud_dev_index dev_idx = PJMEDIA_AUD_DEFAULT_CAPTURE_DEV;
-	//status = pjmedia_aud_dev_default_param(dev_idx, &param)
-
 	/* Initialization is done, now start pjsua */
 	try {
 		ep.libStart();
@@ -240,5 +238,4 @@ void ExitApplication() {
 	CloseConsole();
 	notifyIconData.uFlags = 0;
 	Shell_NotifyIcon(NIM_DELETE, &notifyIconData);
-
 }

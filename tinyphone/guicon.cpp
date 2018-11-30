@@ -50,6 +50,15 @@ void RedirectIOToConsole()
 	std::cerr.clear();
 	std::wcin.clear();
 	std::cin.clear();
+
+	//Disable close button on the console.
+	HWND hwnd = ::GetConsoleWindow();
+	if (hwnd != NULL)
+	{
+		HMENU hMenu = ::GetSystemMenu(hwnd, FALSE);
+		if (hMenu != NULL) 
+			DeleteMenu(hMenu, SC_CLOSE, MF_BYCOMMAND);
+	}
 }
 
 void CloseConsole() {

@@ -38,10 +38,11 @@ public:
 class SIPAccount : public Account
 {
 	std::string account_name;
+	std::string domain;
+
 public:
 	std::vector<SIPCall *> calls;
 
-public:
 	SIPAccount(std::string name)
 	{
 		account_name = name;
