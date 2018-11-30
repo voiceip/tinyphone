@@ -61,7 +61,7 @@ void TinyPhoneHttpServer::Start() {
 			string username = x["username"].s();
 			string domain = x["domain"].s();
 			string password = x["password"].s();
-			string account_name = username + "@" + domain;
+			string account_name = SIP_ACCOUNT_NAME(username, domain);
 
 			// Add account
 			pj_thread_auto_register();
@@ -72,14 +72,36 @@ void TinyPhoneHttpServer::Start() {
 			if (phone.AddAccount(username, domain, password)) {
 				return tp::response(200, {
 					{ "message", "Account added succesfully" },
+					{ "account_name", account_name },
 				});
 			}
 			else {
 				return tp::response(400, {
 					{ "message", "Account already exits" },
+					{ "account_name", account_name },
 				});
 			}
 
+		}
+		catch (std::exception& e) {
+			CROW_LOG_ERROR << "Exception catched : " << e.what();
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
+		}
+	});
+
+	CROW_ROUTE(app, "/accounts")
+		.methods("GET"_method)
+		([&phone]() {
+		try {
+			json response = {
+				{ "message",  "Accounts" },
+				{ "accounts",{} },
+			};
+
+			BOOST_FOREACH(SIPAccount* account, phone.Accounts()) {
+				response["accounts"].push_back(account->Name());
+			}
+			return tp::response(200, response);
 		}
 		catch (std::exception& e) {
 			CROW_LOG_ERROR << "Exception catched : " << e.what();
@@ -104,7 +126,7 @@ void TinyPhoneHttpServer::Start() {
 			pj_thread_auto_register();
 
 			SIPCall *call = phone.MakeCall(dial_uri);
-			string account_name = call->getAccount()->getInfo().uri;
+			string account_name = call->getAccount()->Name();
 
 			json response = {
 				{ "message", ("Dialed via " + account_name) },
@@ -161,19 +183,22 @@ void TinyPhoneHttpServer::Start() {
 		}
 		else {
 			json response;
+			bool status;
 			switch (req.method) {
 			case crow::HTTPMethod::Put:
-				phone.HoldCall(call);
+				status = call->HoldCall();
 				response = {
 					{ "message",  "Hold Triggered" },
-					{ "call_id" , call_id }
+					{ "call_id" , call_id },
+					{ "status" , status }
 				};
 				break;
 			case crow::HTTPMethod::Delete:
-				phone.UnHoldCall(call);
+				status = call->UnHoldCall();
 				response = {
 					{ "message",  "UnHold Triggered" },
-					{ "call_id" , call_id }
+					{ "call_id" , call_id },
+					{ "status" , status }
 				};
 				break;
 			}

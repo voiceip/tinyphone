@@ -40,6 +40,17 @@ public:
 			PJ_LOG(3, (THIS_FILE, "Failed activating %s, err=%d", codec.ptr, status));
 	}
 
+	std::vector<SIPAccount *> Accounts() {
+		std::vector<SIPAccount *> accs;
+		auto it = accounts.begin();
+		while (it != accounts.end())
+		{
+			accs.push_back(it->second);
+			it++;
+		}
+		return accs;
+	}
+
 	bool HasAccounts() {
 		return accounts.size() > 0;
 	}
@@ -92,7 +103,7 @@ public:
 
 	bool AddAccount(string username, string domain, string password) {
 
-		string account_name = username + "@" + domain;
+		string account_name = SIP_ACCOUNT_NAME(username, domain);
 		auto exits = AccountByURI(account_name);
 		if (exits) {
 			return false;
@@ -110,7 +121,7 @@ public:
 			acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
 			acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
 
-			SIPAccount *acc(new SIPAccount);
+			SIPAccount *acc(new SIPAccount(account_name));
 			acc->create(acc_cfg);
 
 			accounts.insert(pair<pjsua_acc_id, SIPAccount*>(acc->getId(), acc));
@@ -130,6 +141,7 @@ public:
 		prm.opt.audioCount = 1;
 		prm.opt.videoCount = 0;
 		call->makeCall(uri, prm);
+		account->onCallEstablished(call);
 		return call;
 	}
 
@@ -153,71 +165,11 @@ public:
 	}
 
 
-	bool HoldCall(SIPCall* call) {
-
-		if (call == NULL || !call->isActive()) {
-			PJ_LOG(3, (THIS_FILE, "HoldCall Attempted on NonActive Call, Ignoring"));
-			return false;
-		}
-
-		auto call_info = call->getInfo();
-		if (call_info.state == PJSIP_INV_STATE_CONFIRMED) {
-			//must have a local media
-			if (call_info.media.size() > 0) {
-				auto current_media = call_info.media.front();
-				if (current_media.status != PJSUA_CALL_MEDIA_LOCAL_HOLD && current_media.status != PJSUA_CALL_MEDIA_NONE) {
-					CallOpParam prm;
-					prm.options = PJSUA_CALL_UPDATE_CONTACT;
-					call->setHold(prm);
-					return true;
-				}
-				else 
-					PJ_LOG(3, (THIS_FILE, "Hold Failed, already on hold maybe?"));
-			}
-			else 
-				PJ_LOG(3, (THIS_FILE, "Hold Failed, Call Doesn't have any media"));
-		}
-		else 
-			PJ_LOG(3, (THIS_FILE, "Hold Failed, Call Not in Confirmed State"));
-		return false;
-	}
-
-	bool UnHoldCall(SIPCall* call) {
-		if (call == NULL || !call->isActive()) {
-			PJ_LOG(3, (THIS_FILE, "UnHoldCall Attempted on NonActive Call, Ignoring"));
-			return false;
-		}
-		
-		auto call_info = call->getInfo();
-		if (call_info.state == PJSIP_INV_STATE_CONFIRMED) {
-			if (call_info.media.size() > 0) {
-				auto current_media = call_info.media.front();
-				if (current_media.status == PJSUA_CALL_MEDIA_LOCAL_HOLD || current_media.status == PJSUA_CALL_MEDIA_NONE) {
-					
-					CallOpParam prm(true);
-					prm.opt.audioCount = 1;
-					prm.opt.videoCount = 0;
-					prm.opt.flag |= PJSUA_CALL_UNHOLD;
-					call->reinvite(prm);
-					return true;
-				}
-				else
-					PJ_LOG(3, (THIS_FILE, "UnHold Failed, already active maybe?"));
-			}
-			else
-				PJ_LOG(3, (THIS_FILE, "UnHold Failed, Call Doesn't have any media"));
-		}
-		else
-			PJ_LOG(3, (THIS_FILE, "UnHold Failed, Call Not in Confirmed State"));
-
-		return false;
-	}
-
 	void HoldOtherCalls(SIPCall* call) {
 		auto all_calls = Calls();
 		all_calls.erase(std::remove(all_calls.begin(), all_calls.end(), call), all_calls.end());
 		BOOST_FOREACH(SIPCall* c, all_calls) {
-			HoldCall(c);
+			c->HoldCall();
 		}
 	}
 
@@ -230,5 +182,7 @@ public:
 		endpoint->hangupAllCalls();
 	}
 };
+
+
 
 #endif

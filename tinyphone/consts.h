@@ -5,9 +5,8 @@
 
 #include "stdafx.h"
 
-
-#define _GLOBAL_CODECS_ENABLED "PCMA/8000/1 PCMU/8000/1"
 #define FOREGROUND_WHITE (FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN)
 #define DEFAULT_UA_STRING "TinyPhone Pjsua2 v0"
+#define SIP_ACCOUNT_NAME(username, domain)  username + "@" + domain
 
 #endif
