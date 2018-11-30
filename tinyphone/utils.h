@@ -10,8 +10,7 @@
 #include <pjsua-lib/pjsua.h>
 #include <stdio.h>
 #include <thread>
-
-#define FOREGROUND_WHITE (FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN)
+#include "consts.h"
 
 void DisplayError(std::string message);
 
@@ -35,7 +34,6 @@ registration.
 */
 static PJ_DEF(pj_status_t) pj_thread_auto_register(void)
 {
-	print_thread_name();
 
 	pj_status_t rc;
 

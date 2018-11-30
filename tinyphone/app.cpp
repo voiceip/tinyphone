@@ -6,6 +6,7 @@
 #include "server.h"
 #include "utils.h"
 #include "net.h"
+#include "consts.h"
 
 //#pragma comment(lib, "libpjproject-i386-Win32-vc14-Release-Static-NoVideo.lib")
 #pragma comment(lib, "libpjproject-i386-Win32-vc14-Debug-Static.lib")
@@ -26,8 +27,6 @@ Endpoint ep;
 
 /*procedures  */
 LRESULT CALLBACK WindowProcedure(HWND, UINT, WPARAM, LPARAM);
-void minimize();
-void restore();
 void InitNotifyIconData();
 void InitPJSUAEndpoint();
 void ExitApplication();
@@ -37,29 +36,7 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 	LPSTR lpszArgument,
 	int nCmdShow)
 {
-	/* This is the handle for our window */
-	MSG messages;            /* Here messages to the application are saved */
-	WNDCLASSEX wincl;        /* Data structure for the windowclass */
-	WM_TASKBAR = RegisterWindowMessageA("TaskbarCreated");
-	/* The Window structure */
-	wincl.hInstance = hThisInstance;
-	wincl.lpszClassName = szClassName;
-	wincl.lpfnWndProc = WindowProcedure;      /* This function is called by windows */
-	wincl.style = CS_DBLCLKS;                 /* Catch double-clicks */
-	wincl.cbSize = sizeof(WNDCLASSEX);
-
-	/* Use default icon and mouse-pointer */
-	wincl.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
-	wincl.hIconSm = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
-	wincl.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wincl.lpszMenuName = NULL;                 /* No menu */
-	wincl.cbClsExtra = 0;                      /* No extra bytes after the window class */
-	wincl.cbWndExtra = 0;                      /* structure or the window instance */
-	wincl.hbrBackground = (HBRUSH)(CreateSolidBrush(RGB(255, 255, 255)));
-	/* Register the window class, and if it fails quit the program */
-	if (!RegisterClassEx(&wincl))
-		return 0;
-
+	MSG messages;  
 	Hwnd = CreateDialog(
 		hThisInstance,
 		MAKEINTRESOURCE(IDD_EMPTY_DIALOG),
@@ -77,6 +54,9 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 	//Run the server in non-ui thread.
 	std::thread thread_object([&server]() {
 		server.Start();
+		ExitApplication();
+		PostQuitMessage(0);
+		//exit(0);
 	});
 
 
@@ -183,18 +163,6 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 }
 
 
-void minimize()
-{
-	// hide the main window
-	ShowWindow(Hwnd, SW_HIDE);
-}
-
-
-void restore()
-{
-	ShowWindow(Hwnd, SW_SHOW);
-}
-
 void InitNotifyIconData()
 {
 	memset(&notifyIconData, 0, sizeof(NOTIFYICONDATA));
@@ -218,7 +186,9 @@ void InitPJSUAEndpoint() {
 
 		// Init library
 		EpConfig ep_cfg;
-		ep_cfg.logConfig.level = 3;//4
+		ep_cfg.logConfig.level = 3; //4
+		ep_cfg.uaConfig.userAgent = DEFAULT_UA_STRING;
+
 		ep.libInit(ep_cfg);
 
 		// Transport

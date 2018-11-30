@@ -22,6 +22,6 @@ void DisplayError(std::string message) {
 void print_thread_name()
 {
 	thread::id this_id = this_thread::get_id();
-	cout << "Thread id: #" << this_id;
+	cout << "Thread id: #" << this_id << endl;
 }	
 

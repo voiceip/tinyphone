@@ -4,6 +4,7 @@
 #define PHONE_HEADER_FILE_H
 
 #include "account.h"
+#define THIS_FILE	"phone.h"
 
 class TinyPhone
 {
@@ -18,6 +19,22 @@ public:
 	~TinyPhone() {
 		std::cout << "Shutting Down TinyPhone" << std::endl;
 		logout();
+	}
+
+	void SetCodecs() {
+		const pj_str_t ID_ALL = { "*", 1 };
+		pjsua_codec_set_priority(&ID_ALL, PJMEDIA_CODEC_PRIO_DISABLED);
+		EnableCodec("PCMA/8000/1");
+		EnableCodec("PCMU/8000/1");
+	}
+
+	void EnableCodec(char* codec_name) {
+		auto codec = pj_str(codec_name);
+		auto status = pjsua_codec_set_priority(&codec, PJMEDIA_CODEC_PRIO_NORMAL);
+		if (status == PJ_SUCCESS)
+			PJ_LOG(3, (THIS_FILE, "%s activated", codec.ptr));
+		else
+			PJ_LOG(3, (THIS_FILE, "Failed activating %s, err=%d", codec.ptr, status));
 	}
 
 	bool hasAccounts() {

@@ -28,6 +28,7 @@ public:
 	}
 
 	virtual void onCallState(OnCallStateParam &prm);
+	virtual void onCallMediaState(OnCallMediaStateParam &prm);
 };
 
 class SIPAccount : public Account
@@ -95,4 +96,19 @@ void SIPCall::onCallState(OnCallStateParam &prm)
 	}
 }
 
+
+void SIPCall::onCallMediaState(OnCallMediaStateParam &prm)
+{
+	CallInfo ci = getInfo();
+	// Iterate all the call medias
+	for (unsigned i = 0; i < ci.media.size(); i++) {
+		if (ci.media[i].type == PJMEDIA_TYPE_AUDIO && getMedia(i)) {
+			AudioMedia *aud_med = (AudioMedia *)getMedia(i);
+			// Connect the call audio media to sound device
+			AudDevManager& mgr = Endpoint::instance().audDevManager();
+			aud_med->startTransmit(mgr.getPlaybackDevMedia());
+			mgr.getCaptureDevMedia().startTransmit(*aud_med);
+		}
+	}
+}
 #endif

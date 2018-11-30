@@ -25,14 +25,13 @@ namespace tp {
 	};
 }
 
-using namespace tp;
-
-
-
 void TinyPhoneHttpServer::Start() {
 
-	std::cout << "Starting the HTTP server" << std::endl;
+	pj_thread_auto_register();
+
+	std::cout << "Starting the TinyPhone HTTP API" << std::endl;
 	TinyPhone phone(getEndpoint());
+	phone.SetCodecs();
 
 	crow::App<TinyPhoneMiddleware> app;
 	//app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
@@ -191,7 +190,6 @@ void TinyPhoneHttpServer::Start() {
 		return tp::response(200, response);
 	});
 
-	pj_thread_auto_register();
 
 	if (is_tcp_port_in_use(http_port)) {
 		DisplayError(("HTTP Port " + to_string(http_port) + " already in use!"));
