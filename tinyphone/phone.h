@@ -4,6 +4,9 @@
 #define PHONE_HEADER_FILE_H
 
 #include "account.h"
+#include <algorithm>
+#include <boost/foreach.hpp>
+
 #define THIS_FILE	"phone.h"
 
 class TinyPhone
@@ -18,7 +21,7 @@ public:
 
 	~TinyPhone() {
 		std::cout << "Shutting Down TinyPhone" << std::endl;
-		logout();
+		Logout();
 	}
 
 	void SetCodecs() {
@@ -37,28 +40,28 @@ public:
 			PJ_LOG(3, (THIS_FILE, "Failed activating %s, err=%d", codec.ptr, status));
 	}
 
-	bool hasAccounts() {
+	bool HasAccounts() {
 		return accounts.size() > 0;
 	}
 
-	SIPAccount* getPrimaryAccount() {
-		if (!hasAccounts())
+	SIPAccount* PrimaryAccount() {
+		if (!HasAccounts())
 			return NULL;
 		else {
 			return accounts.begin()->second;
 		}
 	}
 
-	SIPAccount* getAccountById(int pos) {
-		if (!hasAccounts())
+	SIPAccount* AccountById(int pos) {
+		if (!HasAccounts())
 			return NULL;
 		else {
 			return accounts.find(pos)->second;
 		}
 	}
 
-	SIPAccount* getAccountByURI(string uri) {
-		if (!hasAccounts())
+	SIPAccount* AccountByURI(string uri) {
+		if (!HasAccounts())
 			return NULL;
 		else {
 			string full_uri = "sip:" + uri;
@@ -77,7 +80,7 @@ public:
 		}
 	}
 
-	void logout() {
+	void Logout() {
 		auto it = accounts.begin();
 		while (it != accounts.end()) {
 			it->second->shutdown();
@@ -85,14 +88,12 @@ public:
 		}
 	}
 
-	void hangupAllCalls() {
-		endpoint->hangupAllCalls();
-	}
+	
 
-	bool addAccount(string username, string domain, string password) {
+	bool AddAccount(string username, string domain, string password) {
 
 		string account_name = username + "@" + domain;
-		auto exits = getAccountByURI(account_name);
+		auto exits = AccountByURI(account_name);
 		if (exits) {
 			return false;
 		}
@@ -117,12 +118,12 @@ public:
 		}
 	}
 
-	SIPCall* makeCall(string uri) {
-		SIPAccount* account = getPrimaryAccount();
-		return makeCall(uri, account);
+	SIPCall* MakeCall(string uri) {
+		SIPAccount* account = PrimaryAccount();
+		return MakeCall(uri, account);
 	}
 
-	SIPCall* makeCall(string uri, SIPAccount* account) {
+	SIPCall* MakeCall(string uri, SIPAccount* account) {
 		SIPCall *call = new SIPCall(*account);
 		account->calls.push_back(call);
 		CallOpParam prm(true);
@@ -143,6 +144,53 @@ public:
 		return calls;
 	}
 
+	SIPCall* CallById(int call_id) {
+		BOOST_FOREACH(SIPCall* c, Calls()) {
+			if (c->getId() == call_id)
+				return c;
+		}
+		return NULL;
+	}
+
+
+	void HoldCall(SIPCall* call) {
+
+		if (call == NULL || !call->isActive()) {
+			PJ_LOG(3, (THIS_FILE, "HoldCall Attempted on NonActive Call, Ignoreing"));
+			return;
+		}
+
+		CallOpParam prm;
+		prm.options = PJSUA_CALL_UPDATE_CONTACT;
+		call->setHold(prm);
+	}
+
+	void UnHoldCall(SIPCall* call) {
+		if (call == NULL || !call->isActive()) {
+			PJ_LOG(3, (THIS_FILE, "UnHoldCall Attempted on NonActive Call, Ignoreing"));
+			return;
+		}
+		CallOpParam prm;
+		prm.opt.flag = PJSUA_CALL_UNHOLD;
+		call->reinvite(prm);
+	}
+
+	void HoldOtherCalls(SIPCall* call) {
+		auto all_calls = Calls();
+		all_calls.erase(std::remove(all_calls.begin(), all_calls.end(), call), all_calls.end());
+		BOOST_FOREACH(SIPCall* c, all_calls) {
+			HoldCall(c);
+		}
+	}
+
+	void Hangup(SIPCall* call) {
+		CallOpParam prm;
+		call->hangup(prm);
+	}
+
+	void HangupAllCalls() {
+		endpoint->hangupAllCalls();
+	}
 };
 
 #endif

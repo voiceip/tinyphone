@@ -84,15 +84,20 @@ public:
 void SIPCall::onCallState(OnCallStateParam &prm)
 {
 	PJ_UNUSED_ARG(prm);
-
 	CallInfo ci = getInfo();
 	std::cout << "*** Call: " << ci.remoteUri << " [" << ci.stateText
 		<< "]" << std::endl;
 
-	if (ci.state == PJSIP_INV_STATE_DISCONNECTED) {
+	switch (ci.state) {
+	case PJSIP_INV_STATE_DISCONNECTED:
 		myAcc->removeCall(this);
 		/* Delete the call */
 		delete this;
+		break;
+	case PJSIP_INV_STATE_CONFIRMED:
+		break;
+	default:
+		break;
 	}
 }
 

@@ -69,7 +69,7 @@ void TinyPhoneHttpServer::Start() {
 
 			CROW_LOG_INFO << "Registered account " << account_name;
 
-			if (phone.addAccount(username, domain, password)) {
+			if (phone.AddAccount(username, domain, password)) {
 				return tp::response(200, {
 					{ "message", "Account added succesfully" },
 				});
@@ -92,7 +92,7 @@ void TinyPhoneHttpServer::Start() {
 		([&phone](const crow::request& req) {
 		auto dial_uri = (char *)req.body.c_str();
 
-		if (!phone.hasAccounts()) {
+		if (!phone.HasAccounts()) {
 			return tp::response(400, {
 				{ "message", "No Account Registed Yet" },
 			});
@@ -103,7 +103,7 @@ void TinyPhoneHttpServer::Start() {
 		try {
 			pj_thread_auto_register();
 
-			SIPCall *call = phone.makeCall(dial_uri);
+			SIPCall *call = phone.MakeCall(dial_uri);
 			string account_name = call->getAccount()->getInfo().uri;
 
 			json response = {
@@ -128,20 +128,14 @@ void TinyPhoneHttpServer::Start() {
 				{ "message",  "Current Calls" },
 				{ "data", {}},
 			};
-			auto calls = phone.Calls();
-			auto it = calls.begin();
-			while (it != calls.end()) {
-				SIPCall* call = *it;
+			BOOST_FOREACH(SIPCall* call, phone.Calls()) {
 				json callinfo = {
-					{"id", call->getInfo().id },
-					{"party" , call->getInfo().remoteUri},
-					{"state" ,  call->getInfo().stateText }
+					{ "id", call->getInfo().id },
+					{ "party" , call->getInfo().remoteUri },
+					{ "state" ,  call->getInfo().stateText }
 				};
 				response["data"].push_back(callinfo);
-				it++;
 			}
-
-
 			return tp::response(200, response);
 		}
 		catch (std::exception& e) {
@@ -150,13 +144,82 @@ void TinyPhoneHttpServer::Start() {
 		}
 	});
 
+	CROW_ROUTE(app, "/hold/<int>")
+		.methods("PUT"_method, "DELETE"_method)
+		([&phone](const crow::request& req, int call_id) {
+
+		pj_thread_auto_register();
+
+		SIPCall* call = phone.CallById(call_id);
+		if (call == NULL) {
+			return tp::response(400, {
+				{ "message", "Call Not Found" },
+				{ "call_id" , call_id }
+			});
+		}
+		else {
+			json response;
+			switch (req.method) {
+			case crow::HTTPMethod::Put:
+				phone.HoldCall(call);
+				response = {
+					{ "message",  "Hold Triggered" },
+					{ "call_id" , call_id }
+				};
+				break;
+			case crow::HTTPMethod::Delete:
+				phone.UnHoldCall(call);
+				response = {
+					{ "message",  "UnHold Triggered" },
+					{ "call_id" , call_id }
+				};
+				break;
+			}
+			return tp::response(200, response);
+		}
+	});
+
+	CROW_ROUTE(app, "/hangup/<int>")
+		.methods("POST"_method)
+		([&phone](int call_id) {
+		pj_thread_auto_register();
+		
+		SIPCall* call = phone.CallById(call_id);
+		if (call == NULL) {
+			return tp::response(400, {
+				{ "message", "Call Not Found" },
+				{"call_id" , call_id}
+			});
+		}
+		else {
+			phone.Hangup(call);
+			json response = {
+				{ "message",  "Hangup Triggered" },
+				{ "call_id" , call_id }
+			};
+			return tp::response(200, response);
+		}
+	});
+
+
+	CROW_ROUTE(app, "/hangup_all")
+		.methods("POST"_method)
+		([&phone]() {
+		pj_thread_auto_register();
+		phone.HangupAllCalls();
+		json response = {
+			{ "message",  "Hangup All Calls Triggered" },
+		};
+		return tp::response(200, response);
+	});
+
 	CROW_ROUTE(app, "/logout")
 		.methods("POST"_method)
 		([&phone]() {
 		try {
 			pj_thread_auto_register();
 			CROW_LOG_INFO << "Atempting logout of TinyPhone";
-			phone.logout();
+			phone.Logout();
 			json response = {
 				{ "message",  "Logged Out" },
 			};
@@ -179,16 +242,7 @@ void TinyPhoneHttpServer::Start() {
 		return tp::response(200, response);
 	});
 
-	CROW_ROUTE(app, "/hangup_all")
-		.methods("POST"_method)
-		([&phone]() {
-		pj_thread_auto_register();
-		phone.hangupAllCalls();
-		json response = {
-			{ "message",  "Hangup All Calls Triggered" },
-		};
-		return tp::response(200, response);
-	});
+	
 
 
 	if (is_tcp_port_in_use(http_port)) {
