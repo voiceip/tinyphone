@@ -1,17 +1,40 @@
 #pragma once
+
+#ifndef PHONE_HEADER_FILE_H
+#define PHONE_HEADER_FILE_H
+
 #include "account.h"
+#define THIS_FILE	"phone.h"
 
 class TinyPhone
 {
 	map<pjsua_acc_id, SIPAccount*> accounts;
+	pj::Endpoint* endpoint;
 
 public:
-	TinyPhone() {
+	TinyPhone(pj::Endpoint* ep) {
+		endpoint = ep;
 	}
 
 	~TinyPhone() {
 		std::cout << "Shutting Down TinyPhone" << std::endl;
 		logout();
+	}
+
+	void SetCodecs() {
+		const pj_str_t ID_ALL = { "*", 1 };
+		pjsua_codec_set_priority(&ID_ALL, PJMEDIA_CODEC_PRIO_DISABLED);
+		EnableCodec("PCMA/8000/1");
+		EnableCodec("PCMU/8000/1");
+	}
+
+	void EnableCodec(char* codec_name) {
+		auto codec = pj_str(codec_name);
+		auto status = pjsua_codec_set_priority(&codec, PJMEDIA_CODEC_PRIO_NORMAL);
+		if (status == PJ_SUCCESS)
+			PJ_LOG(3, (THIS_FILE, "%s activated", codec.ptr));
+		else
+			PJ_LOG(3, (THIS_FILE, "Failed activating %s, err=%d", codec.ptr, status));
 	}
 
 	bool hasAccounts() {
@@ -58,29 +81,40 @@ public:
 		auto it = accounts.begin();
 		while (it != accounts.end()) {
 			it->second->shutdown();
-			it++;
+			it = accounts.erase(it);
 		}
 	}
 
-	void addAccount(string username, string domain, string password) {
+	void hangupAllCalls() {
+		endpoint->hangupAllCalls();
+	}
+
+	bool addAccount(string username, string domain, string password) {
 
 		string account_name = username + "@" + domain;
+		auto exits = getAccountByURI(account_name);
+		if (exits) {
+			return false;
+		}
+		else {
 
-		AccountConfig acc_cfg;
-		acc_cfg.idUri = ("sip:" + account_name);
-		acc_cfg.regConfig.registrarUri = ("sip:" + domain);
-		acc_cfg.sipConfig.authCreds.push_back(AuthCredInfo("digest", "*", username, 0, password));
+			AccountConfig acc_cfg;
+			acc_cfg.idUri = ("sip:" + account_name);
+			acc_cfg.regConfig.registrarUri = ("sip:" + domain);
+			acc_cfg.sipConfig.authCreds.push_back(AuthCredInfo("digest", "*", username, 0, password));
 
-		acc_cfg.regConfig.timeoutSec = 180;
-		acc_cfg.regConfig.retryIntervalSec = 30;
-		acc_cfg.regConfig.firstRetryIntervalSec = 15;
-		acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
-		acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
+			acc_cfg.regConfig.timeoutSec = 180;
+			acc_cfg.regConfig.retryIntervalSec = 30;
+			acc_cfg.regConfig.firstRetryIntervalSec = 15;
+			acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
+			acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
 
-		SIPAccount *acc(new SIPAccount);
-		acc->create(acc_cfg);
+			SIPAccount *acc(new SIPAccount);
+			acc->create(acc_cfg);
 
-		accounts.insert(pair<pjsua_acc_id, SIPAccount*>(acc->getId(), acc));
+			accounts.insert(pair<pjsua_acc_id, SIPAccount*>(acc->getId(), acc));
+			return true;
+		}
 	}
 
 	SIPCall* makeCall(string uri) {
@@ -98,4 +132,17 @@ public:
 		return call;
 	}
 
+	std::vector<SIPCall*> Calls() {
+		std::vector<SIPCall *> calls;
+		auto it = accounts.begin();
+		while (it != accounts.end()) {
+			auto account_calls = it->second->getCalls();
+			calls.insert(std::end(calls), std::begin(account_calls), std::end(account_calls));
+			it++;
+		}
+		return calls;
+	}
+
 };
+
+#endif

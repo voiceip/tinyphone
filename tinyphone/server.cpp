@@ -1,30 +1,37 @@
-// tinyphone.cpp : Defines the entry point for the console application.
-
 #include "stdafx.h"
-#include <crow.h>
+
 #include "server.h"
 #include "utils.h"
-#include <pjsua2.hpp>
-#include <iostream>
-#include <string>
 #include "phone.h"
+#include "net.h"
+
+#undef snprintf
+#include <nlohmann/json.hpp>
 
 using namespace std;
 using namespace pj;
 using json = nlohmann::json;
 
-#pragma comment(lib, "ws2_32.lib") 
-//#pragma comment(lib, "libpjproject-i386-Win32-vc14-Release-Static-NoVideo.lib")
-#pragma comment(lib, "libpjproject-i386-Win32-vc14-Debug-Static.lib")
-//#define _CRT_SECURE_NO_WARNINGS 1
 
 #define DEFAULT_HTTP_SERVER_ERROR_REPONSE  {{ "message", "Something went Wrong :(" }}
 
+namespace tp {
+	struct response : crow::response {
+		response(int code, const nlohmann::json& _body) : crow::response{ code,  _body.dump() } {
+			add_header("Access-Control-Allow-Origin", "*");
+			add_header("Access-Control-Allow-Headers", "Content-Type");
+			add_header("Content-Type", "application/json");
+		}
+	};
+}
 
-int main(int argc, char *argv[])
-{
-	TinyPhone phone;
-	Endpoint ep;
+void TinyPhoneHttpServer::Start() {
+
+	pj_thread_auto_register();
+
+	std::cout << "Starting the TinyPhone HTTP API" << std::endl;
+	TinyPhone phone(getEndpoint());
+	phone.SetCodecs();
 
 	crow::App<TinyPhoneMiddleware> app;
 	//app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
@@ -32,65 +39,12 @@ int main(int argc, char *argv[])
 	//crow::logger::setHandler(std::make_shared<TinyPhoneHTTPLogHandler>());	
 	int http_port = 6060;
 
-
-	/* Create pjsua instance! */
-	try {
-		ep.libCreate();
-
-		// Init library
-		EpConfig ep_cfg;
-		ep_cfg.logConfig.level = 3;//4
-		ep.libInit(ep_cfg);
-
-		// Transport
-		TransportConfig tcfg;
-		int port = 5060;
-		while (udp_port_in_use(port)) {
-			port++;
-		}
-
-		CROW_LOG_INFO << "Using Transport Port: " << port;
-
-		tcfg.port = port;
-		ep.transportCreate(PJSIP_TRANSPORT_UDP, tcfg);
-	}
-	catch (Error & err) {
-		std::cout << "Exception: " << err.info() << std::endl;
-		exit(1);
-	}
-
-
-	/* audio device selction */
-	pjmedia_aud_dev_index dev_idx;
-	int dev_count = pjmedia_aud_dev_count();
-	printf("Got %d audio devices\n", dev_count);
-	for (dev_idx = 0; dev_idx < dev_count; ++dev_idx) {
-		pjmedia_aud_dev_info info;
-		auto status = pjmedia_aud_dev_get_info(dev_idx, &info);
-		printf("%d. %s (in=%d, out=%d)\n", dev_idx, info.name, info.input_count, info.output_count);
-	}
-
-	/* Set audio device*/
-	//pjmedia_aud_dev_index dev_idx = PJMEDIA_AUD_DEFAULT_CAPTURE_DEV;
-	//status = pjmedia_aud_dev_default_param(dev_idx, &param)
-
-	/* Initialization is done, now start pjsua */
-	try {
-		ep.libStart();
-		std::cout << "PJSUA2 Started..." << std::endl;
-	}
-	catch (Error & err) {
-		std::cout << "Exception: " << err.info() << std::endl;
-		exit(1);
-	}
-
-
 	/* Define HTTP Endpoints */
 	CROW_ROUTE(app, "/")([]() {
 		json response = {
 			{ "message", "Hello World" },
 		};
-		return tp::response(200,response);
+		return tp::response(200, response);
 	});
 
 	CROW_ROUTE(app, "/login")
@@ -111,14 +65,21 @@ int main(int argc, char *argv[])
 
 			// Add account
 			pj_thread_auto_register();
-			phone.addAccount(username, domain, password);
+			
 
 			CROW_LOG_INFO << "Registered account " << account_name;
 
-			json response = {
-				{ "message", "Account added succesfully" },
-			};
-			return tp::response(200, response);
+			if (phone.addAccount(username, domain, password)) {
+				return tp::response(200, {
+					{ "message", "Account added succesfully" },
+				});
+			}
+			else {
+				return tp::response(400, {
+					{ "message", "Account already exits" },
+				});
+			}
+			
 		}
 		catch (std::exception& e) {
 			CROW_LOG_ERROR << "Exception catched : " << e.what();
@@ -137,7 +98,7 @@ int main(int argc, char *argv[])
 			});
 		}
 
-		CROW_LOG_INFO << "Dial Request to " << req.body ;
+		CROW_LOG_INFO << "Dial Request to " << req.body;
 
 		try {
 			pj_thread_auto_register();
@@ -155,6 +116,38 @@ int main(int argc, char *argv[])
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 
+	});
+
+	CROW_ROUTE(app, "/calls")
+		.methods("GET"_method)
+		([&phone]() {
+		try {
+			pj_thread_auto_register();
+			
+			json response = {
+				{ "message",  "Current Calls" },
+				{ "data", {}},
+			};
+			auto calls = phone.Calls();
+			auto it = calls.begin();
+			while (it != calls.end()) {
+				SIPCall* call = *it;
+				json callinfo = {
+					{"id", call->getInfo().id },
+					{"party" , call->getInfo().remoteUri},
+					{"state" ,  call->getInfo().stateText }
+				};
+				response["data"].push_back(callinfo);
+				it++;
+			}
+
+
+			return tp::response(200, response);
+		}
+		catch (std::exception& e) {
+			CROW_LOG_ERROR << "Exception catched : " << e.what();
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
+		}
 	});
 
 	CROW_ROUTE(app, "/logout")
@@ -188,9 +181,9 @@ int main(int argc, char *argv[])
 
 	CROW_ROUTE(app, "/hangup_all")
 		.methods("POST"_method)
-		([&ep]() {
+		([&phone]() {
 		pj_thread_auto_register();
-		ep.hangupAllCalls();
+		phone.hangupAllCalls();
 		json response = {
 			{ "message",  "Hangup All Calls Triggered" },
 		};
@@ -198,19 +191,19 @@ int main(int argc, char *argv[])
 	});
 
 
-	if (tcp_port_in_use(http_port)) {
-		PrintErr(("HTTP Port " + to_string(http_port) + " already in use!"));
-		ep.libDestroy();
+	if (is_tcp_port_in_use(http_port)) {
+		DisplayError(("HTTP Port " + to_string(http_port) + " already in use!"));
+		getEndpoint()->libDestroy();
 		exit(1);
 	}
-		
+
 	app.port(http_port)
 		//.multithreaded()
 		.run();
 
 	std::cout << "Server has been shutdown... Will Exit now...." << std::endl;
 
-	ep.libDestroy();
+	//ep.libDestroy();
+	getEndpoint()->libDestroy();
 
-	return 0;
 }

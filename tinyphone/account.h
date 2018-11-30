@@ -1,11 +1,13 @@
 #pragma once
 
+#ifndef ACCOUNT_HEADER_FILE_H
+#define ACCOUNT_HEADER_FILE_H
+
 #include <pjsua2.hpp>
 #include <iostream>
 
 using namespace std;
 using namespace pj;
-
 
 class SIPAccount;
 
@@ -26,12 +28,13 @@ public:
 	}
 
 	virtual void onCallState(OnCallStateParam &prm);
+	virtual void onCallMediaState(OnCallMediaStateParam &prm);
 };
 
 class SIPAccount : public Account
 {
 public:
-	std::vector<Call *> calls;
+	std::vector<SIPCall *> calls;
 
 public:
 	SIPAccount()
@@ -42,14 +45,18 @@ public:
 		std::cout << "*** Account is being deleted: No of calls=" << calls.size() << std::endl;
 	}
 
-	void removeCall(Call *call)
+	void removeCall(SIPCall *call)
 	{
-		for (std::vector<Call *>::iterator it = calls.begin(); it != calls.end(); ++it) {
+		for (auto it = calls.begin(); it != calls.end(); ++it) {
 			if (*it == call) {
 				calls.erase(it);
 				break;
 			}
 		}
+	}
+
+	std::vector<SIPCall *> getCalls() {
+		return calls;
 	}
 
 	virtual void onRegState(OnRegStateParam &prm)
@@ -61,7 +68,7 @@ public:
 
 	virtual void onIncomingCall(OnIncomingCallParam &iprm)
 	{
-		Call *call = new SIPCall(*this, iprm.callId);
+		SIPCall *call = new SIPCall(*this, iprm.callId);
 		CallInfo ci = call->getInfo();
 		CallOpParam prm;
 
@@ -88,3 +95,20 @@ void SIPCall::onCallState(OnCallStateParam &prm)
 		delete this;
 	}
 }
+
+
+void SIPCall::onCallMediaState(OnCallMediaStateParam &prm)
+{
+	CallInfo ci = getInfo();
+	// Iterate all the call medias
+	for (unsigned i = 0; i < ci.media.size(); i++) {
+		if (ci.media[i].type == PJMEDIA_TYPE_AUDIO && getMedia(i)) {
+			AudioMedia *aud_med = (AudioMedia *)getMedia(i);
+			// Connect the call audio media to sound device
+			AudDevManager& mgr = Endpoint::instance().audDevManager();
+			aud_med->startTransmit(mgr.getPlaybackDevMedia());
+			mgr.getCaptureDevMedia().startTransmit(*aud_med);
+		}
+	}
+}
+#endif
