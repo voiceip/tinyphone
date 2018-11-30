@@ -153,26 +153,64 @@ public:
 	}
 
 
-	void HoldCall(SIPCall* call) {
+	bool HoldCall(SIPCall* call) {
 
 		if (call == NULL || !call->isActive()) {
-			PJ_LOG(3, (THIS_FILE, "HoldCall Attempted on NonActive Call, Ignoreing"));
-			return;
+			PJ_LOG(3, (THIS_FILE, "HoldCall Attempted on NonActive Call, Ignoring"));
+			return false;
 		}
 
-		CallOpParam prm;
-		prm.options = PJSUA_CALL_UPDATE_CONTACT;
-		call->setHold(prm);
+		auto call_info = call->getInfo();
+		if (call_info.state == PJSIP_INV_STATE_CONFIRMED) {
+			//must have a local media
+			if (call_info.media.size() > 0) {
+				auto current_media = call_info.media.front();
+				if (current_media.status != PJSUA_CALL_MEDIA_LOCAL_HOLD && current_media.status != PJSUA_CALL_MEDIA_NONE) {
+					CallOpParam prm;
+					prm.options = PJSUA_CALL_UPDATE_CONTACT;
+					call->setHold(prm);
+					return true;
+				}
+				else 
+					PJ_LOG(3, (THIS_FILE, "Hold Failed, already on hold maybe?"));
+			}
+			else 
+				PJ_LOG(3, (THIS_FILE, "Hold Failed, Call Doesn't have any media"));
+		}
+		else 
+			PJ_LOG(3, (THIS_FILE, "Hold Failed, Call Not in Confirmed State"));
+		return false;
 	}
 
-	void UnHoldCall(SIPCall* call) {
+	bool UnHoldCall(SIPCall* call) {
 		if (call == NULL || !call->isActive()) {
-			PJ_LOG(3, (THIS_FILE, "UnHoldCall Attempted on NonActive Call, Ignoreing"));
-			return;
+			PJ_LOG(3, (THIS_FILE, "UnHoldCall Attempted on NonActive Call, Ignoring"));
+			return false;
 		}
-		CallOpParam prm;
-		prm.opt.flag = PJSUA_CALL_UNHOLD;
-		call->reinvite(prm);
+		
+		auto call_info = call->getInfo();
+		if (call_info.state == PJSIP_INV_STATE_CONFIRMED) {
+			if (call_info.media.size() > 0) {
+				auto current_media = call_info.media.front();
+				if (current_media.status == PJSUA_CALL_MEDIA_LOCAL_HOLD || current_media.status == PJSUA_CALL_MEDIA_NONE) {
+					
+					CallOpParam prm(true);
+					prm.opt.audioCount = 1;
+					prm.opt.videoCount = 0;
+					prm.opt.flag |= PJSUA_CALL_UNHOLD;
+					call->reinvite(prm);
+					return true;
+				}
+				else
+					PJ_LOG(3, (THIS_FILE, "UnHold Failed, already active maybe?"));
+			}
+			else
+				PJ_LOG(3, (THIS_FILE, "UnHold Failed, Call Doesn't have any media"));
+		}
+		else
+			PJ_LOG(3, (THIS_FILE, "UnHold Failed, Call Not in Confirmed State"));
+
+		return false;
 	}
 
 	void HoldOtherCalls(SIPCall* call) {

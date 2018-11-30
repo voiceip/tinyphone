@@ -65,7 +65,7 @@ void TinyPhoneHttpServer::Start() {
 
 			// Add account
 			pj_thread_auto_register();
-			
+
 
 			CROW_LOG_INFO << "Registered account " << account_name;
 
@@ -79,7 +79,7 @@ void TinyPhoneHttpServer::Start() {
 					{ "message", "Account already exits" },
 				});
 			}
-			
+
 		}
 		catch (std::exception& e) {
 			CROW_LOG_ERROR << "Exception catched : " << e.what();
@@ -107,9 +107,11 @@ void TinyPhoneHttpServer::Start() {
 			string account_name = call->getAccount()->getInfo().uri;
 
 			json response = {
-				{ "message",  ("Dialed via " + account_name) },
+				{ "message", ("Dialed via " + account_name) },
+				{ "call_id", call->getId() },
+				{ "party", dial_uri }
 			};
-			return tp::response(200, response);
+			return tp::response(202, response);
 		}
 		catch (std::exception& e) {
 			CROW_LOG_ERROR << "Exception catched : " << e.what();
@@ -123,7 +125,7 @@ void TinyPhoneHttpServer::Start() {
 		([&phone]() {
 		try {
 			pj_thread_auto_register();
-			
+
 			json response = {
 				{ "message",  "Current Calls" },
 				{ "data", {}},
@@ -175,7 +177,7 @@ void TinyPhoneHttpServer::Start() {
 				};
 				break;
 			}
-			return tp::response(200, response);
+			return tp::response(202, response);
 		}
 	});
 
@@ -183,7 +185,7 @@ void TinyPhoneHttpServer::Start() {
 		.methods("POST"_method)
 		([&phone](int call_id) {
 		pj_thread_auto_register();
-		
+
 		SIPCall* call = phone.CallById(call_id);
 		if (call == NULL) {
 			return tp::response(400, {
@@ -197,7 +199,7 @@ void TinyPhoneHttpServer::Start() {
 				{ "message",  "Hangup Triggered" },
 				{ "call_id" , call_id }
 			};
-			return tp::response(200, response);
+			return tp::response(202, response);
 		}
 	});
 
@@ -210,7 +212,7 @@ void TinyPhoneHttpServer::Start() {
 		json response = {
 			{ "message",  "Hangup All Calls Triggered" },
 		};
-		return tp::response(200, response);
+		return tp::response(202, response);
 	});
 
 	CROW_ROUTE(app, "/logout")
@@ -242,7 +244,7 @@ void TinyPhoneHttpServer::Start() {
 		return tp::response(200, response);
 	});
 
-	
+
 
 
 	if (is_tcp_port_in_use(http_port)) {
@@ -257,7 +259,7 @@ void TinyPhoneHttpServer::Start() {
 
 	std::cout << "Server has been shutdown... Will Exit now...." << std::endl;
 
-	//ep.libDestroy();
+	phone.HangupAllCalls();
 	getEndpoint()->libDestroy();
 
 }
