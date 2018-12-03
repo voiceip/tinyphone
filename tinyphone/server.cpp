@@ -30,8 +30,9 @@ void TinyPhoneHttpServer::Start() {
 	pj_thread_auto_register();
 
 	std::cout << "Starting the TinyPhone HTTP API" << std::endl;
-	TinyPhone phone(getEndpoint());
+	TinyPhone phone(endpoint);
 	phone.SetCodecs();	
+	phone.ConfigureAudioDevices();
 
 	crow::App<TinyPhoneMiddleware> app;
 	//app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
@@ -47,6 +48,43 @@ void TinyPhoneHttpServer::Start() {
 		return tp::response(200, response);
 	});
 
+	CROW_ROUTE(app, "/devices")
+		.methods("GET"_method)
+		([&phone]() {
+		try {				
+			pj_thread_auto_register();
+			AudDevManager& audio_manager = Endpoint::instance().audDevManager();
+			audio_manager.refreshDevs();
+			AudioDevInfoVector devices = audio_manager.enumDev();
+			json response = {
+				{ "message",  "Audio Devices" },
+				{ "count", devices.size() },
+				{ "devices",{} },
+			};
+			int dev_idx = 0;
+			BOOST_FOREACH(AudioDevInfo* info, devices) {
+				json dev_info = {
+					{ "name",info->name },
+					{ "driver",info->driver },
+					{ "id", dev_idx },
+					{ "inputCount" ,  info->inputCount },
+					{ "outputCount" ,  info->outputCount },
+				};
+				response["devices"].push_back(dev_info);
+				dev_idx++;
+			}
+			return tp::response(200, response);
+		}
+		catch (std::exception& e) {
+			CROW_LOG_ERROR << "Exception catched : " << e.what();
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
+		}
+	});
+
+
+
+
+	
 	CROW_ROUTE(app, "/login")
 		.methods("POST"_method)
 		([&phone](const crow::request& req) {
@@ -63,12 +101,8 @@ void TinyPhoneHttpServer::Start() {
 			string password = x["password"].s();
 			string account_name = SIP_ACCOUNT_NAME(username, domain);
 
-			// Add account
 			pj_thread_auto_register();
-
-
-			CROW_LOG_INFO << "Registered account " << account_name;
-
+			CROW_LOG_INFO << "Registering account " << account_name;
 			if (phone.AddAccount(username, domain, password)) {
 				return tp::response(200, {
 					{ "message", "Account added succesfully" },
@@ -95,11 +129,17 @@ void TinyPhoneHttpServer::Start() {
 		try {
 			json response = {
 				{ "message",  "Accounts" },
-				{ "accounts",{} },
+				{ "accounts", json::array() },
 			};
 
 			BOOST_FOREACH(SIPAccount* account, phone.Accounts()) {
-				response["accounts"].push_back(account->Name());
+				json account_data = {
+					{ "id" , account->getId() },
+					{"name" , account->Name()},
+					{"active" , account->getInfo().regIsActive },
+					{"status" , account->getInfo().regStatusText }
+				};
+				response["accounts"].push_back(account_data);
 			}
 			return tp::response(200, response);
 		}
@@ -114,9 +154,6 @@ void TinyPhoneHttpServer::Start() {
 		([&phone](const crow::request& req) {
 
 		std::string dial_uri =  "sip:"+req.body;
-
-
-
 		auto sip_dial_uri = (char *)dial_uri.c_str();
 
 		if (!phone.HasAccounts()) {
@@ -155,15 +192,17 @@ void TinyPhoneHttpServer::Start() {
 
 			json response = {
 				{ "message",  "Current Calls" },
-				{ "data", {}},
+				{ "data", json::array() },
 			};
 			BOOST_FOREACH(SIPCall* call, phone.Calls()) {
 				json callinfo = {
 					{ "id", call->getInfo().id },
 					{ "sid", call->getInfo().callIdString },
 					{ "party" , call->getInfo().remoteUri },
-					{ "state" ,  call->getInfo().stateText }
+					{ "state" ,  call->getInfo().stateText },
+					{ "hold" ,  (""+call->HoldState()) }
 				};
+
 				response["data"].push_back(callinfo);
 			}
 			return tp::response(200, response);
@@ -276,11 +315,9 @@ void TinyPhoneHttpServer::Start() {
 	});
 
 
-
-
 	if (is_tcp_port_in_use(http_port)) {
 		DisplayError(("HTTP Port " + to_string(http_port) + " already in use!"));
-		getEndpoint()->libDestroy();
+		endpoint->libDestroy();
 		exit(1);
 	}
 
@@ -291,6 +328,6 @@ void TinyPhoneHttpServer::Start() {
 	std::cout << "Server has been shutdown... Will Exit now...." << std::endl;
 
 	phone.HangupAllCalls();
-	getEndpoint()->libDestroy();
+	endpoint->libDestroy();
 
 }

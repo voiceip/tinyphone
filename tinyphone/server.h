@@ -44,27 +44,18 @@ struct TinyPhoneMiddleware
 };
 
 class TinyPhoneHttpServer {
-private:
-	pj::Endpoint* m_ep;
+public:
+	pj::Endpoint* endpoint;
 public:
 	TinyPhoneHttpServer(pj::Endpoint* ep) {
-		SetEndpoint(ep);
+		endpoint = ep;
 	}
 
 	~TinyPhoneHttpServer() {
 		std::cout << "Shutting Down TinyPhone HTTP Service" << std::endl;
 	}
 
-	void SetEndpoint(pj::Endpoint* ep) {
-		m_ep = ep;
-	}
-
-	pj::Endpoint* getEndpoint() {
-		return m_ep;
-	}
-
-
-
+	
 	void Start();
 };
 

@@ -5,16 +5,21 @@
 
 #include "account.h"
 #include <algorithm>
+#include <string>
+
 #include <boost/foreach.hpp>
+#include <boost/algorithm/string.hpp>
 
 #define THIS_FILE	"phone.h"
 
 class TinyPhone
 {
-	map<pjsua_acc_id, SIPAccount*> accounts;
+	std::vector<SIPAccount*> accounts;
 	pj::Endpoint* endpoint;
 
 public:
+	int input_audio_dev = 0, output_audio_dev = 0;
+
 	TinyPhone(pj::Endpoint* ep) {
 		endpoint = ep;
 	}
@@ -41,15 +46,41 @@ public:
 			PJ_LOG(3, (THIS_FILE, "Failed activating %s, err=%d", codec.ptr, status));
 	}
 
-	std::vector<SIPAccount *> Accounts() {
-		std::vector<SIPAccount *> accs;
-		auto it = accounts.begin();
-		while (it != accounts.end())
-		{
-			accs.push_back(it->second);
-			it++;
+	void ConfigureAudioDevices(int input_device = -1, int output_device = -1) {
+		AudDevManager& audio_manager = Endpoint::instance().audDevManager();
+		if (input_device == -1 || output_device == -1) {
+			audio_manager.refreshDevs();
+			AudioDevInfoVector devices = audio_manager.enumDev();
+			vector<string> preffered_devices{ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" };
+			BOOST_FOREACH(string& search_string, preffered_devices) {
+				int dev_idx = 0;
+				BOOST_FOREACH(AudioDevInfo* info, devices) {
+				string dev_name = info->name;
+				boost::to_lower(dev_name);
+					if (dev_name.find(search_string) != string::npos) {
+						if (info->inputCount > 0 && input_audio_dev <= 0 ) {
+							input_audio_dev = dev_idx;
+							PJ_LOG(3, (THIS_FILE, "Selected Input #%d %s", dev_idx, info->name.c_str()));
+						}
+						if (info->outputCount > 0 && output_audio_dev <= 0) {
+							output_audio_dev = dev_idx;
+							PJ_LOG(3, (THIS_FILE, "Selected Output #%d %s", dev_idx, info->name.c_str()));
+						}
+					}
+					dev_idx++;
+				}
+			}
 		}
-		return accs;
+		else {
+			input_audio_dev = input_device;
+			output_audio_dev = output_device;
+		}
+		audio_manager.setCaptureDev(input_audio_dev);
+		audio_manager.setPlaybackDev(output_audio_dev);
+	}
+
+	std::vector<SIPAccount *> Accounts() {
+		return accounts;
 	}
 
 	bool HasAccounts() {
@@ -60,15 +91,11 @@ public:
 		if (!HasAccounts())
 			return NULL;
 		else {
-			return accounts.begin()->second;
-		}
-	}
-
-	SIPAccount* AccountById(int pos) {
-		if (!HasAccounts())
+			BOOST_FOREACH(SIPAccount* acc, accounts) {
+				if (acc->getInfo().regStatus == pjsip_status_code::PJSIP_SC_OK)
+					return acc;
+			}
 			return NULL;
-		else {
-			return accounts.find(pos)->second;
 		}
 	}
 
@@ -78,15 +105,12 @@ public:
 		else {
 			string full_uri = "sip:" + uri;
 			SIPAccount* account = NULL;
-			auto it = accounts.begin();
-			while (it != accounts.end())
-			{
-				if (it->second->getInfo().uri == full_uri)
+			BOOST_FOREACH(SIPAccount* acc, accounts) {
+				if (acc->getInfo().uri == full_uri)
 				{
-					account = it->second;
+					account = acc;
 					break;
 				}
-				it++;
 			}
 			return account;
 		}
@@ -95,22 +119,17 @@ public:
 	void Logout() {
 		auto it = accounts.begin();
 		while (it != accounts.end()) {
-			it->second->shutdown();
+			(*it)->shutdown();
 			it = accounts.erase(it);
 		}
 	}
 
-	
-
 	bool AddAccount(string username, string domain, string password) {
-
 		string account_name = SIP_ACCOUNT_NAME(username, domain);
 		auto exits = AccountByURI(account_name);
 		if (exits) {
 			return false;
-		}
-		else {
-
+		} else {
 			AccountConfig acc_cfg;
 			acc_cfg.idUri = ("sip:" + account_name);
 			acc_cfg.regConfig.registrarUri = ("sip:" + domain);
@@ -125,7 +144,7 @@ public:
 			SIPAccount *acc(new SIPAccount(account_name));
 			acc->create(acc_cfg);
 			
-			accounts.insert(pair<pjsua_acc_id, SIPAccount*>(acc->getId(), acc));
+			accounts.push_back(acc);
 			return true;
 		}
 	}
@@ -148,11 +167,9 @@ public:
 
 	std::vector<SIPCall*> Calls() {
 		std::vector<SIPCall *> calls;
-		auto it = accounts.begin();
-		while (it != accounts.end()) {
-			auto account_calls = it->second->getCalls();
+		BOOST_FOREACH(SIPAccount* acc, accounts) {
+			auto account_calls = acc->getCalls();
 			calls.insert(std::end(calls), std::begin(account_calls), std::end(account_calls));
-			it++;
 		}
 		return calls;
 	}
@@ -177,7 +194,7 @@ public:
 	void Hangup(SIPCall* call) {
 		CallOpParam prm;
 		call->hangup(prm);
-	}
+	}	
 
 	void HangupAllCalls() {
 		endpoint->hangupAllCalls();

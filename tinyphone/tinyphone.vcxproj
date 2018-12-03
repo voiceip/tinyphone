@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="account.h" />
     <ClInclude Include="consts.h" />
+    <ClInclude Include="enum.h" />
     <ClInclude Include="guicon.h" />
     <ClInclude Include="phone.h" />
     <ClInclude Include="resource.h" />

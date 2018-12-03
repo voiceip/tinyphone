@@ -6,11 +6,14 @@
 #include <pjsua2.hpp>
 #include <iostream>
 #include <boost/foreach.hpp>
+#include "enum.h"
 
 using namespace std;
 using namespace pj;
 
 class SIPAccount;
+
+DECLARE_ENUM_WITH_TYPE(HoldStatus, int32_t, NOT_IN_HOLD = 0x00, LOCAL_HOLD = 0x01, REMOTE_HOLD = 0x02);
 
 class SIPCall : public Call
 {
@@ -32,6 +35,7 @@ public:
 	virtual void onCallMediaState(OnCallMediaStateParam &prm);
 	virtual bool HoldCall();
 	virtual bool UnHoldCall();
+	virtual HoldStatus HoldState();
 
 };
 
@@ -134,18 +138,35 @@ void SIPCall::onCallState(OnCallStateParam &prm)
 void SIPCall::onCallMediaState(OnCallMediaStateParam &prm)
 {
 	CallInfo ci = getInfo();
+
 	// Iterate all the call medias
 	for (unsigned i = 0; i < ci.media.size(); i++) {
 		if (ci.media[i].type == PJMEDIA_TYPE_AUDIO && getMedia(i)) {
 			AudioMedia *aud_med = (AudioMedia *)getMedia(i);
 			// Connect the call audio media to sound device
 			AudDevManager& mgr = Endpoint::instance().audDevManager();
+			cout << "Connecting Call to Media Device Input #" << mgr.getCaptureDev() << " , Output #" << mgr.getPlaybackDev() << endl;
 			aud_med->startTransmit(mgr.getPlaybackDevMedia());
 			mgr.getCaptureDevMedia().startTransmit(*aud_med);
 		}
 	}
 }
 
+HoldStatus SIPCall::HoldState() {
+	auto call_info = getInfo();
+	if (call_info.state == PJSIP_INV_STATE_CONFIRMED) {
+		if (call_info.media.size() > 0) {
+			auto current_media = call_info.media.front();
+			if (current_media.status == PJSUA_CALL_MEDIA_LOCAL_HOLD || current_media.status == PJSUA_CALL_MEDIA_NONE) {
+				return HoldStatus::LOCAL_HOLD;
+			}
+			else if (current_media.status == PJSUA_CALL_MEDIA_REMOTE_HOLD ){
+				HoldStatus::REMOTE_HOLD;
+			}
+		}
+	}
+	return HoldStatus::NOT_IN_HOLD;
+}
 
 bool SIPCall::HoldCall() {
 
