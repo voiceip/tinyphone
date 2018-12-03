@@ -156,9 +156,10 @@ void TinyPhoneHttpServer::Start() {
 		std::string dial_uri =  "sip:"+req.body;
 		auto sip_dial_uri = (char *)dial_uri.c_str();
 
-		if (!phone.HasAccounts()) {
+		SIPAccount* account = phone.PrimaryAccount();
+		if (account == NULL) {
 			return tp::response(400, {
-				{ "message", "No Account Registed Yet" },
+				{ "message", "No Account Registed/Active Yet" },
 			});
 		}
 
@@ -166,14 +167,13 @@ void TinyPhoneHttpServer::Start() {
 
 		try {
 			pj_thread_auto_register();
-
-			SIPCall *call = phone.MakeCall(sip_dial_uri);
+			SIPCall *call = phone.MakeCall(sip_dial_uri, account);
 			string account_name = call->getAccount()->Name();
-
 			json response = {
-				{ "message", ("Dialed via " + account_name) },
+				{ "message", "Dialling"},
 				{ "call_id", call->getId() },
-				{ "party", sip_dial_uri }
+				{ "party", sip_dial_uri },
+				{ "account", account_name }
 			};
 			return tp::response(202, response);
 		}

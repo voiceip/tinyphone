@@ -11,6 +11,8 @@
 using namespace std;
 using namespace pj;
 
+#define THIS_FILE	"account.h"
+
 class SIPAccount;
 
 DECLARE_ENUM_WITH_TYPE(HoldStatus, int32_t, NOT_IN_HOLD = 0x00, LOCAL_HOLD = 0x01, REMOTE_HOLD = 0x02);
@@ -36,6 +38,7 @@ public:
 	virtual bool HoldCall();
 	virtual bool UnHoldCall();
 	virtual HoldStatus HoldState();
+	virtual void onCallEnd();
 
 };
 
@@ -123,6 +126,7 @@ void SIPCall::onCallState(OnCallStateParam &prm)
 
 	switch (ci.state) {
 	case PJSIP_INV_STATE_DISCONNECTED:
+		onCallEnd();
 		myAcc->removeCall(this);
 		/* Delete the call */
 		delete this;
@@ -216,4 +220,34 @@ bool SIPCall::UnHoldCall() {
 		PJ_LOG(3, (THIS_FILE, "UnHold Failed, Call Not in Confirmed State"));
 	return false;
 }
+
+void SIPCall::onCallEnd() {
+	ToneGenerator toneGenerator;
+	AudioMedia& play_med = Endpoint::instance().audDevManager().getPlaybackDevMedia();
+	try {
+		
+		ToneDesc tone;
+		tone.freq1 = 425;
+		tone.freq2 = 0;
+		tone.on_msec = 200;
+		tone.off_msec = 100;		
+
+		ToneDescVector tones = { tone  };
+
+		toneGenerator.createToneGenerator();
+		toneGenerator.play(tones, true);
+		toneGenerator.startTransmit(play_med);
+
+		// let the tone play for a sec.
+		pj_thread_sleep(1000);
+
+		toneGenerator.stop();
+		toneGenerator.stopTransmit(play_med);
+	}
+	catch (Error& err) {
+		PJ_LOG(3, (THIS_FILE, "SIPCall::onCallEnd Error"));
+	}
+
+}
+
 #endif
