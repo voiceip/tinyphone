@@ -84,6 +84,8 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 		break;
 
 	case WM_CLOSE:
+		notifyIconData.uFlags = 0;
+		Shell_NotifyIcon(NIM_DELETE, &notifyIconData);
 		return 0;
 		break;
 

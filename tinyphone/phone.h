@@ -4,6 +4,7 @@
 #define PHONE_HEADER_FILE_H
 
 #include "account.h"
+#include "channel.h"
 #include <algorithm>
 #include <string>
 
@@ -16,6 +17,7 @@ class TinyPhone
 {
 	std::vector<SIPAccount*> accounts;
 	pj::Endpoint* endpoint;
+	channel<std::string>* chan;
 
 public:
 	int input_audio_dev = 0, output_audio_dev = 0;
@@ -32,18 +34,25 @@ public:
 
 	void SetCodecs() {
 		const pj_str_t ID_ALL = { "*", 1 };
-		pjsua_codec_set_priority(&ID_ALL, PJMEDIA_CODEC_PRIO_DISABLED);
-		EnableCodec("PCMA/8000/1");
-		EnableCodec("PCMU/8000/1");
+		pjsua_codec_set_priority(&ID_ALL, PJMEDIA_CODEC_PRIO_DISABLED);	
+		auto allowed_codecs = splitString(SIP_ALLOWED_AUDIO_CODECS, ' ');
+		BOOST_FOREACH(std::string codec, allowed_codecs){
+			EnableCodec(codec);
+		}
 	}
 
-	void EnableCodec(char* codec_name) {
+	void SetUpdateChannel(channel<std::string>* ch) {
+		chan = ch;
+	}
+
+	void EnableCodec(std::string codec_name) {
 		auto codec = pj_str(codec_name);
 		auto status = pjsua_codec_set_priority(&codec, PJMEDIA_CODEC_PRIO_NORMAL);
 		if (status == PJ_SUCCESS)
 			PJ_LOG(3, (THIS_FILE, "%s activated", codec.ptr));
 		else
 			PJ_LOG(3, (THIS_FILE, "Failed activating %s, err=%d", codec.ptr, status));
+		free(codec.ptr);
 	}
 
 	void ConfigureAudioDevices(int input_device = -1, int output_device = -1) {
@@ -106,8 +115,7 @@ public:
 			string full_uri = "sip:" + uri;
 			SIPAccount* account = NULL;
 			BOOST_FOREACH(SIPAccount* acc, accounts) {
-				if (acc->getInfo().uri == full_uri)
-				{
+				if (acc->getInfo().uri == full_uri){
 					account = acc;
 					break;
 				}
@@ -135,9 +143,9 @@ public:
 			acc_cfg.regConfig.registrarUri = ("sip:" + domain);
 			acc_cfg.sipConfig.authCreds.push_back(AuthCredInfo("digest", "*", username, 0, password));
 
-			acc_cfg.regConfig.timeoutSec = 180;
-			acc_cfg.regConfig.retryIntervalSec = 30;
-			acc_cfg.regConfig.firstRetryIntervalSec = 15;
+			acc_cfg.regConfig.timeoutSec = SIP_REG_DURATION;
+			acc_cfg.regConfig.retryIntervalSec = SIP_REG_RETRY_INTERVAL;
+			acc_cfg.regConfig.firstRetryIntervalSec = SIP_REG_FIRST_RETRY_INTERVAL;
 			acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
 			acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
 

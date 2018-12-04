@@ -4,6 +4,9 @@
 #include "utils.h"
 #include "phone.h"
 #include "net.h"
+#include <unordered_set>
+#include <mutex>
+#include "channel.h"
 
 #undef snprintf
 #include <nlohmann/json.hpp>
@@ -25,16 +28,20 @@ namespace tp {
 	};
 }
 
+
 void TinyPhoneHttpServer::Start() {
 
 	pj_thread_auto_register();
+	channel<std::string> updates;
 
 	std::cout << "Starting the TinyPhone HTTP API" << std::endl;
 	TinyPhone phone(endpoint);
 	phone.SetCodecs();	
 	phone.ConfigureAudioDevices();
+	phone.SetUpdateChannel(&updates);
 
 	crow::App<TinyPhoneMiddleware> app;
+	std::mutex mtx;;
 	//app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
 	app.loglevel(crow::LogLevel::Info);
 	//crow::logger::setHandler(std::make_shared<TinyPhoneHTTPLogHandler>());	
@@ -47,6 +54,39 @@ void TinyPhoneHttpServer::Start() {
 		};
 		return tp::response(200, response);
 	});
+
+	std::unordered_set<crow::websocket::connection*> subscribers;
+
+	CROW_ROUTE(app, "/events")
+		.websocket()
+		.onopen([&](crow::websocket::connection& conn) {
+		CROW_LOG_INFO << "new websocket connection";
+		std::lock_guard<std::mutex> _(mtx);
+		subscribers.insert(&conn);
+	})
+		.onclose([&](crow::websocket::connection& conn, const std::string& reason) {
+		CROW_LOG_INFO << "websocket connection closed: " << reason;
+		std::lock_guard<std::mutex> _(mtx);
+		subscribers.erase(&conn);
+	})
+		.onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary) {
+		conn.send_text("ok");
+		updates.push("whatttt");
+	});
+
+	std::thread thread_object([&updates,&subscribers]() {
+		std::string data;
+		while (!updates.is_closed()) {
+			if (updates.pop(data, true)) {
+				for(auto u : subscribers)
+					u->send_text(data);
+			}
+		}
+		CROW_LOG_INFO << "Exiting Channel Relayer Thread ";
+		//for (auto u : subscribers)
+		//	u->close();
+	});
+
 
 	CROW_ROUTE(app, "/devices")
 		.methods("GET"_method)
@@ -80,10 +120,6 @@ void TinyPhoneHttpServer::Start() {
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 	});
-
-
-
-
 	
 	CROW_ROUTE(app, "/login")
 		.methods("POST"_method)
@@ -172,6 +208,7 @@ void TinyPhoneHttpServer::Start() {
 			json response = {
 				{ "message", "Dialling"},
 				{ "call_id", call->getId() },
+				{ "sid", call->getInfo().callIdString },
 				{ "party", sip_dial_uri },
 				{ "account", account_name }
 			};
@@ -200,6 +237,7 @@ void TinyPhoneHttpServer::Start() {
 					{ "sid", call->getInfo().callIdString },
 					{ "party" , call->getInfo().remoteUri },
 					{ "state" ,  call->getInfo().stateText },
+					{ "duration",  call->getInfo().totalDuration.sec },
 					{ "hold" ,  (""+call->HoldState()) }
 				};
 
@@ -316,18 +354,23 @@ void TinyPhoneHttpServer::Start() {
 
 
 	if (is_tcp_port_in_use(http_port)) {
-		DisplayError(("HTTP Port " + to_string(http_port) + " already in use!"));
+		DisplayError(("HTTP Port " + to_string(http_port) + " already in use! \nIs another instance running?"));
 		endpoint->libDestroy();
 		exit(1);
 	}
 
 	app.port(http_port)
-		//.multithreaded()
+		.multithreaded()
 		.run();
 
-	std::cout << "Server has been shutdown... Will Exit now...." << std::endl;
+	CROW_LOG_INFO << "Server has been shutdown... Will Exit now...." ;
+
+	updates.close();
+	thread_object.join();
+	CROW_LOG_INFO << "Terminating current running call(s) if any";
 
 	phone.HangupAllCalls();
 	endpoint->libDestroy();
 
+	CROW_LOG_INFO << "Shutdown Complete..";
 }

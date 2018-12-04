@@ -18,8 +18,9 @@ void print_thread_name();
 
 static PJ_IDEF(pj_str_t) pj_str(std::string str)
 {
+	char* chr = strdup(str.c_str());
 	pj_str_t dst;
-	dst.ptr = (char *)str.c_str();
+	dst.ptr = chr;
 	dst.slen = str.length();
 	return dst;
 }
@@ -50,6 +51,6 @@ static PJ_DEF(pj_status_t) pj_thread_auto_register(void)
 	}
 	return rc;
 }
- 
+
 #endif
  
