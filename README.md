@@ -24,15 +24,22 @@ run tinyphone/Debug/tinyphone.exe
 
 ## APIs 
 
-```
-GET / 
-GET /calls
-POST /login
-POST /logout
-POST /hangup_all
-POST /hangup/<call_id>
-POST /exit
-```
+The softphone exposes the following resources.
+
+| Resource                    | Method | Description                       |
+|:----------------------------|:-------|:----------------------------------|
+| `/`      | GET | Returns `hello world` |
+| `/login`| POST | Account login with the provided details <br> `{"username":"jane", "password" : "doe", "domain" : "hello.com"}` | 
+| `/logout`| POST | Logout of all accounts |
+| `/accounts`| GET | Returns list of registed accounts |
+| `/dial`| POST | Dial a call with provided `sip-uri` | 
+| `/calls`| GET | Returns list of active calls |
+| `/hold/{call_id}`| PUT | Hold call with specified `type_id` | 
+| `/hold/{call_id}`| DELETE | UnHold call with specified `type_id` | 
+| `/hangup/{call_id}`| POST | hangup call with specified `type_id` | 
+| `/hangup_all`| POST | Hangup all calls | 
+| `/exit`| POST | Exit the application | 
+
 
 ## Issues & Contribution
 
