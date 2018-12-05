@@ -370,7 +370,7 @@ void TinyPhoneHttpServer::Start() {
 
 
 	if (is_tcp_port_in_use(http_port)) {
-		DisplayError(("HTTP Port " + to_string(http_port) + " already in use! \nIs another instance running?"));
+		tp::DisplayError(("HTTP Port " + to_string(http_port) + " already in use! \nIs another instance running?"));
 		endpoint->libDestroy();
 		exit(1);
 	}
