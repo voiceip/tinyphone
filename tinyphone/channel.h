@@ -1,6 +1,13 @@
 #pragma once
+
+#ifndef CHANNEL_HEADER_FILE_H
+#define CHANNEL_HEADER_FILE_H
+
 #include <list>
 #include <thread>
+#include <stdio.h>
+#include <mutex>
+#include <condition_variable>
 
 template<class item>
 class channel {
@@ -38,3 +45,5 @@ public:
 		return true;
 	}
 };
+
+#endif

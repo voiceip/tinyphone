@@ -4,6 +4,7 @@
 #define CONSTS_HEADER_FILE_H
 
 #include "stdafx.h"
+#include <string.h>
 
 #define FOREGROUND_WHITE (FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN)
 #define DEFAULT_UA_STRING "TinyPhone Pjsua2 v0"
@@ -20,5 +21,7 @@
 
 #define PJSUA_MAX_CALLS	4
 #define PJSUA_MAX_ACC	3
+
+#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 
 #endif

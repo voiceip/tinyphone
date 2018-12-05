@@ -8,11 +8,10 @@
 #include <algorithm>
 #include <string>
 #include "events.h"
+#include "utils.h"
 
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string.hpp>
-
-#define THIS_FILE	"phone.h"
 
 class TinyPhone
 {
@@ -51,9 +50,9 @@ public:
 		auto codec = pj_str(codec_name);
 		auto status = pjsua_codec_set_priority(&codec, PJMEDIA_CODEC_PRIO_NORMAL);
 		if (status == PJ_SUCCESS)
-			PJ_LOG(3, (THIS_FILE, "%s activated", codec.ptr));
+			PJ_LOG(3, (__FILENAME__, "%s activated", codec.ptr));
 		else
-			PJ_LOG(3, (THIS_FILE, "Failed activating %s, err=%d", codec.ptr, status));
+			PJ_LOG(3, (__FILENAME__, "Failed activating %s, err=%d", codec.ptr, status));
 		free(codec.ptr);
 	}
 
@@ -71,11 +70,11 @@ public:
 					if (dev_name.find(search_string) != string::npos) {
 						if (info->inputCount > 0 && input_audio_dev <= 0 ) {
 							input_audio_dev = dev_idx;
-							PJ_LOG(3, (THIS_FILE, "Selected Input #%d %s", dev_idx, info->name.c_str()));
+							PJ_LOG(3, (__FILENAME__, "Selected Input #%d %s", dev_idx, info->name.c_str()));
 						}
 						if (info->outputCount > 0 && output_audio_dev <= 0) {
 							output_audio_dev = dev_idx;
-							PJ_LOG(3, (THIS_FILE, "Selected Output #%d %s", dev_idx, info->name.c_str()));
+							PJ_LOG(3, (__FILENAME__, "Selected Output #%d %s", dev_idx, info->name.c_str()));
 						}
 					}
 					dev_idx++;
@@ -202,15 +201,12 @@ public:
 	}
 
 	void Hangup(SIPCall* call) {
-		CallOpParam prm;
-		call->hangup(prm);
+		call->Hangup();
 	}	
 
 	void HangupAllCalls() {
 		endpoint->hangupAllCalls();
 	}
 };
-
-
 
 #endif

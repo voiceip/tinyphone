@@ -156,6 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="account.h" />
+    <ClInclude Include="call.h" />
     <ClInclude Include="channel.h" />
     <ClInclude Include="consts.h" />
     <ClInclude Include="enum.h" />
@@ -171,6 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="call.cpp" />
     <ClCompile Include="guicon.cpp" />
     <ClCompile Include="net.h" />
     <ClCompile Include="server.cpp" />

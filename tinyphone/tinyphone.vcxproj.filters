@@ -54,6 +54,9 @@
     <ClInclude Include="json.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="call.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -73,6 +76,9 @@
     </ClCompile>
     <ClCompile Include="net.h">
       <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="call.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -10,6 +10,8 @@
 #include <pjsua-lib/pjsua.h>
 #include <stdio.h>
 #include <thread>
+#include <vector>
+#include <sstream>
 #include "consts.h"
 
 void DisplayError(std::string message);
@@ -52,5 +54,18 @@ static PJ_DEF(pj_status_t) pj_thread_auto_register(void)
 	return rc;
 }
 
+#define STRING_REMOVE_CHAR(str, ch) str.erase(std::remove(str.begin(), str.end(), ch), str.end())
+
+static std::vector<std::string> splitString(std::string str, char sep = ',') {
+	std::vector<std::string> vecString;
+	std::string item;
+
+	std::stringstream stringStream(str);
+	while (std::getline(stringStream, item, sep)) {
+		vecString.push_back(item);
+	}
+
+	return vecString;
+}
 #endif
  
