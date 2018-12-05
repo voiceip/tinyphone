@@ -7,14 +7,11 @@
 #include <unordered_set>
 #include <mutex>
 #include "channel.h"
-
-#undef snprintf
-#include <nlohmann/json.hpp>
+#include "json.h"
 
 using namespace std;
 using namespace pj;
 using json = nlohmann::json;
-
 
 #define DEFAULT_HTTP_SERVER_ERROR_REPONSE  {{ "message", "Something went Wrong :(" }}
 
@@ -38,7 +35,7 @@ void TinyPhoneHttpServer::Start() {
 	TinyPhone phone(endpoint);
 	phone.SetCodecs();	
 	phone.ConfigureAudioDevices();
-	phone.SetUpdateChannel(&updates);
+	phone.CreateEventStream(&updates);
 
 	crow::App<TinyPhoneMiddleware> app;
 	std::mutex mtx;;
@@ -60,18 +57,25 @@ void TinyPhoneHttpServer::Start() {
 	CROW_ROUTE(app, "/events")
 		.websocket()
 		.onopen([&](crow::websocket::connection& conn) {
-		CROW_LOG_INFO << "new websocket connection";
+		CROW_LOG_INFO << "new websocket connection" ;
 		std::lock_guard<std::mutex> _(mtx);
 		subscribers.insert(&conn);
+		json message = {
+			{ "message", "welcome" },
+			{ "subcription", "created" }
+		};
+		conn.send_text(message.dump());
 	})
 		.onclose([&](crow::websocket::connection& conn, const std::string& reason) {
-		CROW_LOG_INFO << "websocket connection closed: " << reason;
+		CROW_LOG_INFO << "websocket connection closed: %s" << reason;
 		std::lock_guard<std::mutex> _(mtx);
 		subscribers.erase(&conn);
 	})
 		.onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary) {
-		conn.send_text("ok");
-		updates.push("whatttt");
+		json message = {
+			{ "message", "nothing here" },
+		};
+		conn.send_text(message.dump());
 	});
 
 	std::thread thread_object([&updates,&subscribers]() {
@@ -115,8 +119,7 @@ void TinyPhoneHttpServer::Start() {
 			}
 			return tp::response(200, response);
 		}
-		catch (std::exception& e) {
-			CROW_LOG_ERROR << "Exception catched : " << e.what();
+		catch (...) {
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 	});
@@ -129,6 +132,12 @@ void TinyPhoneHttpServer::Start() {
 			if (!x) {
 				return tp::response(400, {
 					{ "message", "Bad Request" },
+				});
+			}
+
+			if (phone.Accounts().size() >= PJSUA_MAX_ACC ) {
+				return tp::response(429, {
+					{ "message", "Max Account Allowed Reached." },
 				});
 			}
 
@@ -151,10 +160,9 @@ void TinyPhoneHttpServer::Start() {
 					{ "account_name", account_name },
 				});
 			}
-
 		}
-		catch (std::exception& e) {
-			CROW_LOG_ERROR << "Exception catched : " << e.what();
+		catch (pj::Error& e) {
+			CROW_LOG_ERROR << "Exception catched : " << e.reason;
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 	});
@@ -167,7 +175,7 @@ void TinyPhoneHttpServer::Start() {
 				{ "message",  "Accounts" },
 				{ "accounts", json::array() },
 			};
-
+			pj_thread_auto_register();
 			BOOST_FOREACH(SIPAccount* account, phone.Accounts()) {
 				json account_data = {
 					{ "id" , account->getId() },
@@ -179,8 +187,7 @@ void TinyPhoneHttpServer::Start() {
 			}
 			return tp::response(200, response);
 		}
-		catch (std::exception& e) {
-			CROW_LOG_ERROR << "Exception catched : " << e.what();
+		catch (...) {
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 	});
@@ -192,6 +199,8 @@ void TinyPhoneHttpServer::Start() {
 		std::string dial_uri =  "sip:"+req.body;
 		auto sip_dial_uri = (char *)dial_uri.c_str();
 
+		pj_thread_auto_register();
+
 		SIPAccount* account = phone.PrimaryAccount();
 		if (account == NULL) {
 			return tp::response(400, {
@@ -199,10 +208,14 @@ void TinyPhoneHttpServer::Start() {
 			});
 		}
 
-		CROW_LOG_INFO << "Dial Request to " << sip_dial_uri;
+		if (account->calls.size() >= PJSUA_MAX_CALLS ) {
+			return tp::response(429, {
+				{ "message", "Max Concurrent Calls Reached. Please try again later." },
+			});
+		}
 
+		CROW_LOG_INFO << "Dial Request to " << sip_dial_uri;
 		try {
-			pj_thread_auto_register();
 			SIPCall *call = phone.MakeCall(sip_dial_uri, account);
 			string account_name = call->getAccount()->Name();
 			json response = {
@@ -214,8 +227,8 @@ void TinyPhoneHttpServer::Start() {
 			};
 			return tp::response(202, response);
 		}
-		catch (std::exception& e) {
-			CROW_LOG_ERROR << "Exception catched : " << e.what();
+		catch (pj::Error& e) {
+			CROW_LOG_ERROR << "Exception catched : " << e.reason;
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 
@@ -226,27 +239,29 @@ void TinyPhoneHttpServer::Start() {
 		([&phone]() {
 		try {
 			pj_thread_auto_register();
-
 			json response = {
 				{ "message",  "Current Calls" },
+				{ "count",  phone.Calls().size() },
 				{ "data", json::array() },
 			};
-			BOOST_FOREACH(SIPCall* call, phone.Calls()) {
-				json callinfo = {
-					{ "id", call->getInfo().id },
-					{ "sid", call->getInfo().callIdString },
-					{ "party" , call->getInfo().remoteUri },
-					{ "state" ,  call->getInfo().stateText },
-					{ "duration",  call->getInfo().totalDuration.sec },
-					{ "hold" ,  (""+call->HoldState()) }
-				};
 
-				response["data"].push_back(callinfo);
+			BOOST_FOREACH(SIPCall* call, phone.Calls()) {
+				if (call->getId() >= 0) {
+					auto ci = call->getInfo();
+					json callinfo = {
+						{ "id", ci.id },
+						{ "sid", ci.callIdString },
+						{ "party" , ci.remoteUri },
+						{ "state" ,  ci.stateText },
+						{ "duration",  ci.totalDuration.sec },
+						{ "hold" ,  ("" + call->HoldState()) }
+					};
+					response["data"].push_back(callinfo);
+				}
 			}
 			return tp::response(200, response);
 		}
-		catch (std::exception& e) {
-			CROW_LOG_ERROR << "Exception catched : " << e.what();
+		catch (...) {
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 	});
@@ -335,8 +350,7 @@ void TinyPhoneHttpServer::Start() {
 			};
 			return tp::response(200, response);
 		}
-		catch (std::exception& e) {
-			CROW_LOG_ERROR << "Exception catched : " << e.what();
+		catch (...) {
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 	});
@@ -363,14 +377,15 @@ void TinyPhoneHttpServer::Start() {
 		.multithreaded()
 		.run();
 
-	CROW_LOG_INFO << "Server has been shutdown... Will Exit now...." ;
-
-	updates.close();
-	thread_object.join();
 	CROW_LOG_INFO << "Terminating current running call(s) if any";
 
 	phone.HangupAllCalls();
 	endpoint->libDestroy();
 
+	CROW_LOG_INFO << "Server has been shutdown... Will Exit now...." ;
+
+	updates.close();
+	thread_object.join();
+	
 	CROW_LOG_INFO << "Shutdown Complete..";
 }

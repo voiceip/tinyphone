@@ -8,8 +8,11 @@
 #include "net.h"
 #include "consts.h"
 
-//#pragma comment(lib, "libpjproject-i386-Win32-vc14-Release-Static-NoVideo.lib")
+#ifdef _DEBUG
 #pragma comment(lib, "libpjproject-i386-Win32-vc14-Debug-Static.lib")
+#else
+#pragma comment(lib, "libpjproject-i386-Win32-vc14-Release-Static.lib")
+#endif
 
 #define WM_SYSICON  WM_APP
 
@@ -58,7 +61,6 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 		PostQuitMessage(0);
 		exit(0);
 	});
-
 
 	/* Run the message loop. It will run until GetMessage() returns 0 */
 	while (GetMessage(&messages, NULL, 0, 0))

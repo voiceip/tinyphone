@@ -10,7 +10,6 @@
 using namespace std;
 #endif
 
-//#ifdef _DEBUG
 void RedirectIOToConsole()
 {
 	//Create a console for this application
@@ -65,4 +64,4 @@ void CloseConsole() {
 	//Close the console
 	FreeConsole();
 }
-//#endif
+

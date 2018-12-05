@@ -38,7 +38,7 @@
     <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <UseOfMfc>false</UseOfMfc>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -131,7 +131,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\lib\boost_1_68_0\lib32-msvc-14.0;..\lib\opus\win32\VS2015\Win32\Debug;..\lib\vp8vfw\vp8\lib\Win32;..\lib\pjproject\pjsip\lib;..\lib\pjproject\pjnath\lib;..\lib\pjproject\pjmedia\lib;..\lib\pjproject\pjlib-util\lib;..\lib\pjproject\pjlib\lib;..\lib\pjproject\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>false</EnableUAC>
@@ -159,7 +159,9 @@
     <ClInclude Include="channel.h" />
     <ClInclude Include="consts.h" />
     <ClInclude Include="enum.h" />
+    <ClInclude Include="events.h" />
     <ClInclude Include="guicon.h" />
+    <ClInclude Include="json.h" />
     <ClInclude Include="phone.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="server.h" />

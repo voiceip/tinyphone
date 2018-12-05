@@ -3,10 +3,12 @@
 #ifndef ACCOUNT_HEADER_FILE_H
 #define ACCOUNT_HEADER_FILE_H
 
+#include <pj/config_site.h>
 #include <pjsua2.hpp>
 #include <iostream>
 #include <boost/foreach.hpp>
 #include "enum.h"
+#include "events.h"
 
 using namespace std;
 using namespace pj;
@@ -20,17 +22,17 @@ DECLARE_ENUM_WITH_TYPE(HoldStatus, int32_t, NOT_IN_HOLD = 0x00, LOCAL_HOLD = 0x0
 class SIPCall : public Call
 {
 private:
-	SIPAccount *myAcc;
+	SIPAccount *account;
 
 public:
 	SIPCall(Account &acc, int call_id = PJSUA_INVALID_ID)
 		: Call(acc, call_id)
 	{
-		myAcc = (SIPAccount *)&acc;
+		account = (SIPAccount *)&acc;
 	}
 
 	SIPAccount* getAccount() {
-		return myAcc;
+		return account;
 	}
 
 	virtual void onCallState(OnCallStateParam &prm);
@@ -48,16 +50,35 @@ class SIPAccount : public Account
 	std::string domain;
 
 public:
+
+	EventStream* eventStream;
 	std::vector<SIPCall *> calls;
 
-	SIPAccount(std::string name)
+	SIPAccount(std::string name, EventStream* es)
 	{
 		account_name = name;
+		eventStream = es;
 	}
 
 	~SIPAccount()
 	{
-		std::cout << "*** Account is being deleted: No of calls=" << calls.size() << std::endl;
+		std::cout << "*** Account is being deleted " << account_name << " : No of calls=" << calls.size() << std::endl;
+		try {
+			if (pjsua_acc_is_valid(getId()) != 0) {
+				pj_thread_auto_register();
+				AccountInfo ai = getInfo();
+				OnRegStateParam prm{
+					200,
+					pjsip_status_code::PJSIP_SC_OK
+				};
+				ai.regIsActive = false;
+				eventStream->publishEvent(ai, prm);
+			}
+		}
+		catch (...) {
+			cout << "Account Shutdown Error " << account_name << endl;
+		};
+		shutdown();
 	}
 
 	std::string Name() {
@@ -75,14 +96,16 @@ public:
 	}
 
 	std::vector<SIPCall *> getCalls() {
-		return calls;
+		return calls;		
 	}
+
 
 	virtual void onRegState(OnRegStateParam &prm)
 	{
 		AccountInfo ai = getInfo();
 		std::cout << (ai.regIsActive ? "*** Register: code=" : "*** Unregister: code=")
 			<< prm.code << std::endl;
+		eventStream->publishEvent(ai, prm);
 	}
 
 	void HoldAllCalls() {
@@ -109,6 +132,8 @@ public:
 		std::cout << "*** Incoming Call: " << ci.remoteUri << " ["
 			<< ci.stateText << "]" << std::endl;
 
+		eventStream->publishEvent(ci, iprm);
+
 		calls.push_back(call);
 		prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
 		call->answer(prm);
@@ -124,10 +149,12 @@ void SIPCall::onCallState(OnCallStateParam &prm)
 	std::cout << "*** Call: " << ci.remoteUri << " [" << ci.stateText
 		<< "]" << std::endl;
 
+	account->eventStream->publishEvent(ci, prm);
+
 	switch (ci.state) {
 	case PJSIP_INV_STATE_DISCONNECTED:
 		onCallEnd();
-		myAcc->removeCall(this);
+		account->removeCall(this);
 		/* Delete the call */
 		delete this;
 		break;

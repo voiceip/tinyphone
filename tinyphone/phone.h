@@ -7,6 +7,7 @@
 #include "channel.h"
 #include <algorithm>
 #include <string>
+#include "events.h"
 
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string.hpp>
@@ -17,7 +18,7 @@ class TinyPhone
 {
 	std::vector<SIPAccount*> accounts;
 	pj::Endpoint* endpoint;
-	channel<std::string>* chan;
+	EventStream* eventStream;
 
 public:
 	int input_audio_dev = 0, output_audio_dev = 0;
@@ -30,6 +31,7 @@ public:
 		std::cout << "Shutting Down TinyPhone" << std::endl;
 		HangupAllCalls();
 		Logout();
+		delete eventStream;
 	}
 
 	void SetCodecs() {
@@ -41,8 +43,8 @@ public:
 		}
 	}
 
-	void SetUpdateChannel(channel<std::string>* ch) {
-		chan = ch;
+	void CreateEventStream(channel<std::string>* ch) {
+		eventStream = new EventStream(ch);
 	}
 
 	void EnableCodec(std::string codec_name) {
@@ -98,22 +100,22 @@ public:
 
 	SIPAccount* PrimaryAccount() {
 		if (!HasAccounts())
-			return NULL;
+			return nullptr;
 		else {
 			BOOST_FOREACH(SIPAccount* acc, accounts) {
 				if (acc->getInfo().regStatus == pjsip_status_code::PJSIP_SC_OK)
 					return acc;
 			}
-			return NULL;
+			return nullptr;
 		}
 	}
 
 	SIPAccount* AccountByURI(string uri) {
 		if (!HasAccounts())
-			return NULL;
+			return nullptr;
 		else {
 			string full_uri = "sip:" + uri;
-			SIPAccount* account = NULL;
+			SIPAccount* account = nullptr;
 			BOOST_FOREACH(SIPAccount* acc, accounts) {
 				if (acc->getInfo().uri == full_uri){
 					account = acc;
@@ -127,7 +129,7 @@ public:
 	void Logout() {
 		auto it = accounts.begin();
 		while (it != accounts.end()) {
-			(*it)->shutdown();
+			delete (*it);
 			it = accounts.erase(it);
 		}
 	}
@@ -149,7 +151,7 @@ public:
 			acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
 			acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
 
-			SIPAccount *acc(new SIPAccount(account_name));
+			SIPAccount *acc(new SIPAccount(account_name, eventStream));
 			acc->create(acc_cfg);
 			
 			accounts.push_back(acc);
@@ -157,18 +159,18 @@ public:
 		}
 	}
 
-	SIPCall* MakeCall(string uri) {
+	SIPCall* MakeCall(string uri) throw(pj::Error) {
 		SIPAccount* account = PrimaryAccount();
 		return MakeCall(uri, account);
 	}
 
-	SIPCall* MakeCall(string uri, SIPAccount* account) {
+	SIPCall* MakeCall(string uri, SIPAccount* account) throw(pj::Error){
 		SIPCall *call = new SIPCall(*account);
-		account->calls.push_back(call);
 		CallOpParam prm(true);
 		prm.opt.audioCount = 1;
 		prm.opt.videoCount = 0;
 		call->makeCall(uri, prm);
+		account->calls.push_back(call);
 		account->onCallEstablished(call);
 		return call;
 	}
@@ -187,7 +189,7 @@ public:
 			if (c->getId() == call_id)
 				return c;
 		}
-		return NULL;
+		return nullptr;
 	}
 
 

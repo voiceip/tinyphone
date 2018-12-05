@@ -16,5 +16,9 @@
 
 #define SIP_ALLOWED_AUDIO_CODECS "PCMA/8000/1 PCMU/8000/1"
 
+#define UNUSED_ARG(arg)  (void)arg
+
+#define PJSUA_MAX_CALLS	4
+#define PJSUA_MAX_ACC	3
 
 #endif
