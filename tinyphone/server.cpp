@@ -253,10 +253,10 @@ void TinyPhoneHttpServer::Start() {
 					json callinfo = {
 						{ "id", ci.id },
 						{ "sid", ci.callIdString },
-						{ "party" , ci.remoteUri },
-						{ "state" ,  ci.stateText },
-						{ "duration",  ci.totalDuration.sec },
-						{ "hold" ,  ("" + call->HoldState()) }
+						{ "party", ci.remoteUri },
+						{ "state", ci.stateText },
+						{ "duration", ci.totalDuration.sec },
+						{ "hold", call->HoldState()._to_string() }
 					};
 					response["data"].push_back(callinfo);
 				}
