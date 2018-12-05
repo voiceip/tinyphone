@@ -196,8 +196,7 @@ void TinyPhoneHttpServer::Start() {
 		.methods("POST"_method)
 		([&phone](const crow::request& req) {
 
-		std::string dial_uri =  "sip:"+req.body;
-		auto sip_dial_uri = (char *)dial_uri.c_str();
+		std::string dial_uri =  req.body;
 
 		pj_thread_auto_register();
 
@@ -213,6 +212,9 @@ void TinyPhoneHttpServer::Start() {
 				{ "message", "Max Concurrent Calls Reached. Please try again later." },
 			});
 		}
+
+		auto sip_uri = tp::GetSIPURI(dial_uri, account->domain);
+		auto sip_dial_uri = (char *)sip_uri.c_str();
 
 		CROW_LOG_INFO << "Dial Request to " << sip_dial_uri;
 		try {

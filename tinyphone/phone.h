@@ -151,6 +151,7 @@ public:
 			acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
 
 			SIPAccount *acc(new SIPAccount(account_name, eventStream));
+			acc->domain = domain;
 			acc->create(acc_cfg);
 			
 			accounts.push_back(acc);

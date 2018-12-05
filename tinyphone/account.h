@@ -18,11 +18,11 @@ using namespace pj;
 class SIPAccount : public Account
 {
 	std::string account_name;
-	std::string domain;
 
 public:
 
 	EventStream* eventStream;
+	std::string domain;
 	std::vector<SIPCall *> calls;
 
 	SIPAccount(std::string name, EventStream* es)

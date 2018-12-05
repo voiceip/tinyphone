@@ -134,6 +134,7 @@ void SIPCall::onCallEnd() {
 		toneGenerator.stopTransmit(play_med);
 	}
 	catch (Error& err) {
+		UNUSED_ARG(err);
 		PJ_LOG(3, (__FILENAME__, "SIPCall::onCallEnd Error"));
 	}
 
