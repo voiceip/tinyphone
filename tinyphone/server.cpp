@@ -178,7 +178,7 @@ void TinyPhoneHttpServer::Start() {
 			pj_thread_auto_register();
 			BOOST_FOREACH(SIPAccount* account, phone.Accounts()) {
 				json account_data = {
-					{ "id" , account->getId() },
+					{"id" , account->getId() },
 					{"name" , account->Name()},
 					{"active" , account->getInfo().regIsActive },
 					{"status" , account->getInfo().regStatusText }
@@ -244,20 +244,24 @@ void TinyPhoneHttpServer::Start() {
 			json response = {
 				{ "message",  "Current Calls" },
 				{ "count",  phone.Calls().size() },
-				{ "data", json::array() },
+				{ "calls", json::array() },
 			};
 			BOOST_FOREACH(SIPCall* call, phone.Calls()) {
 				if (call->getId() >= 0) {
 					auto ci = call->getInfo();
+					tp::SIPUri uri;
+					tp::ParseSIPURI(ci.remoteUri, &uri);
 					json callinfo = {
 						{ "id", ci.id },
 						{ "sid", ci.callIdString },
 						{ "party", ci.remoteUri },
+						{ "callerId", uri.user },
+						{ "callerName", uri.name },
 						{ "state", ci.stateText },
 						{ "duration", ci.totalDuration.sec },
 						{ "hold", call->HoldState()._to_string() }
 					};
-					response["data"].push_back(callinfo);
+					response["calls"].push_back(callinfo);
 				}
 			}
 			return tp::response(200, response);

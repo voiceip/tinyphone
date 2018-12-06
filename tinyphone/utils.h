@@ -16,8 +16,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
 
-void print_thread_name();
-
 static PJ_IDEF(pj_str_t) pj_str(std::string str)
 {
 	char* chr = strdup(str.c_str());
@@ -53,8 +51,6 @@ static PJ_DEF(pj_status_t) pj_thread_auto_register(void)
 	return rc;
 }
 
-#define STRING_REMOVE_CHAR(str, ch) str.erase(std::remove(str.begin(), str.end(), ch), str.end())
-
 static std::vector<std::string> splitString(std::string str, char sep = ',') {
 	std::vector<std::string> vecString;
 	std::string item;
@@ -66,7 +62,16 @@ static std::vector<std::string> splitString(std::string str, char sep = ',') {
 	return vecString;
 }
 
+void print_thread_name();
+
 namespace tp {
+
+	struct SIPUri {
+		std::string name;
+		std::string user;
+		std::string domain;
+		std::string parameters;
+	};
 
 	void DisplayError(std::string message);
 
@@ -76,7 +81,9 @@ namespace tp {
 
 	std::string AddTransportSuffix(std::string &str, pjsip_transport_type_e transport);
 
-	std::string GetSIPURI(std::string str, /* bool isSimple, bool isLocal, */ std::string domain);
+	std::string GetSIPURI(std::string str, std::string domain);
+
+	void ParseSIPURI(std::string in, tp::SIPUri* out);
 }
 #endif
  

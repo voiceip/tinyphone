@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "utils.h"
 #include <thread>
+#include <boost/algorithm/string.hpp>
 
 using namespace std;
 
@@ -103,5 +104,59 @@ namespace tp {
 		str = _T("<") + str + _T(">");
 		}*/
 		return str;
+	}
+
+	void ParseSIPURI(std::string in, tp::SIPUri* out)
+	{
+		//	tone_gen.toneslot = -1;
+		//	tone_gen = NULL;
+
+		// "WEwewew rewewe" <sip:qqweqwe@qwerer.com;rrrr=tttt;qweqwe=rrr?qweqwr=rqwrqwr>
+		// sip:qqweqwe@qwerer.com;rrrr=tttt;qweqwe=rrr?qweqwr=rqwrqwr
+		if (in.back() == _T('>')) {
+			in = in.substr(0, in.size() - 1);
+		}
+		out->name = _T("");
+		out->user = _T("");
+		out->domain = _T("");
+		out->parameters = _T("");
+
+		int start = in.find(_T("sip:"));
+		int end;
+		if (start>0)
+		{
+			out->name = in.substr(1,start - 4);
+			if (boost::iequals(out->name, _T("unknown"))){
+				out->name = _T("");
+			}
+		}
+		if (start >= 0){
+			start += 4;
+		} else {
+			start = 0;
+		}
+		end = in.find(_T("@"), start);
+		if (end >= 0)
+		{
+			out->user = in.substr(start, end - start);
+			start = end + 1;
+		}
+		end = in.find(_T(";"), start);
+		if (end >= 0) {
+			out->domain = in.substr(start, end - start);
+			start = end;
+			out->parameters = in.substr(start);
+		}
+		else {
+			end = in.find(_T("?"), start);
+			if (end >= 0) {
+				out->domain = in.substr(start, end - start);
+				start = end;
+				out->parameters = in.substr(start);
+			}
+			else {
+				out->domain = in.substr(start);
+			}
+		}
 	}
 }
