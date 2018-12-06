@@ -34,7 +34,7 @@ The softphone exposes the following resources.
 | `/accounts`| GET | Returns list of registed accounts |
 | `/dial`| POST | Dial a call with provided `sip-uri` | 
 | `/calls`| GET | Returns list of active calls |
-| `/calls/{call_id}/dtmf/{digits}`| PUT | Send dtmf digits `digits` to call with specified `call_id` | 
+| `/calls/{call_id}/dtmf/{digits}`| POST | Send dtmf digits `digits` to call with specified `call_id` | 
 | `/calls/{call_id}/hold`| PUT | Hold call with specified `call_id` | 
 | `/calls/{call_id}/hold`| DELETE | UnHold call with specified `call_id` | 
 | `/calls/{call_id}/hangup`| POST | hangup call with specified `call_id` | 
