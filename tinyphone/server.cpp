@@ -201,7 +201,7 @@ void TinyPhoneHttpServer::Start() {
 		pj_thread_auto_register();
 
 		SIPAccount* account = phone.PrimaryAccount();
-		if (account == NULL) {
+		if (account == nullptr) {
 			return tp::response(400, {
 				{ "message", "No Account Registed/Active Yet" },
 			});
@@ -246,7 +246,6 @@ void TinyPhoneHttpServer::Start() {
 				{ "count",  phone.Calls().size() },
 				{ "data", json::array() },
 			};
-
 			BOOST_FOREACH(SIPCall* call, phone.Calls()) {
 				if (call->getId() >= 0) {
 					auto ci = call->getInfo();
@@ -268,14 +267,14 @@ void TinyPhoneHttpServer::Start() {
 		}
 	});
 
-	CROW_ROUTE(app, "/hold/<int>")
+	CROW_ROUTE(app, "/calls/<int>/hold")
 		.methods("PUT"_method, "DELETE"_method)
 		([&phone](const crow::request& req, int call_id) {
 
 		pj_thread_auto_register();
 
 		SIPCall* call = phone.CallById(call_id);
-		if (call == NULL) {
+		if (call == nullptr) {
 			return tp::response(400, {
 				{ "message", "Call Not Found" },
 				{ "call_id" , call_id }
@@ -306,13 +305,41 @@ void TinyPhoneHttpServer::Start() {
 		}
 	});
 
-	CROW_ROUTE(app, "/hangup/<int>")
+	CROW_ROUTE(app, "/calls/<int>/dtmf/<string>")
+		.methods("POST"_method)
+		([&phone](int call_id, string dtmf_digits) {
+		pj_thread_auto_register();
+
+		try{
+			SIPCall* call = phone.CallById(call_id);
+			if (call == nullptr) {
+				return tp::response(400, {
+					{ "message", "Call Not Found" },
+					{ "call_id" , call_id }
+				});
+			}
+			else {
+				call->dialDtmf(dtmf_digits);
+				json response = {
+					{ "message",  "DTMF Send" },
+					{ "call_id", call_id },
+					{ "dtmf", dtmf_digits}
+				};
+				return tp::response(202, response);
+			}
+		}
+		catch (...) {
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
+		}
+	});
+
+	CROW_ROUTE(app, "/calls/<int>/hangup")
 		.methods("POST"_method)
 		([&phone](int call_id) {
 		pj_thread_auto_register();
 
 		SIPCall* call = phone.CallById(call_id);
-		if (call == NULL) {
+		if (call == nullptr) {
 			return tp::response(400, {
 				{ "message", "Call Not Found" },
 				{"call_id" , call_id}
