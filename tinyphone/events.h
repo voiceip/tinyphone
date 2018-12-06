@@ -8,6 +8,7 @@
 #include <iostream>
 #include <pjsua2.hpp>
 #include "json.h"
+#include "utils.h"
 
 using namespace std;
 using namespace pj;
@@ -44,10 +45,14 @@ public:
 
 	void publishEvent(CallInfo ci, OnCallStateParam &prm) {
 		UNUSED_ARG(prm);
+		tp::SIPUri uri;
+		tp::ParseSIPURI(ci.remoteUri, &uri);
 		json event = {
 			{ "type","CALL" },
 			{ "id", ci.id },
 			{ "party", ci.remoteUri },
+			{ "callerId", uri.user },
+			{ "displayName", uri.name },
 			{ "state", ci.stateText },
 			{ "sid", ci.callIdString },
 		};
@@ -56,10 +61,14 @@ public:
 
 	void publishEvent(CallInfo ci, OnIncomingCallParam &iprm) {
 		UNUSED_ARG(iprm);
+		tp::SIPUri uri;
+		tp::ParseSIPURI(ci.remoteUri, &uri);
 		json event = {
 			{"type","CALL"},
 			{"incomming", true},
 			{"party", ci.remoteUri },
+			{ "from", uri.user },
+			{ "displayName", uri.name },
 			{"state", ci.stateText },
 		};
 		chan->push(event.dump());
