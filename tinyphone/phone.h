@@ -7,6 +7,7 @@
 #include "channel.h"
 #include <algorithm>
 #include <string>
+#include <stdexcept>
 #include "events.h"
 #include "utils.h"
 
@@ -135,11 +136,11 @@ public:
 		}
 	}
 
-	bool AddAccount(string username, string domain, string password) {
+	std::future<int> AddAccount(string username, string domain, string password) throw (std::invalid_argument) {
 		string account_name = SIP_ACCOUNT_NAME(username, domain);
 		auto exits = AccountByURI(account_name);
-		if (exits) {
-			return false;
+		if (exits != nullptr) {
+			throw std::invalid_argument("Account already exists");
 		} else {
 			AccountConfig acc_cfg;
 			acc_cfg.idUri = ("sip:" + account_name);
@@ -154,10 +155,10 @@ public:
 
 			SIPAccount *acc(new SIPAccount(account_name, eventStream));
 			acc->domain = domain;
-			acc->create(acc_cfg);
+			auto res = acc->Create(acc_cfg);
 			
 			accounts.push_back(acc);
-			return true;
+			return res;
 		}
 	}
 

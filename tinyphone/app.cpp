@@ -242,8 +242,8 @@ void InitPJSUAEndpoint(std::string logfile) {
 		EpConfig ep_cfg;
 		ep_cfg.logConfig.fileFlags = PJ_O_APPEND;
 		ep_cfg.logConfig.filename = logfile;
-		//ep_cfg.logConfig.msgLogging = true
-		ep_cfg.logConfig.level = 3; //4
+		ep_cfg.logConfig.msgLogging = true;
+		ep_cfg.logConfig.level = 3;
 		ep_cfg.uaConfig.userAgent = DEFAULT_UA_STRING;
 
 		ep.libInit(ep_cfg);

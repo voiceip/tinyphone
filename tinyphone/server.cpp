@@ -6,6 +6,9 @@
 #include "net.h"
 #include <unordered_set>
 #include <mutex>
+#include <future>
+#include <thread>
+#include <chrono>
 #include "channel.h"
 #include "json.h"
 
@@ -33,7 +36,7 @@ void TinyPhoneHttpServer::Start() {
 
 	CROW_LOG_INFO << "Starting the TinyPhone HTTP API";
 	TinyPhone phone(endpoint);
-	phone.SetCodecs();	
+	phone.SetCodecs();
 	phone.ConfigureAudioDevices();
 	phone.CreateEventStream(&updates);
 
@@ -41,7 +44,7 @@ void TinyPhoneHttpServer::Start() {
 	std::mutex mtx;;
 	//app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
 	app.loglevel(crow::LogLevel::Info);
-	crow::logger::setHandler(new TinyPhoneHTTPLogHandler(logfile));	
+	crow::logger::setHandler(new TinyPhoneHTTPLogHandler(logfile));
 	int http_port = 6060;
 
 	/* Define HTTP Endpoints */
@@ -57,7 +60,7 @@ void TinyPhoneHttpServer::Start() {
 	CROW_ROUTE(app, "/events")
 		.websocket()
 		.onopen([&](crow::websocket::connection& conn) {
-		CROW_LOG_INFO << "new websocket connection" ;
+		CROW_LOG_INFO << "new websocket connection";
 		std::lock_guard<std::mutex> _(mtx);
 		subscribers.insert(&conn);
 		json message = {
@@ -78,11 +81,11 @@ void TinyPhoneHttpServer::Start() {
 		conn.send_text(message.dump());
 	});
 
-	std::thread thread_object([&updates,&subscribers]() {
+	std::thread thread_object([&updates, &subscribers]() {
 		std::string data;
 		while (!updates.is_closed()) {
 			if (updates.pop(data, true)) {
-				for(auto u : subscribers)
+				for (auto u : subscribers)
 					u->send_text(data);
 			}
 		}
@@ -95,7 +98,7 @@ void TinyPhoneHttpServer::Start() {
 	CROW_ROUTE(app, "/devices")
 		.methods("GET"_method)
 		([&phone]() {
-		try {				
+		try {
 			pj_thread_auto_register();
 			AudDevManager& audio_manager = Endpoint::instance().audDevManager();
 			audio_manager.refreshDevs();
@@ -123,7 +126,7 @@ void TinyPhoneHttpServer::Start() {
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 	});
-	
+
 	CROW_ROUTE(app, "/login")
 		.methods("POST"_method)
 		([&phone](const crow::request& req) {
@@ -135,8 +138,8 @@ void TinyPhoneHttpServer::Start() {
 				});
 			}
 
-			if (phone.Accounts().size() >= PJSUA_MAX_ACC ) {
-				return tp::response(429, {
+			if (phone.Accounts().size() >= PJSUA_MAX_ACC) {
+				return tp::response(403, {
 					{ "message", "Max Account Allowed Reached." },
 				});
 			}
@@ -148,17 +151,39 @@ void TinyPhoneHttpServer::Start() {
 
 			pj_thread_auto_register();
 			CROW_LOG_INFO << "Registering account " << account_name;
-			if (phone.AddAccount(username, domain, password)) {
-				return tp::response(200, {
-					{ "message", "Account added succesfully" },
-					{ "account_name", account_name },
-				});
-			}
-			else {
+			
+			auto existing_account = phone.AccountByURI(account_name);
+			if (existing_account != nullptr) {
 				return tp::response(400, {
 					{ "message", "Account already exits" },
 					{ "account_name", account_name },
+					{ "id", existing_account->getId() },
 				});
+			}
+			else {
+				future<int> result = phone.AddAccount(username, domain, password);
+				auto sync = req.url_params.get("sync") == nullptr ? false : true;
+				if (sync) {
+					if (result.wait_for(std::chrono::seconds(30)) == std::future_status::ready) {
+						return tp::response(200, {
+							{ "message", "Account login" },
+							{ "account_name", account_name },
+							{ "result", result.get() }
+						});
+					}
+					else {
+						return tp::response(408, {
+							{ "message", "Account login still in progress" },
+							{ "account_name", account_name },
+						});
+					}
+				}
+				else {
+					return tp::response(202, {
+						{ "message", "Account login in progress" },
+						{ "account_name", account_name },
+					});
+				};
 			}
 		}
 		catch (pj::Error& e) {
@@ -196,7 +221,7 @@ void TinyPhoneHttpServer::Start() {
 		.methods("POST"_method)
 		([&phone](const crow::request& req) {
 
-		std::string dial_uri =  req.body;
+		std::string dial_uri = req.body;
 
 		pj_thread_auto_register();
 
@@ -207,7 +232,7 @@ void TinyPhoneHttpServer::Start() {
 			});
 		}
 
-		if (account->calls.size() >= PJSUA_MAX_CALLS ) {
+		if (account->calls.size() >= PJSUA_MAX_CALLS) {
 			return tp::response(429, {
 				{ "message", "Max Concurrent Calls Reached. Please try again later." },
 			});
@@ -276,7 +301,6 @@ void TinyPhoneHttpServer::Start() {
 		([&phone](const crow::request& req, int call_id) {
 
 		pj_thread_auto_register();
-
 		SIPCall* call = phone.CallById(call_id);
 		if (call == nullptr) {
 			return tp::response(400, {
@@ -314,7 +338,7 @@ void TinyPhoneHttpServer::Start() {
 		([&phone](int call_id, string dtmf_digits) {
 		pj_thread_auto_register();
 
-		try{
+		try {
 			SIPCall* call = phone.CallById(call_id);
 			if (call == nullptr) {
 				return tp::response(400, {
@@ -388,6 +412,24 @@ void TinyPhoneHttpServer::Start() {
 		}
 	});
 
+	CROW_ROUTE(app, "/logout/<string>")
+		.methods("POST"_method)
+		([&phone](string account_name) {
+		try {
+			pj_thread_auto_register();
+				
+
+			json response = {
+				{ "message",  "Logged Out" },
+				{"account_name", account_name}
+			};
+			return tp::response(200, response);
+		}
+		catch (...) {
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
+		}
+	});
+
 	CROW_ROUTE(app, "/exit")
 		.methods("POST"_method)
 		([&app](const crow::request& req) {
@@ -403,22 +445,26 @@ void TinyPhoneHttpServer::Start() {
 	if (is_tcp_port_in_use(http_port)) {
 		tp::DisplayError(("HTTP Port " + to_string(http_port) + " already in use! \nIs another instance running?"));
 		endpoint->libDestroy();
-		exit(1);
+
+		updates.close();
+		thread_object.join();
 	}
+	else {
 
-	app.port(http_port)
-		.multithreaded()
-		.run();
+		app.port(http_port)
+			.multithreaded()
+			.run();
 
-	CROW_LOG_INFO << "Terminating current running call(s) if any";
+		CROW_LOG_INFO << "Terminating current running call(s) if any";
 
-	phone.HangupAllCalls();
-	endpoint->libDestroy();
+		phone.HangupAllCalls();
+		endpoint->libDestroy();
 
-	CROW_LOG_INFO << "Server has been shutdown... Will Exit now...." ;
+		CROW_LOG_INFO << "Server has been shutdown... Will Exit now....";
 
-	updates.close();
-	thread_object.join();
-	
-	CROW_LOG_INFO << "Shutdown Complete..";
+		updates.close();
+		thread_object.join();
+
+		CROW_LOG_INFO << "Shutdown Complete..";
+	}
 }

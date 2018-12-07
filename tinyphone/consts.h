@@ -20,7 +20,12 @@
 #define UNUSED_ARG(arg)  (void)arg
 
 #define PJSUA_MAX_CALLS	4
+
+#ifdef _DEBUG
 #define PJSUA_MAX_ACC	3
+#else
+#define PJSUA_MAX_ACC	1
+#endif
 
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #define STRING_REMOVE_CHAR(str, ch) str.erase(std::remove(str.begin(), str.end(), ch), str.end())

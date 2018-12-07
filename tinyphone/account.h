@@ -10,6 +10,9 @@
 #include "events.h"
 #include "call.h"
 #include "utils.h"
+#include <thread>
+#include <future>
+#include <chrono>
 
 using namespace std;
 using namespace pj;
@@ -17,6 +20,7 @@ using namespace pj;
 class SIPAccount : public Account
 {
 	std::string account_name;
+	std::promise<int> create_result_promise;
 
 public:
 
@@ -32,9 +36,9 @@ public:
 
 	~SIPAccount()
 	{
-		PJ_LOG(3, (__FILENAME__, "Account is being deleted: %s. No of calls [%d]", account_name.c_str() , calls.size()));
+		pj_thread_auto_register();
+		std::cout << "Account is being deleted:" << account_name << ". No of calls : " << calls.size() << std::endl;;
 		try {
-			pj_thread_auto_register();
 			if (pjsua_acc_is_valid(getId()) != 0) {
 				AccountInfo ai = getInfo();
 				OnRegStateParam prm{
@@ -44,9 +48,12 @@ public:
 				ai.regIsActive = false;
 				eventStream->publishEvent(ai, prm);
 			}
+			else {
+				std::cout << "Underlying Account Already Shutdown" << account_name << std::endl;
+			}
 		}
 		catch (...) {
-			PJ_LOG(3, (__FILENAME__, "Account Shutdown Error %s" , account_name.c_str() ));
+			std::cerr << "Account Shutdown Error" << account_name << std::endl;
 		};
 		shutdown();
 	}
@@ -73,6 +80,18 @@ public:
 		AccountInfo ai = getInfo();
 		PJ_LOG(3, (__FILENAME__, "RegStateChange %s : %s, Code: %d", account_name.c_str(), (ai.regIsActive ? " Register" : "Unregister"), prm.code));
 		eventStream->publishEvent(ai, prm);
+		try {
+			create_result_promise.set_value(prm.code);
+		}
+		catch (std::future_error& e) {}
+	}
+
+	
+
+	std::future<int> Create(const AccountConfig &cfg,
+		bool make_default = false) throw(Error) {
+		create(cfg, make_default);
+		return create_result_promise.get_future();
 	}
 
 	void HoldAllCalls() {
@@ -96,7 +115,7 @@ public:
 		CallInfo ci = call->getInfo();
 		CallOpParam prm;
 
-		PJ_LOG(3, (__FILENAME__, "Incomming Call: [%s] [%s]", ci.remoteUri, ci.stateText));
+		PJ_LOG(3, (__FILENAME__, "Incomming Call: [%s] [%s]", ci.remoteUri.c_str(), ci.stateText.c_str()));
 
 		eventStream->publishEvent(ci, iprm);
 

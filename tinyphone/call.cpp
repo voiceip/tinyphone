@@ -8,7 +8,7 @@ void SIPCall::onCallState(OnCallStateParam &prm)
 	PJ_UNUSED_ARG(prm);
 	CallInfo ci = getInfo();
 
-	PJ_LOG(3, (__FILENAME__, "CallState Change: [%s] [%s]", ci.remoteUri, ci.stateText));
+	PJ_LOG(3, (__FILENAME__, "CallState Change: %s [%s]", ci.remoteUri.c_str(), ci.stateText.c_str()));
 
 	account->eventStream->publishEvent(ci, prm);
 
