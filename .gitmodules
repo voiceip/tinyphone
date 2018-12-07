@@ -9,7 +9,7 @@
 	url = https://github.com/xiph/opus.git
 [submodule "lib/crow"]
 	path = lib/crow
-	url = https://github.com/ipkn/crow.git
+	url = https://github.com/kingster/crow.git
 [submodule "lib/boost"]
 	path = lib/boost
 	url = https://github.com/boostorg/boost.git
