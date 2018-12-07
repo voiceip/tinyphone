@@ -7,6 +7,8 @@
 #include "utils.h"
 #include "net.h"
 #include "consts.h"
+#include <boost/filesystem.hpp>
+#include <ctime>
 
 #ifdef _DEBUG
 #pragma comment(lib, "libpjproject-i386-Win32-vc14-Debug-Static.lib")
@@ -31,28 +33,38 @@ Endpoint ep;
 /*procedures  */
 LRESULT CALLBACK WindowProcedure(HWND, UINT, WPARAM, LPARAM);
 void InitNotifyIconData();
-void InitPJSUAEndpoint();
+void InitPJSUAEndpoint(std::string logfile);
 void ExitApplication();
+string InitLogFile(std::string filename, std::string ext = "log");
+boost::filesystem::path GetLogDir();
 
 int WINAPI WinMain(HINSTANCE hThisInstance,
 	HINSTANCE hPrevInstance,
 	LPSTR lpszArgument,
 	int nCmdShow)
 {
-	MSG messages;  
+	MSG messages;
 	Hwnd = CreateDialog(
 		hThisInstance,
 		MAKEINTRESOURCE(IDD_EMPTY_DIALOG),
 		NULL,
 		(DLGPROC)WindowProcedure
 	);
+
+	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
+
 	/*Initialize the NOTIFYICONDATA structure only once*/
 	InitNotifyIconData();
 
+#ifdef _DEBUG
 	RedirectIOToConsole();
+#endif
 
-	InitPJSUAEndpoint();
-	TinyPhoneHttpServer server(&ep);
+	string sipLogFile = InitLogFile("tinyphone","log");
+	string httpLogFile = InitLogFile("tinyphone-http","log");
+
+	InitPJSUAEndpoint(sipLogFile);
+	TinyPhoneHttpServer server(&ep, httpLogFile);
 
 	//Run the server in non-ui thread.
 	std::thread thread_object([&server]() {
@@ -74,34 +86,36 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 	return messages.wParam;
 }
 
+void BrowseToFile(LPCTSTR filename)
+{
+	ITEMIDLIST *pidl = ILCreateFromPath(filename);
+	if (pidl) {
+		SHOpenFolderAndSelectItems(pidl, 0, 0, 0);
+		ILFree(pidl);
+	}
+}
 
 /*  This function is called by the Windows function DispatchMessage()  */
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-
 	switch (message)
 	{
-
 	case WM_CREATE:
 		break;
-
 	case WM_CLOSE:
 		notifyIconData.uFlags = 0;
 		Shell_NotifyIcon(NIM_DELETE, &notifyIconData);
 		return 0;
 		break;
-
-	case WM_DESTROY:		
+	case WM_DESTROY:
 		ExitApplication();
 		exit(0);
 		break;
-
-	// Our user defined WM_SYSICON message.
+		// Our user defined WM_SYSICON message.
 	case WM_SYSICON:
 	{
 
 	case WM_CONTEXTMENU:
-
 		switch (lParam)
 		{
 		case WM_LBUTTONUP:
@@ -113,7 +127,8 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 			Hmenu = CreatePopupMenu();
 			auto local_address = "Local IP: " + local_ip_address();
 			AppendMenu(Hmenu, MF_STRING | MF_DISABLED, ID_TRAY_IP, TEXT(local_address.c_str()));
-			AppendMenu(Hmenu, MF_SEPARATOR,0 ,TEXT(""));
+			AppendMenu(Hmenu, MF_SEPARATOR, 0, TEXT(""));
+			AppendMenu(Hmenu, MF_STRING, ID_TRAY_LOGDIR, TEXT("View Logs"));
 			AppendMenu(Hmenu, MF_STRING, ID_TRAY_EXIT, TEXT("Exit"));
 			//DestroyMenu(hMenu);
 
@@ -126,14 +141,24 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 			UINT clicked = TrackPopupMenu(Hmenu, TPM_RETURNCMD | TPM_NONOTIFY, curPoint.x, curPoint.y, 0, hwnd, NULL);
 
 			SendMessage(hwnd, WM_NULL, 0, 0); // send benign message to window to make sure the menu goes away.
-			if (clicked == ID_TRAY_EXIT)
+			switch (clicked)
 			{
+			case ID_TRAY_EXIT:
 				ExitApplication();
 				PostQuitMessage(0);
 				exit(0);
+				break;
+			case ID_TRAY_LOGDIR:
+			{
+				auto path = GetLogDir().string() + "\\";
+				cout << "Open Folder " << path << endl;
+				BrowseToFile(path.c_str());
+			}
+				break;
+			default:
+				break;
 			}
 		}
-
 	}
 	break;
 
@@ -141,7 +166,6 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 		/*In WM_SYSCOMMAND messages, the four low-order bits of the wParam parameter
 		are used internally by the system. To obtain the correct result when testing the value of wParam,
 		an application must combine the value 0xFFF0 with the wParam value by using the bitwise AND operator.*/
-
 		switch (wParam & 0xFFF0)
 		{
 		case SC_MINIMIZE:
@@ -185,13 +209,40 @@ void InitNotifyIconData()
 }
 
 
-void InitPJSUAEndpoint() {
-	/* Create pjsua instance! */
+boost::filesystem::path GetLogDir() {
+	auto tmp_dir = boost::filesystem::temp_directory_path();
+	auto tiny_dir = tmp_dir.append("tinyphone");
+	if (!boost::filesystem::exists(tiny_dir))
+		boost::filesystem::create_directory(tiny_dir);
+	return tiny_dir;
+}
+
+string InitLogFile(std::string filename, std::string ext) {
+	time_t rawtime;
+	struct tm * timeinfo;
+	char buffer[80];
+
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+
+	strftime(buffer, sizeof(buffer), "%d-%m-%Y-", timeinfo);
+	std::string prefix(buffer);
+
+	boost::filesystem::path tiny_dir = GetLogDir();
+	auto logfile = tiny_dir.append(prefix + filename + "." + ext);
+	return logfile.string();
+}
+
+void InitPJSUAEndpoint(std::string logfile) {
+	/* Create endpoint instance! */
 	try {
 		ep.libCreate();
 
 		// Init library
 		EpConfig ep_cfg;
+		ep_cfg.logConfig.fileFlags = PJ_O_APPEND;
+		ep_cfg.logConfig.filename = logfile;
+		//ep_cfg.logConfig.msgLogging = true
 		ep_cfg.logConfig.level = 3; //4
 		ep_cfg.uaConfig.userAgent = DEFAULT_UA_STRING;
 
@@ -210,25 +261,26 @@ void InitPJSUAEndpoint() {
 		ep.transportCreate(PJSIP_TRANSPORT_UDP, tcfg);
 	}
 	catch (Error & err) {
-		std::cout << "Exception: " << err.info() << std::endl;
+		CROW_LOG_ERROR << "Exception: " << err.info();
 		exit(1);
 	}
 
 	/* Initialization is done, now start pjsua */
 	try {
 		ep.libStart();
-		std::cout << "PJSUA2 Started..." << std::endl;
+		CROW_LOG_INFO  << "PJSUA2 Started...";
 	}
 	catch (Error & err) {
-		std::cout << "Exception: " << err.info() << std::endl;
+		CROW_LOG_ERROR << "Exception: " << err.info() ;
 		exit(1);
 	}
 
 }
 
 void ExitApplication() {
-	// quit the application.
+#ifdef _DEBUG
 	CloseConsole();
+#endif
 	notifyIconData.uFlags = 0;
 	Shell_NotifyIcon(NIM_DELETE, &notifyIconData);
 }

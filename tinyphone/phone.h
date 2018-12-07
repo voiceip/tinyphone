@@ -27,10 +27,12 @@ public:
 	}
 
 	~TinyPhone() {
+		pj_thread_auto_register();
 		std::cout << "Shutting Down TinyPhone" << std::endl;
 		HangupAllCalls();
 		Logout();
 		delete eventStream;
+		std::cout << "Shutting Down TinyPhone Complete" << std::endl;
 	}
 
 	void SetCodecs() {
@@ -178,7 +180,7 @@ public:
 	std::vector<SIPCall*> Calls() {
 		std::vector<SIPCall *> calls;
 		BOOST_FOREACH(SIPAccount* acc, accounts) {
-			auto account_calls = acc->getCalls();
+			auto account_calls = acc->calls;
 			calls.insert(std::end(calls), std::begin(account_calls), std::end(account_calls));
 		}
 		return calls;

@@ -3,13 +3,12 @@
 #include "account.h"
 #include "utils.h"
 
-
 void SIPCall::onCallState(OnCallStateParam &prm)
 {
 	PJ_UNUSED_ARG(prm);
 	CallInfo ci = getInfo();
-	std::cout << "*** Call: " << ci.remoteUri << " [" << ci.stateText
-		<< "]" << std::endl;
+
+	PJ_LOG(3, (__FILENAME__, "CallState Change: [%s] [%s]", ci.remoteUri, ci.stateText));
 
 	account->eventStream->publishEvent(ci, prm);
 
@@ -38,7 +37,7 @@ void SIPCall::onCallMediaState(OnCallMediaStateParam &prm)
 			AudioMedia *aud_med = (AudioMedia *)getMedia(i);
 			// Connect the call audio media to sound device
 			AudDevManager& mgr = Endpoint::instance().audDevManager();
-			cout << "Connecting Call to Media Device Input #" << mgr.getCaptureDev() << " , Output #" << mgr.getPlaybackDev() << endl;
+			PJ_LOG(3, (__FILENAME__, "Connecting Call to Media Device Input #%d , Output # %d", mgr.getCaptureDev(), mgr.getPlaybackDev()));
 			aud_med->startTransmit(mgr.getPlaybackDevMedia());
 			mgr.getCaptureDevMedia().startTransmit(*aud_med);
 		}

@@ -31,7 +31,7 @@ void TinyPhoneHttpServer::Start() {
 	pj_thread_auto_register();
 	channel<std::string> updates;
 
-	std::cout << "Starting the TinyPhone HTTP API" << std::endl;
+	CROW_LOG_INFO << "Starting the TinyPhone HTTP API";
 	TinyPhone phone(endpoint);
 	phone.SetCodecs();	
 	phone.ConfigureAudioDevices();
@@ -41,7 +41,7 @@ void TinyPhoneHttpServer::Start() {
 	std::mutex mtx;;
 	//app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
 	app.loglevel(crow::LogLevel::Info);
-	//crow::logger::setHandler(std::make_shared<TinyPhoneHTTPLogHandler>());	
+	crow::logger::setHandler(new TinyPhoneHTTPLogHandler(logfile));	
 	int http_port = 6060;
 
 	/* Define HTTP Endpoints */

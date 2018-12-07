@@ -3,7 +3,6 @@
 #ifndef ACCOUNT_HEADER_FILE_H
 #define ACCOUNT_HEADER_FILE_H
 
-#include <pj/config_site.h>
 #include <pjsua2.hpp>
 #include <iostream>
 #include <boost/foreach.hpp>
@@ -33,10 +32,10 @@ public:
 
 	~SIPAccount()
 	{
-		std::cout << "*** Account is being deleted " << account_name << " : No of calls=" << calls.size() << std::endl;
+		PJ_LOG(3, (__FILENAME__, "Account is being deleted: %s. No of calls [%d]", account_name.c_str() , calls.size()));
 		try {
+			pj_thread_auto_register();
 			if (pjsua_acc_is_valid(getId()) != 0) {
-				pj_thread_auto_register();
 				AccountInfo ai = getInfo();
 				OnRegStateParam prm{
 					200,
@@ -47,7 +46,7 @@ public:
 			}
 		}
 		catch (...) {
-			cout << "Account Shutdown Error " << account_name << endl;
+			PJ_LOG(3, (__FILENAME__, "Account Shutdown Error %s" , account_name.c_str() ));
 		};
 		shutdown();
 	}
@@ -56,8 +55,11 @@ public:
 		return account_name;
 	}
 
-	void removeCall(SIPCall *call)
-	{
+	/**
+	* removes the call from the account list. 
+	* Doesn't delete it, you must delete the reference of it.
+	*/
+	void removeCall(SIPCall *call){
 		for (auto it = calls.begin(); it != calls.end(); ++it) {
 			if (*it == call) {
 				calls.erase(it);
@@ -66,16 +68,10 @@ public:
 		}
 	}
 
-	std::vector<SIPCall *> getCalls() {
-		return calls;		
-	}
-
-
 	virtual void onRegState(OnRegStateParam &prm)
 	{
 		AccountInfo ai = getInfo();
-		std::cout << (ai.regIsActive ? "*** Register: code=" : "*** Unregister: code=")
-			<< prm.code << std::endl;
+		PJ_LOG(3, (__FILENAME__, "RegStateChange %s : %s, Code: %d", account_name.c_str(), (ai.regIsActive ? " Register" : "Unregister"), prm.code));
 		eventStream->publishEvent(ai, prm);
 	}
 
@@ -100,8 +96,7 @@ public:
 		CallInfo ci = call->getInfo();
 		CallOpParam prm;
 
-		std::cout << "*** Incoming Call: " << ci.remoteUri << " ["
-			<< ci.stateText << "]" << std::endl;
+		PJ_LOG(3, (__FILENAME__, "Incomming Call: [%s] [%s]", ci.remoteUri, ci.stateText));
 
 		eventStream->publishEvent(ci, iprm);
 

@@ -5,7 +5,6 @@
 #ifndef CALL_HEADER_FILE_H
 #define CALL_HEADER_FILE_H
 
-#include <pj/config_site.h>
 #include <pjsua2.hpp>
 #include <iostream>
 #include <boost/foreach.hpp>
