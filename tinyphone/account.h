@@ -21,6 +21,7 @@ class SIPAccount : public Account
 {
 	std::string account_name;
 	std::promise<int> create_result_promise;
+	int create_result_promise_fullfilled = 0;
 
 public:
 
@@ -75,21 +76,22 @@ public:
 		}
 	}
 
-	virtual void onRegState(OnRegStateParam &prm)
+	virtual void onRegState(OnRegStateParam &prm) 
 	{
 		AccountInfo ai = getInfo();
 		PJ_LOG(3, (__FILENAME__, "RegStateChange %s : %s, Code: %d", account_name.c_str(), (ai.regIsActive ? " Register" : "Unregister"), prm.code));
 		eventStream->publishEvent(ai, prm);
 		try {
-			create_result_promise.set_value(prm.code);
+			if (!create_result_promise_fullfilled) {
+				create_result_promise.set_value(prm.code);
+				create_result_promise_fullfilled++;
+			}
+			
 		}
 		catch (std::future_error& e) {}
 	}
 
-	
-
-	std::future<int> Create(const AccountConfig &cfg,
-		bool make_default = false) throw(Error) {
+	std::future<int> Create(const AccountConfig &cfg, bool make_default = false) throw(Error) {
 		create(cfg, make_default);
 		return create_result_promise.get_future();
 	}
