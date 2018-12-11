@@ -32,6 +32,7 @@ The softphone exposes the following resources.
 | `/login`| POST | Account login with the provided details <br> `{"username":"jane", "password" : "doe", "domain" : "hello.com"}` | 
 | `/logout`| POST | Logout of all accounts |
 | `/accounts`| GET | Returns list of registed accounts |
+| `/accounts/{account_name}/logout`| GET | Logout of account with provided `account_name` |
 | `/dial`| POST | Dial a call with provided `sip-uri` | 
 | `/calls`| GET | Returns list of active calls |
 | `/calls/{call_id}/dtmf/{digits}`| POST | Send dtmf digits `digits` to call with specified `call_id` | 
