@@ -35,7 +35,7 @@ LRESULT CALLBACK WindowProcedure(HWND, UINT, WPARAM, LPARAM);
 void InitNotifyIconData();
 void InitPJSUAEndpoint(std::string logfile);
 void ExitApplication();
-string InitLogFile(std::string filename, std::string ext = "log");
+string GetLogFile(std::string filename, std::string ext = "log");
 boost::filesystem::path GetLogDir();
 
 int WINAPI WinMain(HINSTANCE hThisInstance,
@@ -60,8 +60,8 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 	RedirectIOToConsole();
 #endif
 
-	string sipLogFile = InitLogFile("tinyphone","log");
-	string httpLogFile = InitLogFile("tinyphone-http","log");
+	string sipLogFile = GetLogFile("tinyphone","log");
+	string httpLogFile = GetLogFile("tinyphone-http","log");
 
 	InitPJSUAEndpoint(sipLogFile);
 	TinyPhoneHttpServer server(&ep, httpLogFile);
@@ -150,8 +150,8 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 				break;
 			case ID_TRAY_LOGDIR:
 			{
-				auto path = GetLogDir().string() + "\\";
-				cout << "Open Folder " << path << endl;
+				auto path = GetLogFile("tinyphone", "log");
+				cout << "Open Folder " << GetLogDir() << endl;
 				BrowseToFile(path.c_str());
 			}
 				break;
@@ -217,7 +217,7 @@ boost::filesystem::path GetLogDir() {
 	return tiny_dir;
 }
 
-string InitLogFile(std::string filename, std::string ext) {
+string GetLogFile(std::string filename, std::string ext) {
 	time_t rawtime;
 	struct tm * timeinfo;
 	char buffer[80];

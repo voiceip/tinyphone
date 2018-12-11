@@ -217,6 +217,33 @@ void TinyPhoneHttpServer::Start() {
 		}
 	});
 
+	CROW_ROUTE(app, "/accounts/<string>/logout")
+		.methods("POST"_method)
+		([&phone](string account_name) {
+		try {
+			pj_thread_auto_register();
+			SIPAccount* acc = phone.AccountByURI(account_name);
+			if (acc != nullptr) {
+				phone.Logout(acc);
+				json response = {
+					{ "message",  "Logged Out" },
+					{ "account_name", account_name }
+				};
+				return tp::response(200, response);
+			}
+			else {
+				return tp::response(400, {
+					{ "message", "Account Not Found" },
+					{ "account_name" , account_name }
+				});
+			}
+
+		}
+		catch (...) {
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
+		}
+	});
+
 	CROW_ROUTE(app, "/dial")
 		.methods("POST"_method)
 		([&phone](const crow::request& req) {
@@ -401,34 +428,27 @@ void TinyPhoneHttpServer::Start() {
 		try {
 			pj_thread_auto_register();
 			CROW_LOG_INFO << "Atempting logout of TinyPhone";
-			phone.Logout();
 			json response = {
 				{ "message",  "Logged Out" },
+				{ "accounts", json::array() },
 			};
-			return tp::response(200, response);
-		}
-		catch (...) {
-			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
-		}
-	});
-
-	CROW_ROUTE(app, "/logout/<string>")
-		.methods("POST"_method)
-		([&phone](string account_name) {
-		try {
 			pj_thread_auto_register();
-				
-
-			json response = {
-				{ "message",  "Logged Out" },
-				{"account_name", account_name}
-			};
+			BOOST_FOREACH(SIPAccount* account, phone.Accounts()) {
+				json account_data = {
+					{ "id" , account->getId() },
+					{ "name" , account->Name() },
+				};
+				response["accounts"].push_back(account_data);
+			}
+			phone.Logout();
 			return tp::response(200, response);
 		}
 		catch (...) {
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 	});
+
+
 
 	CROW_ROUTE(app, "/exit")
 		.methods("POST"_method)
@@ -441,30 +461,25 @@ void TinyPhoneHttpServer::Start() {
 		return tp::response(200, response);
 	});
 
-
 	if (is_tcp_port_in_use(http_port)) {
-		tp::DisplayError(("HTTP Port " + to_string(http_port) + " already in use! \nIs another instance running?"));
-		endpoint->libDestroy();
-
-		updates.close();
-		thread_object.join();
+		tp::DisplayError("Failed to Bind Port! \nIs another instance of tinyphone running?");
 	}
 	else {
-
 		app.port(http_port)
 			.multithreaded()
 			.run();
-
-		CROW_LOG_INFO << "Terminating current running call(s) if any";
-
-		phone.HangupAllCalls();
-		endpoint->libDestroy();
-
-		CROW_LOG_INFO << "Server has been shutdown... Will Exit now....";
-
-		updates.close();
-		thread_object.join();
-
-		CROW_LOG_INFO << "Shutdown Complete..";
 	}
+
+	CROW_LOG_INFO << "Terminating current running call(s) if any";
+
+	phone.HangupAllCalls();
+	endpoint->libDestroy();
+
+	CROW_LOG_INFO << "Server has been shutdown... Will Exit now....";
+
+	updates.close();
+	thread_object.join();
+
+	CROW_LOG_INFO << "Shutdown Complete..";
+
 }

@@ -128,6 +128,16 @@ public:
 		}
 	}
 
+	void Logout(SIPAccount* acc) {
+		auto it = accounts.begin();
+		while (it != accounts.end()) {
+			if (*it == acc) {
+				delete (*it);
+				it = accounts.erase(it);
+			}
+		}
+	}
+
 	void Logout() {
 		auto it = accounts.begin();
 		while (it != accounts.end()) {
