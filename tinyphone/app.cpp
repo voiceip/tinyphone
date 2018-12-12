@@ -250,17 +250,31 @@ void InitPJSUAEndpoint(std::string logfile) {
 
 		ep.libInit(ep_cfg);
 
-		// Transport
+		// Transport Setup
 		TransportConfig tcfg;
 		int port = 5060;
-		while (is_udp_port_in_use(port)) {
-			port++;
+
+		switch (ApplicationConfig.transport)
+		{
+		case PJSIP_TRANSPORT_UDP:
+			while (is_udp_port_in_use(port)) {
+				port++;
+			}
+			break;
+		case PJSIP_TRANSPORT_TCP:
+		case PJSIP_TRANSPORT_TLS:
+			while (is_tcp_port_in_use(port)) {
+				port++;
+			}
+		default:
+			break;
 		}
 
+		CROW_LOG_INFO << "Using Transport Protocol: " << ApplicationConfig.transport;
 		CROW_LOG_INFO << "Using Transport Port: " << port;
-
+		
 		tcfg.port = port;
-		ep.transportCreate(PJSIP_TRANSPORT_UDP, tcfg);
+		ep.transportCreate(ApplicationConfig.transport, tcfg);
 	}
 	catch (Error & err) {
 		CROW_LOG_ERROR << "Exception: " << err.info();

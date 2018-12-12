@@ -29,6 +29,8 @@ namespace tp {
 	};
 }
 
+using namespace tp;
+
 
 void TinyPhoneHttpServer::Start() {
 
@@ -132,12 +134,9 @@ void TinyPhoneHttpServer::Start() {
 		.methods("POST"_method)
 		([&phone](const crow::request& req) {
 		try {
-			auto x = crow::json::load(req.body);
-			if (!x) {
-				return tp::response(400, {
-					{ "message", "Bad Request" },
-				});
-			}
+
+			json j = json::parse(req.body);
+			tp::AccountConfig loginConfig = j.get<tp::AccountConfig>();
 
 			if (phone.Accounts().size() >= ApplicationConfig.maxAccounts) {
 				return tp::response(403, {
@@ -145,10 +144,7 @@ void TinyPhoneHttpServer::Start() {
 				});
 			}
 
-			string username = x["username"].s();
-			string domain = x["domain"].s();
-			string password = x["password"].s();
-			string account_name = SIP_ACCOUNT_NAME(username, domain);
+			string account_name = SIP_ACCOUNT_NAME(loginConfig.username, loginConfig.domain);
 
 			pj_thread_auto_register();
 			CROW_LOG_INFO << "Registering account " << account_name;
@@ -162,7 +158,8 @@ void TinyPhoneHttpServer::Start() {
 				});
 			}
 			else {
-				future<int> result = phone.AddAccount(username, domain, password);
+
+				future<int> result = phone.AddAccount(loginConfig);
 				auto sync = req.url_params.get("sync") == nullptr ? false : true;
 				if (sync) {
 					if (result.wait_for(std::chrono::seconds(30)) == std::future_status::ready) {
@@ -186,6 +183,12 @@ void TinyPhoneHttpServer::Start() {
 					});
 				};
 			}
+		}
+		catch (json::exception& e) {
+			return tp::response(400, {
+				{ "message", "Bad Request" },
+				{ "reason", e.what() },
+			});
 		}
 		catch (pj::Error& e) {
 			CROW_LOG_ERROR << "Exception catched : " << e.reason;

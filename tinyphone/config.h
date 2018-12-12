@@ -28,9 +28,11 @@
 namespace pj {
 
 	struct appConfig {
+		pjsip_transport_type_e transport;
 		int timeoutSec;
 		int retryIntervalSec;
 		int firstRetryIntervalSec;
+		bool dropCallsOnFail;
 
 		std::string uaPrefix;
 		size_t maxCalls;
@@ -47,9 +49,11 @@ namespace pj {
 	static auto _default_codes = splitString(SIP_ALLOWED_AUDIO_CODECS, ' ');
 
 	static appConfig ApplicationConfig = {
+		PJSIP_TRANSPORT_UDP,
 		SIP_REG_DURATION,
 		SIP_REG_RETRY_INTERVAL,
 		SIP_REG_FIRST_RETRY_INTERVAL,
+		false,
 		DEFAULT_UA_PREFIX_STRING,
 		SIP_MAX_CALLS,
 		SIP_MAX_ACC,
