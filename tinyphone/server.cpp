@@ -11,6 +11,7 @@
 #include <chrono>
 #include "channel.h"
 #include "json.h"
+#include "config.h"
 
 using namespace std;
 using namespace pj;
@@ -138,7 +139,7 @@ void TinyPhoneHttpServer::Start() {
 				});
 			}
 
-			if (phone.Accounts().size() >= PJSUA_MAX_ACC) {
+			if (phone.Accounts().size() >= ApplicationConfig.maxAccounts) {
 				return tp::response(403, {
 					{ "message", "Max Account Allowed Reached." },
 				});
@@ -259,7 +260,7 @@ void TinyPhoneHttpServer::Start() {
 			});
 		}
 
-		if (account->calls.size() >= PJSUA_MAX_CALLS) {
+		if (account->calls.size() >= ApplicationConfig.maxCalls) {
 			return tp::response(429, {
 				{ "message", "Max Concurrent Calls Reached. Please try again later." },
 			});

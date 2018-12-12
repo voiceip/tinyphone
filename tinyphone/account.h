@@ -88,7 +88,9 @@ public:
 			}
 			
 		}
-		catch (std::future_error& e) {}
+		catch (std::future_error& e) {
+			UNUSED_ARG(e);
+		}
 	}
 
 	std::future<int> Create(const AccountConfig &cfg, bool make_default = false) throw(Error) {

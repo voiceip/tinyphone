@@ -158,6 +158,7 @@
     <ClInclude Include="account.h" />
     <ClInclude Include="call.h" />
     <ClInclude Include="channel.h" />
+    <ClInclude Include="config.h" />
     <ClInclude Include="consts.h" />
     <ClInclude Include="enum.h" />
     <ClInclude Include="events.h" />

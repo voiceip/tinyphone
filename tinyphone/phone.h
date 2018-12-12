@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include "events.h"
 #include "utils.h"
+#include "config.h"
 
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string.hpp>
@@ -39,8 +40,7 @@ public:
 	void SetCodecs() {
 		const pj_str_t ID_ALL = { "*", 1 };
 		pjsua_codec_set_priority(&ID_ALL, PJMEDIA_CODEC_PRIO_DISABLED);	
-		auto allowed_codecs = splitString(SIP_ALLOWED_AUDIO_CODECS, ' ');
-		BOOST_FOREACH(std::string codec, allowed_codecs){
+		BOOST_FOREACH(std::string codec, ApplicationConfig.audioCodecs){
 			EnableCodec(codec);
 		}
 	}
@@ -157,9 +157,9 @@ public:
 			acc_cfg.regConfig.registrarUri = ("sip:" + domain);
 			acc_cfg.sipConfig.authCreds.push_back(AuthCredInfo("digest", "*", username, 0, password));
 
-			acc_cfg.regConfig.timeoutSec = SIP_REG_DURATION;
-			acc_cfg.regConfig.retryIntervalSec = SIP_REG_RETRY_INTERVAL;
-			acc_cfg.regConfig.firstRetryIntervalSec = SIP_REG_FIRST_RETRY_INTERVAL;
+			acc_cfg.regConfig.timeoutSec = ApplicationConfig.timeoutSec;
+			acc_cfg.regConfig.retryIntervalSec = ApplicationConfig.retryIntervalSec;
+			acc_cfg.regConfig.firstRetryIntervalSec = ApplicationConfig.firstRetryIntervalSec;
 			acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
 			acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
 

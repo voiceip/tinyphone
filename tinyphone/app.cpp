@@ -7,6 +7,7 @@
 #include "utils.h"
 #include "net.h"
 #include "consts.h"
+#include "config.h"
 #include <boost/filesystem.hpp>
 #include <ctime>
 
@@ -243,10 +244,9 @@ void InitPJSUAEndpoint(std::string logfile) {
 		ep_cfg.logConfig.fileFlags = PJ_O_APPEND;
 		ep_cfg.logConfig.filename = logfile;
 		ep_cfg.logConfig.msgLogging = true;
-		ep_cfg.logConfig.level = 3;
+		ep_cfg.logConfig.level = ApplicationConfig.pjLogLevel;
 		ep_cfg.logConfig.decor |= PJ_LOG_HAS_CR | PJ_LOG_HAS_DAY_OF_MON |  PJ_LOG_HAS_MONTH |  PJ_LOG_HAS_YEAR ;
-
-		ep_cfg.uaConfig.userAgent = DEFAULT_UA_STRING;
+		ep_cfg.uaConfig.userAgent = ApplicationConfig.ua();
 
 		ep.libInit(ep_cfg);
 
