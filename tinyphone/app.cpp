@@ -61,6 +61,8 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 	RedirectIOToConsole();
 #endif
 
+	InitConfig();
+
 	string sipLogFile = GetLogFile("tinyphone","log");
 	string httpLogFile = GetLogFile("tinyphone-http","log");
 

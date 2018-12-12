@@ -62,13 +62,30 @@ namespace pj {
 	};
 
 	static void to_json(nlohmann::json& j, const appConfig& p) {
-        //j = nlohmann::json{{"name", p.name}, {"address", p.address}, {"age", p.age}};
+		j = nlohmann::json{
+			{"transport", p.transport },
+			{"timeoutSec", p.timeoutSec },
+			{"retryIntervalSec", p.retryIntervalSec },
+			{"firstRetryIntervalSec", p.firstRetryIntervalSec },
+			{"dropCallsOnFail", p.dropCallsOnFail },
+			{"uaPrefix", p.uaPrefix },
+			{"maxCalls", p.maxCalls },
+			{"maxAccounts", p.maxAccounts },
+			{"audioCodecs", p.audioCodecs },
+			{"pjLogLevel", p.pjLogLevel },
+		};
     }
 
    static void from_json(const nlohmann::json& j, appConfig& p) {
         //j.at("name").get_to(p.name);
         
     }
+
+   static void InitConfig() {
+	   // conversion: ApplicationConfig -> json
+	   nlohmann::json j = ApplicationConfig;
+	   std::cout <<  "=======Application Config======" << std::endl << j << std::endl;
+   }
 }
 
 #endif

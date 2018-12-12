@@ -23,10 +23,6 @@ namespace tp {
 		string domain;
 		string password;
 		string proxy;
-
-		bool validate() {
-			return username.size() > 0 && domain.size() > 0;
-		}
 	};
 
 	void from_json(const nlohmann::json& j, AccountConfig& p) {

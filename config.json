@@ -1,0 +1,12 @@
+{
+	"audioCodecs": ["PCMA/8000/1", "PCMU/8000/1"],
+	"dropCallsOnFail": false,
+	"firstRetryIntervalSec": 15,
+	"maxAccounts": 3,
+	"maxCalls": 4,
+	"pjLogLevel": 3,
+	"retryIntervalSec": 30,
+	"timeoutSec": 180,
+	"transport": 1,
+	"uaPrefix": "TinyPhone Pjsua2 v"
+}
