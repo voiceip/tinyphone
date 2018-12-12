@@ -29,7 +29,7 @@ The softphone exposes the following resources.
 | Resource                    | Method | Description                       |
 |:----------------------------|:-------|:----------------------------------|
 | `/`      | GET | Returns `hello world` |
-| `/login`| POST | Account login with the provided details <br> `{"username":"jane", "password" : "doe", "domain" : "hello.com"}` | 
+| `/login`| POST | Account login with the provided details `AccountConfig` | 
 | `/logout`| POST | Logout of all accounts |
 | `/accounts`| GET | Returns list of registed accounts |
 | `/accounts/{account_name}/logout`| GET | Logout of account with provided `account_name` |
@@ -41,6 +41,20 @@ The softphone exposes the following resources.
 | `/calls/{call_id}/hangup`| POST | hangup call with specified `call_id` | 
 | `/hangup_all`| POST | Hangup all calls | 
 | `/exit`| POST | Exit the application | 
+
+
+## Request Payloads
+
+### Account Config
+```cpp
+struct AccountConfig {
+	string username;
+	string domain;
+	string password;
+	string proxy;
+};
+```
+
 
 
 ## Issues & Contribution
