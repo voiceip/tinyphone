@@ -266,6 +266,7 @@ void InitPJSUAEndpoint(std::string logfile) {
 			while (is_tcp_port_in_use(port)) {
 				port++;
 			}
+			break;
 		default:
 			break;
 		}

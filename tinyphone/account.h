@@ -93,7 +93,7 @@ public:
 		}
 	}
 
-	std::future<int> Create(const AccountConfig &cfg, bool make_default = false) throw(Error) {
+	std::future<int> Create(const pj::AccountConfig &cfg, bool make_default = false) throw(Error) {
 		create(cfg, make_default);
 		return create_result_promise.get_future();
 	}
