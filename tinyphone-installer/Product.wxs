@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?define ShortcutName = "Strowger Tinyphone" ?>
+<?define UpgradeCode = "f53dd57f-44cb-4f54-b861-1513f5f7914e"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="*" Name="Strowger Tinyphone" Language="1033" Version="1.0.0.0" Manufacturer="Flipkart India" UpgradeCode="f53dd57f-44cb-4f54-b861-1513f5f7914e">
-        <Package InstallerVersion="200" Compressed="yes" Comments="Windows Installer Package" InstallScope="perMachine" />
-        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <Product Id="*" Name="Strowger Tinyphone" Language="1033" Version="1.0.0.0" Manufacturer="Flipkart India" UpgradeCode="$(var.UpgradeCode)">
+      <Package InstallerVersion="200" Compressed="yes" Comments="Windows Installer Package" InstallScope="perMachine" />
+        <MajorUpgrade Schedule="afterInstallInitialize" AllowSameVersionUpgrades="yes"  DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
         <MediaTemplate EmbedCab="yes" />
         <Feature Id="ProductFeature" Title="Tinyphone" Level="1">
             <ComponentGroupRef Id="ProductComponents" />
             <ComponentGroupRef Id="ProductMenuComponents" />
         </Feature>
-        <UI />
+
         <Icon Id="icon.ico" SourceFile="$(var.tinyphone.ProjectDir)\resources\tinyphone.ico" />
         <Property Id="ARPPRODUCTICON" Value="icon.ico"/>
+
+      <InstallExecuteSequence>
+        <!--<RemoveExistingProducts Before="InstallInitialize"/> -->
+      </InstallExecuteSequence>
     </Product>
     <Fragment>
         <Directory Id="TARGETDIR" Name="SourceDir">
@@ -25,19 +31,15 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-            <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-            <!-- <Component Id="ProductComponent"> -->
-            <!-- TODO: Insert files, registry keys, and other resources here. -->
-            <!-- </Component> -->
-            <Component Id="CMP_TinyPhoneApplicationSetup">
-                <File Id="FILE_TinyPhone.exe" Source="$(var.tinyphone.TargetPath)" KeyPath="yes">
-                    <Shortcut Id="desktopShortcut" Directory="DesktopFolder" Name="Strowger TinyPhone" WorkingDirectory="INSTALLDIR" Advertise="yes" Icon="icon.ico" IconIndex="0" />
+            <Component Id="ProductComponent" Guid="{AE75A17D-3EBF-4B68-AA32-73D18D983316}">
+                <File Id="TinyPhone.exe" Name="$(var.tinyphone.TargetFileName)" Source="$(var.tinyphone.TargetPath)" KeyPath="yes">
+                    <Shortcut Id="desktopShortcut" Directory="DesktopFolder" Name="$(var.ShortcutName)" WorkingDirectory="INSTALLFOLDER" Advertise="yes" Icon="icon.ico" IconIndex="0" />
                 </File>
             </Component>
         </ComponentGroup>
         <ComponentGroup Id="ProductMenuComponents" Directory="ApplicationProgramsFolder">
             <Component Id="ApplicationShortcut" Guid="{AE75A17D-3EBF-4B68-AA32-73D18D983317}">
-                <Shortcut Id="ApplicationStartMenuShortcut" Name="Strowger TinyPhone" Description="Strowger Softphone" Target="[#FILE_TinyPhone.exe]" WorkingDirectory="APPLICATIONROOTDIRECTORY" />
+                <Shortcut Id="ApplicationStartMenuShortcut" Name="$(var.ShortcutName)" Description="Strowger Softphone" Target="[#TinyPhone.exe]" WorkingDirectory="INSTALLFOLDER" />
                 <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
                 <RegistryValue Root="HKCU" Key="Software\Flipkart\TinyPhone" Name="installed" Type="integer" Value="1" KeyPath="yes" />
             </Component>
