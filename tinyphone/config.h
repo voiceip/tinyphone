@@ -4,9 +4,11 @@
 #define CONFIG_HEADER_FILE_H
 
 #include <iostream>
+#include <string>
 #include "json.h"
 #include "consts.h"
 #include "utils.h"
+#include "net.h"
 
 #define SIP_REG_DURATION 180
 #define SIP_REG_RETRY_INTERVAL 30
@@ -25,7 +27,7 @@
 
 #define DEFUALT_PJ_LOG_LEVEL 3
 
-namespace pj {
+namespace tp {
 
 	struct appConfig {
 		pjsip_transport_type_e transport;
@@ -77,14 +79,35 @@ namespace pj {
     }
 
    static void from_json(const nlohmann::json& j, appConfig& p) {
-        //j.at("name").get_to(p.name);
-        
+		j.at("transport").get_to(p.transport);
+		j.at("timeoutSec").get_to(p.timeoutSec);
+		j.at("retryIntervalSec").get_to(p.retryIntervalSec);
+		j.at("firstRetryIntervalSec").get_to(p.firstRetryIntervalSec);
+		j.at("dropCallsOnFail").get_to(p.dropCallsOnFail);
+		j.at("uaPrefix").get_to(p.uaPrefix);
+		j.at("maxCalls").get_to(p.maxCalls);
+		j.at("maxAccounts").get_to(p.maxAccounts);
+		j.at("audioCodecs").get_to(p.audioCodecs);
+		j.at("pjLogLevel").get_to(p.pjLogLevel);
     }
 
    static void InitConfig() {
 	   // conversion: ApplicationConfig -> json
-	   nlohmann::json j = ApplicationConfig;
-	   std::cout <<  "=======Application Config======" << std::endl << j << std::endl;
+	   tp::HttpResponse remoteConfig = file_get_contents(REMOTE_CONFIG_URL);
+	   if (remoteConfig.code / 100 != 2) {
+		   tp::DisplayError("Failed to fetch Remote Config! Return Code: " + std::to_string(remoteConfig.code));
+		   exit(1);
+	   }
+	   std::cout << "======= Remote Application Config ======" << std::endl << remoteConfig.body << std::endl;
+
+	   try {
+		   auto j = nlohmann::json::parse(remoteConfig.body);
+		   ApplicationConfig = j.get<tp::appConfig>();
+	   }
+	   catch (...) {
+		   tp::DisplayError("Failed Parsing Remote Config! Please contact support.");
+		   exit(1);
+	   }
    }
 }
 

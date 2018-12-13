@@ -3,11 +3,57 @@
 #include "stdafx.h"
 #include <crow.h>
 #include <iostream>
+#include <string>
+#include <curl/curl.h>
 
 using namespace boost;
 using namespace boost::asio;
 using boost::asio::ip::tcp;
 using boost::asio::ip::udp;
+
+namespace tp {
+	struct HttpResponse {
+		long code;
+		std::string body;
+		std::vector<std::pair<std::string, std::string>> headers;
+	};
+}
+
+static size_t CurlWriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
+{
+	((std::string*)userp)->append((char*)contents, size * nmemb);
+	return size * nmemb;
+}
+
+static tp::HttpResponse file_get_contents(std::string url) throw (std::exception) {
+	CURL *curl;
+	tp::HttpResponse response;
+
+	curl = curl_easy_init();
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+		curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
+
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CurlWriteCallback);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response.body);
+		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L); //10s timeout
+
+		auto res = curl_easy_perform(curl);
+		if (res != CURLE_OK) {
+			std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+		}
+		else {
+			curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response.code);
+		}
+		curl_easy_cleanup(curl);
+	}
+	else {
+		throw std::runtime_error("Unable to init curl libary");
+	}
+	return response;
+}
+
 
 static std::string local_ip_address() {
 	boost::asio::io_service io_service;

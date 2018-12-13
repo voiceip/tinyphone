@@ -8,6 +8,7 @@
     <MediaTemplate EmbedCab="yes" />
     <Feature Id="ProductFeature" Title="Tinyphone" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="ProductSystemComponents"/>
       <ComponentGroupRef Id="ProductSupportComponents" />
     </Feature>
 
@@ -30,6 +31,7 @@
         <Directory Id="ApplicationProgramsFolder" Name="Tinyphone" />
       </Directory>
       <Directory Id="DesktopFolder" />
+      <Directory Id="SystemFolder" />
     </Directory>
   </Fragment>
   <Fragment>
@@ -38,14 +40,21 @@
         <File Id="TinyPhone.exe" Name="$(var.tinyphone.TargetFileName)" Source="$(var.tinyphone.TargetPath)" KeyPath="yes">
           <Shortcut Id="desktopShortcut" Directory="DesktopFolder" Name="$(var.ShortcutName)" WorkingDirectory="INSTALLFOLDER" Advertise="yes" Icon="icon.ico" IconIndex="0" />
         </File>
+        
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="ProductSystemComponents" Directory="SystemFolder" >
+      <Component Id="DLLComponent" Guid="{AE75A17D-3EBF-4B68-AA32-73D18D983315}">
+        <File Id="libcurl.dll" Name="libcurl.dll" Source="$(var.tinyphone.ProjectDir)\..\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\bin\libcurl.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="ProductSupportComponents" Directory="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut" Guid="{AE75A17D-3EBF-4B68-AA32-73D18D983317}">
         <Shortcut Id="ApplicationStartMenuShortcut" Name="$(var.ShortcutName)" Description="Strowger Softphone" Target="[#TinyPhone.exe]" WorkingDirectory="INSTALLFOLDER" />
+        <Shortcut Id="UninstallProduct"	Name="Uninstall $(var.ShortcutName)" Description="Uninstalls $(var.ShortcutName)" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]"/>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
         <RegistryValue Root="HKCU" Key="Software\Flipkart\TinyPhone" Name="installed" Type="integer" Value="1" KeyPath="yes" />
-        <RemoveRegistryKey Root="HKCU" Key="Software\Flipkart\TinyPhone"  Action="removeOnUninstall" />
+        <!--<RemoveRegistryKey Root="HKCU" Key="Software\Flipkart\TinyPhone"  Action="removeOnUninstall" />-->
       </Component>
       <!--
       <Component Id="TinyPhoneAutoStart" Guid="{AE75A17D-3EBF-4B68-AA32-73D18D983318}">

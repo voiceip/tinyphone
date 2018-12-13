@@ -21,6 +21,7 @@
 
 using namespace std;
 using namespace pj;
+using namespace tp;
 
 /*variables*/
 UINT WM_TASKBAR = 0;
@@ -54,14 +55,14 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
-	/*Initialize the NOTIFYICONDATA structure only once*/
-	InitNotifyIconData();
-
 #ifdef _DEBUG
 	RedirectIOToConsole();
 #endif
 
 	InitConfig();
+
+	/*Initialize the NOTIFYICONDATA structure only once*/
+	InitNotifyIconData();
 
 	string sipLogFile = GetLogFile("tinyphone","log");
 	string httpLogFile = GetLogFile("tinyphone-http","log");

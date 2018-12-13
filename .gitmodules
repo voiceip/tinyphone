@@ -16,3 +16,6 @@
 [submodule "lib/json"]
 	path = lib/json
 	url = https://github.com/nlohmann/json.git
+[submodule "lib/curl"]
+	path = lib/curl
+	url = https://github.com/curl/curl.git
