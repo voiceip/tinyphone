@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?define ShortcutName = "Strowger Tinyphone" ?>
 <?define UpgradeCode = "f53dd57f-44cb-4f54-b861-1513f5f7914e"?>
+<?if $(var.tinyphone.Configuration) = "Debug" ?>
+<?define ShortcutName = "Strowger Tinyphone Debug" ?>
+<?else?>
+<?define ShortcutName = "Strowger Tinyphone" ?>
+ <?endif?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="*" Name="Strowger Tinyphone" Language="1033" Version="1.0.0.0" Manufacturer="Flipkart India" UpgradeCode="$(var.UpgradeCode)">
     <Package InstallerVersion="200" Compressed="yes" Description="Strowger TinyPhone Installer" InstallScope="perMachine" />
@@ -40,7 +44,6 @@
         <File Id="TinyPhone.exe" Name="$(var.tinyphone.TargetFileName)" Source="$(var.tinyphone.TargetPath)" KeyPath="yes">
           <Shortcut Id="desktopShortcut" Directory="DesktopFolder" Name="$(var.ShortcutName)" WorkingDirectory="INSTALLFOLDER" Advertise="yes" Icon="icon.ico" IconIndex="0" />
         </File>
-        
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="ProductSystemComponents" Directory="SystemFolder" >
@@ -66,7 +69,6 @@
         <Condition>APP_AUTO_START</Condition>
       </Component>
       -->
-
     </ComponentGroup>
   </Fragment>
 </Wix>

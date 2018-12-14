@@ -92,7 +92,6 @@ namespace tp {
     }
 
    static void InitConfig() {
-	   // conversion: ApplicationConfig -> json
 	   tp::HttpResponse remoteConfig = file_get_contents(REMOTE_CONFIG_URL);
 	   if (remoteConfig.code / 100 != 2) {
 		   tp::DisplayError("Failed to fetch Remote Config! Return Code: " + std::to_string(remoteConfig.code));
