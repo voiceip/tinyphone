@@ -46,14 +46,15 @@ The softphone exposes the following resources.
 ## Request Payloads
 
 ### Account Config
-```cpp
-struct AccountConfig {
-	string username;
-	string domain;
-	string password;
-	string proxy;
-};
+```json
+{
+  "username": "string" ,
+  "password" : "string",
+  "domain" : "string",
+  "proxy" : "optional-string*"
+}
 ```
+`* optional fields : Fields should exist only with valid value.`
 
 
 
