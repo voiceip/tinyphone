@@ -8,5 +8,6 @@
 	"retryIntervalSec": 30,
 	"timeoutSec": 180,
 	"transport": 1,
-	"uaPrefix": "TinyPhone Pjsua2 v"
+	"uaPrefix": "TinyPhone Pjsua2 v",
+	"enableNoiseCancel" : true
 }

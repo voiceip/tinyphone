@@ -43,6 +43,8 @@ namespace tp {
 
 		int pjLogLevel;
 
+		bool enableNoiseCancel;
+
 		std::string ua(){
 			return uaPrefix + APP_VERSION;
 		};
@@ -60,7 +62,8 @@ namespace tp {
 		SIP_MAX_CALLS,
 		SIP_MAX_ACC,
 		_default_codes,
-		DEFUALT_PJ_LOG_LEVEL
+		DEFUALT_PJ_LOG_LEVEL,
+		false
 	};
 
 	static void to_json(nlohmann::json& j, const appConfig& p) {
@@ -75,6 +78,7 @@ namespace tp {
 			{"maxAccounts", p.maxAccounts },
 			{"audioCodecs", p.audioCodecs },
 			{"pjLogLevel", p.pjLogLevel },
+			{"enableNoiseCancel", p.enableNoiseCancel },
 		};
     }
 
@@ -89,6 +93,7 @@ namespace tp {
 		j.at("maxAccounts").get_to(p.maxAccounts);
 		j.at("audioCodecs").get_to(p.audioCodecs);
 		j.at("pjLogLevel").get_to(p.pjLogLevel);
+		j.at("enableNoiseCancel").get_to(p.enableNoiseCancel);
     }
 
    static void InitConfig() {

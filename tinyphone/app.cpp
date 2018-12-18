@@ -251,6 +251,12 @@ void InitPJSUAEndpoint(std::string logfile) {
 		ep_cfg.logConfig.decor |= PJ_LOG_HAS_CR | PJ_LOG_HAS_DAY_OF_MON |  PJ_LOG_HAS_MONTH |  PJ_LOG_HAS_YEAR ;
 		ep_cfg.uaConfig.userAgent = ApplicationConfig.ua();
 
+		if (ApplicationConfig.enableNoiseCancel) {
+			ep_cfg.medConfig.noVad = true;
+			ep_cfg.medConfig.ecTailLen = PJSUA_DEFAULT_EC_TAIL_LEN;
+			ep_cfg.medConfig.ecOptions = PJMEDIA_ECHO_DEFAULT | PJMEDIA_ECHO_USE_NOISE_SUPPRESSOR;
+		}
+
 		ep.libInit(ep_cfg);
 
 		// Transport Setup
