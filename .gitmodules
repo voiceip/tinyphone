@@ -19,3 +19,6 @@
 [submodule "lib/curl"]
 	path = lib/curl
 	url = https://github.com/curl/curl.git
+[submodule "lib/bcg729"]
+	path = lib/bcg729
+	url = git@github.com:BelledonneCommunications/bcg729.git
