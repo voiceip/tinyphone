@@ -51,4 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="actions.def">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

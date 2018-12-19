@@ -6,7 +6,7 @@
 <?define ShortcutName = "Strowger Tinyphone" ?>
  <?endif?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="Strowger Tinyphone" Language="1033" Version="1.0.0.0" Manufacturer="Flipkart India" UpgradeCode="$(var.UpgradeCode)">
+  <Product Id="*" Name="Strowger Tinyphone" Language="1033" Version="35.0.0.0" Manufacturer="Flipkart India" UpgradeCode="$(var.UpgradeCode)">
     <Package InstallerVersion="200" Compressed="yes" Description="Strowger TinyPhone Installer" InstallScope="perMachine" />
     <MajorUpgrade Schedule="afterInstallInitialize" AllowSameVersionUpgrades="yes"  DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
@@ -20,12 +20,20 @@
     <Property Id="ARPPRODUCTICON" Value="icon.ico"/>
     <Property Id='ARPHELPLINK'>https://github.com/voiceip/tinyphone</Property>
 
-    <Property Id="APP_AUTO_START">0</Property>
-
+    <CustomAction Id="PostInstScript.SetParam" Return="check"  Property="PostInstScript" Value="Something" /> 
+                
     <InstallExecuteSequence>
       <!--<RemoveExistingProducts Before="InstallInitialize"/> -->
+      <Custom Action ="PostInstScript.SetParam" After="InstallFiles">NOT Installed</Custom>
+      <Custom Action='PostInstScript' After="PostInstScript.SetParam">NOT Installed</Custom>
     </InstallExecuteSequence>
   </Product>
+  <Fragment>
+    <Binary Id="MSIActions" SourceFile="$(var.installer-actions.TargetPath)" />
+    <!--Return="ignore" -->
+    <CustomAction Id="PostInstScript" Return="check" BinaryKey="MSIActions" DllEntry="PostInstall"
+          Execute="deferred" Impersonate="no" /> 
+  </Fragment>
   <Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
