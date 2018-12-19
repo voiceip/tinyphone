@@ -58,6 +58,19 @@ namespace tp {
 		}
 
 		void SetCodecs() {
+
+			pjsua_codec_info codec[32];
+			ZeroMemory(codec, sizeof(codec));
+			unsigned uCount = 32;
+			if (pjsua_enum_codecs(codec, &uCount) == PJ_SUCCESS) {
+				printf("List of supported codecs:\n");
+				for (unsigned i = 0; i<uCount; ++i) {
+					printf("  %d\t%.*s\n", codec[i].priority,
+						(int)codec[i].codec_id.slen, codec[i].codec_id.ptr);
+				}
+			}
+
+
 			const pj_str_t ID_ALL = { "*", 1 };
 			pjsua_codec_set_priority(&ID_ALL, PJMEDIA_CODEC_PRIO_DISABLED);
 			BOOST_FOREACH(std::string codec, ApplicationConfig.audioCodecs) {
@@ -183,6 +196,7 @@ namespace tp {
 				}
 
 				acc_cfg.regConfig.timeoutSec = ApplicationConfig.timeoutSec;
+				acc_cfg.regConfig.delayBeforeRefreshSec = ApplicationConfig.refreshIntervalSec;
 				acc_cfg.regConfig.retryIntervalSec = ApplicationConfig.retryIntervalSec;
 				acc_cfg.regConfig.firstRetryIntervalSec = ApplicationConfig.firstRetryIntervalSec;
 				acc_cfg.regConfig.dropCallsOnFail = ApplicationConfig.dropCallsOnFail;

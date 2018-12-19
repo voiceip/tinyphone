@@ -7,6 +7,7 @@
 	"pjLogLevel": 3,
 	"retryIntervalSec": 30,
 	"timeoutSec": 180,
+	"refreshIntervalSec" : 60,
 	"transport": 1,
 	"uaPrefix": "TinyPhone Pjsua2 v",
 	"enableNoiseCancel" : true

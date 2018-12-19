@@ -32,6 +32,7 @@ namespace tp {
 	struct appConfig {
 		pjsip_transport_type_e transport;
 		int timeoutSec;
+		int refreshIntervalSec;
 		int retryIntervalSec;
 		int firstRetryIntervalSec;
 		bool dropCallsOnFail;
@@ -55,6 +56,7 @@ namespace tp {
 	static appConfig ApplicationConfig = {
 		PJSIP_TRANSPORT_UDP,
 		SIP_REG_DURATION,
+		SIP_REG_DURATION / 2,
 		SIP_REG_RETRY_INTERVAL,
 		SIP_REG_FIRST_RETRY_INTERVAL,
 		false,
@@ -70,6 +72,7 @@ namespace tp {
 		j = nlohmann::json{
 			{"transport", p.transport },
 			{"timeoutSec", p.timeoutSec },
+			{"refreshIntervalSec", p.refreshIntervalSec },
 			{"retryIntervalSec", p.retryIntervalSec },
 			{"firstRetryIntervalSec", p.firstRetryIntervalSec },
 			{"dropCallsOnFail", p.dropCallsOnFail },
@@ -85,6 +88,7 @@ namespace tp {
    static void from_json(const nlohmann::json& j, appConfig& p) {
 		j.at("transport").get_to(p.transport);
 		j.at("timeoutSec").get_to(p.timeoutSec);
+		j.at("refreshIntervalSec").get_to(p.refreshIntervalSec);
 		j.at("retryIntervalSec").get_to(p.retryIntervalSec);
 		j.at("firstRetryIntervalSec").get_to(p.firstRetryIntervalSec);
 		j.at("dropCallsOnFail").get_to(p.dropCallsOnFail);
