@@ -12,6 +12,7 @@
  */
 #pragma once
 
+
 #ifdef _DEVMSI_EXPORTS
 #  define DEVMSI_API __declspec(dllexport)
 #else
@@ -45,7 +46,7 @@ HRESULT DEVMSI_API DoPreInstall(int argc, LPWSTR* argv);
 /**
  *  Standardized function prototype for DevMsi.
  *
- *  Functions in DevMsi can be called through the MSI Custom
+ *  Functions in MSI Handler can be called through the MSI Custom
  *  Action DLL or through an external C program.  Both
  *  methods expect to wrap things into this function prototype.
  *

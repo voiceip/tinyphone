@@ -9,11 +9,17 @@
  *  @param hr HRESULT to be checked for failure
  *  @param message Message to be sent to the log on failure
  */
-inline void CheckResult( HRESULT hr, const char* message )
+inline void CheckResultOrThrow( HRESULT hr, const char* message )
 {
-    if ( FAILED(hr) )
-    {
+    if ( FAILED(hr) ){
         LogResult( hr, message );
         throw( (hr) );
     }
-} // CheckResult( HRESULT hr, const char* message )
+} 
+
+inline void CheckResult(HRESULT hr, const char* message)
+{
+	if (FAILED(hr)){
+		LogResult(hr, message);
+	}
+}

@@ -8,12 +8,18 @@
 
 #define _DEVMSI_EXPORTS
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
+#include <iostream>
 #include <windows.h>
 #include <strsafe.h>
 #include <msiquery.h>
 #include <shellapi.h>
+#include <string>
 
+#ifndef UNICODE  
+typedef std::string String;
+#else
+typedef std::wstring String;
+#endif
 
 void LogResult(
     __in HRESULT hr,

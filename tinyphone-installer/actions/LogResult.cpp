@@ -88,6 +88,7 @@ void LogResult(
 
     va_start( args, fmt );
 #pragma warning( push )
+#pragma warning( disable : 4995 )
 #pragma warning( disable : 4996 )
     len = _vsnprintf( NULL, 0, fmt, args ) + 1;
 #pragma warning( pop )

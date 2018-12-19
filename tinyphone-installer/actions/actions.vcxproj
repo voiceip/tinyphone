@@ -22,21 +22,21 @@
     <ProjectGuid>{5E5DB19E-DD1A-49FB-8788-D419ED63EB02}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>actions</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
     <ProjectName>installer-actions</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -96,13 +96,14 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ACTIONS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(WIX)sdk\VS2015\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <DisableSpecificWarnings>4995;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(WIX)sdk\VS2015\lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>msi.lib;Version.lib;dutil.lib;wcautil.lib;Advapi32.lib;Wtsapi32.lib;Shell32.lib;Shlwapi.lib;User32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>msi.lib;Version.lib;dutil.lib;wcautil.lib;Advapi32.lib;Wtsapi32.lib;Shell32.lib;Shlwapi.lib;User32.lib;Activeds.lib;Adsiid.lib</AdditionalDependencies>
       <ModuleDefinitionFile>actions.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
@@ -129,6 +130,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;ACTIONS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(WIX)sdk\VS2015\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <DisableSpecificWarnings>4995;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -136,7 +139,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(WIX)sdk\VS2015\lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>msi.lib;Version.lib;dutil.lib;wcautil.lib;Advapi32.lib;Wtsapi32.lib;Shell32.lib;Shlwapi.lib;User32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>msi.lib;Version.lib;dutil.lib;wcautil.lib;Advapi32.lib;Wtsapi32.lib;Shell32.lib;Shlwapi.lib;User32.lib;Activeds.lib;Adsiid.lib</AdditionalDependencies>
       <ModuleDefinitionFile>actions.def</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
