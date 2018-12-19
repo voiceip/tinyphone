@@ -31,16 +31,16 @@
  */
 UINT CustomActionArgcArgv( MSIHANDLE hInstall, CUSTOM_ACTION_ARGC_ARGV func, LPCSTR actionName )
 {
-	HRESULT hr = S_OK;
-	UINT er = ERROR_SUCCESS;
+    HRESULT hr = S_OK;
+    UINT er = ERROR_SUCCESS;
     LPWSTR pszCustomActionData = NULL;
     int argc = 0;
     LPWSTR* argv = NULL;
 
-	hr = WcaInitialize(hInstall, actionName);
-	ExitOnFailure(hr, "Failed to initialize");
+    hr = WcaInitialize(hInstall, actionName);
+    ExitOnFailure(hr, "Failed to initialize");
 
-	WcaLog(LOGMSG_STANDARD, "Initialized.");
+    WcaLog(LOGMSG_STANDARD, "Initialized.");
     
     // Retrieve our custom action property. This is one of
     // only three properties we can request on a Deferred
@@ -70,8 +70,8 @@ LExit:
     if ( NULL != argv )
         LocalFree( argv );
 
-	er = SUCCEEDED(hr) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
-	return WcaFinalize(er);
+    er = SUCCEEDED(hr) ? ERROR_SUCCESS : ERROR_INSTALL_FAILURE;
+    return WcaFinalize(er);
 }
 
 UINT __stdcall PostInstall(MSIHANDLE hInstall)
@@ -89,21 +89,21 @@ UINT __stdcall PreInstall(MSIHANDLE hInstall)
  * DllMain - Initialize and cleanup WiX custom action utils.
  */
 extern "C" BOOL WINAPI DllMain(
-	__in HINSTANCE hInst,
-	__in ULONG ulReason,
-	__in LPVOID
-	)
+    __in HINSTANCE hInst,
+    __in ULONG ulReason,
+    __in LPVOID
+    )
 {
-	switch(ulReason)
-	{
-	case DLL_PROCESS_ATTACH:
-		WcaGlobalInitialize(hInst);
-		break;
+    switch(ulReason)
+    {
+    case DLL_PROCESS_ATTACH:
+        WcaGlobalInitialize(hInst);
+        break;
 
-	case DLL_PROCESS_DETACH:
-		WcaGlobalFinalize();
-		break;
-	}
+    case DLL_PROCESS_DETACH:
+        WcaGlobalFinalize();
+        break;
+    }
 
-	return TRUE;
+    return TRUE;
 }

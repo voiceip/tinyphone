@@ -8,71 +8,75 @@
 #define MAX_COMPUTERNAME_LENGTH 256
 
 HRESULT AddDomainUserToLocalGroup(LPCWSTR pwszComputerName,
-	LPCWSTR pwszGroupName,
-	LPCWSTR pwszDomainName,
-	LPCWSTR pwszUserToAdd)
-{
-	HRESULT hr = E_FAIL;
-	CComPtr<IADsContainer> spComputer;
+    LPCWSTR pwszGroupName, LPCWSTR pwszDomainName, LPCWSTR pwszUserToAdd) {
 
-	// Build the binding string.
-	CComBSTR sbstrBindingString;
-	sbstrBindingString = "WinNT://";
-	sbstrBindingString += pwszComputerName;
-	sbstrBindingString += ",computer";
+    HRESULT hr = E_FAIL;
+    CComPtr<IADsContainer> spComputer;
 
-	// Bind to the computer that contains the group.
-	hr = ADsOpenObject(sbstrBindingString,
-		NULL,
-		NULL,
-		ADS_SECURE_AUTHENTICATION,
-		IID_IADsContainer,
-		(void**)&spComputer);
+    // Build the binding string.
+    CComBSTR sbstrBindingString;
+    sbstrBindingString = "WinNT://";
+    sbstrBindingString += pwszComputerName;
+    sbstrBindingString += ",computer";
 
-	if (FAILED(hr)){
-		return hr;
-	}
+    // Bind to the computer that contains the group.
+    hr = ADsOpenObject(sbstrBindingString,
+        NULL,
+        NULL,
+        ADS_SECURE_AUTHENTICATION,
+        IID_IADsContainer,
+        (void**)&spComputer);
 
-	// Bind to the group object.
-	CComPtr<IDispatch> spDisp;
-	hr = spComputer->GetObject(CComBSTR("group"),
-		CComBSTR(pwszGroupName),
-		&spDisp);
-	if (FAILED(hr)){
-		return hr;
-	}
+    if (FAILED(hr)){
+        return hr;
+    }
 
-	CComPtr<IADsGroup> spGroup;
-	hr = spDisp->QueryInterface(IID_IADs, (LPVOID*)&spGroup);
-	if (FAILED(hr)){
-		return hr;
-	}
+    // Bind to the group object.
+    CComPtr<IDispatch> spDisp;
+    hr = spComputer->GetObject(CComBSTR("group"),
+        CComBSTR(pwszGroupName),
+        &spDisp);
+    if (FAILED(hr)){
+        return hr;
+    }
 
-	// Bind to the member to add.
-	sbstrBindingString = "WinNT://";
-	sbstrBindingString += pwszDomainName;
-	sbstrBindingString += "/";
-	sbstrBindingString += pwszUserToAdd;
+    CComPtr<IADsGroup> spGroup;
+    hr = spDisp->QueryInterface(IID_IADs, (LPVOID*)&spGroup);
+    if (FAILED(hr)){
+        return hr;
+    }
 
-	hr = spGroup->Add(sbstrBindingString);
+    // Bind to the member to add.
+    sbstrBindingString = "WinNT://";
+    sbstrBindingString += pwszDomainName;
+    sbstrBindingString += "/";
+    sbstrBindingString += pwszUserToAdd;
 
-	return hr;
+    hr = spGroup->Add(sbstrBindingString);
+
+    if (HRESULT_FROM_WIN32(ERROR_MEMBER_IN_ALIAS) == hr) {
+        //This will occur if the member already exists in the group, which is ok for us.
+        hr = S_OK;
+    }
+
+    return hr;
 }
 
 std::wstring getComputerName() {
-	wchar_t buffer[MAX_COMPUTERNAME_LENGTH + 1] = { 0 };
-	DWORD cchBufferSize = sizeof(buffer) / sizeof(buffer[0]);
-	if (!GetComputerNameW(buffer, &cchBufferSize))
-		throw std::runtime_error("GetComputerName() failed.");
-	return std::wstring(&buffer[0]);
+    wchar_t buffer[MAX_COMPUTERNAME_LENGTH + 1] = { 0 };
+    DWORD cchBufferSize = sizeof(buffer) / sizeof(buffer[0]);
+    if (!GetComputerNameW(buffer, &cchBufferSize))
+        throw std::runtime_error("GetComputerName() failed.");
+    return std::wstring(&buffer[0]);
 }
 
 HRESULT DEVMSI_API DoPostInstall( int argc, LPWSTR* argv )
 {
     HRESULT hr = S_OK;
-	LogResult(hr, "Executing PostInstall Script...");
+    LogResult(hr, "Executing PostInstall Script...");
 
-	String computerName = getComputerName();
-	LogResult(hr, "Computer-Name %ls", computerName.c_str());
+    String computerName = getComputerName();
+    LogResult(hr, "Computer-Name %ls", computerName.c_str());
+
     return S_OK;
 } 

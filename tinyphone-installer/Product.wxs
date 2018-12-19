@@ -4,7 +4,7 @@
 <?define ShortcutName = "Strowger Tinyphone Debug" ?>
 <?else?>
 <?define ShortcutName = "Strowger Tinyphone" ?>
- <?endif?>
+<?endif?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="*" Name="Strowger Tinyphone" Language="1033" Version="35.0.0.0" Manufacturer="Flipkart India" UpgradeCode="$(var.UpgradeCode)">
     <Package InstallerVersion="200" Compressed="yes" Description="Strowger TinyPhone Installer" InstallScope="perMachine" />
