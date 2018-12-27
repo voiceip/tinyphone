@@ -284,7 +284,10 @@ void InitPJSUAEndpoint(std::string logfile) {
 		CROW_LOG_INFO << "Using Transport Port: " << port;
 		
 		tcfg.port = port;
-		ep.transportCreate(ApplicationConfig.transport, tcfg);
+		auto status = ep.transportCreate((pjsip_transport_type_e)ApplicationConfig.transport, tcfg);
+		if (status != PJ_SUCCESS) {
+			CROW_LOG_INFO << "pjsua.transportCreate returned status : "  << status ;
+		}
 	}
 	catch (Error & err) {
 		CROW_LOG_ERROR << "Exception: " << err.info();

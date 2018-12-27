@@ -164,6 +164,7 @@
     <ClInclude Include="events.h" />
     <ClInclude Include="guicon.h" />
     <ClInclude Include="json.h" />
+    <ClInclude Include="net.h" />
     <ClInclude Include="phone.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="server.h" />
@@ -174,8 +175,9 @@
   <ItemGroup>
     <ClCompile Include="app.cpp" />
     <ClCompile Include="call.cpp" />
+    <ClCompile Include="config.cpp" />
     <ClCompile Include="guicon.cpp" />
-    <ClCompile Include="net.h" />
+    <ClCompile Include="net.cpp" />
     <ClCompile Include="server.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

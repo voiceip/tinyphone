@@ -138,23 +138,22 @@ void TinyPhoneHttpServer::Start() {
 			json j = json::parse(req.body);
 			tp::AccountConfig loginConfig = j.get<tp::AccountConfig>();
 
-			if (phone.Accounts().size() >= ApplicationConfig.maxAccounts) {
-				return tp::response(403, {
-					{ "message", "Max Account Allowed Reached." },
-				});
-			}
-
 			string account_name = SIP_ACCOUNT_NAME(loginConfig.username, loginConfig.domain);
 
 			pj_thread_auto_register();
 			CROW_LOG_INFO << "Registering account " << account_name;
 			
-			auto existing_account = phone.AccountByURI(account_name);
+			auto existing_account = phone.AccountByName(account_name);
 			if (existing_account != nullptr) {
 				return tp::response(400, {
 					{ "message", "Account already exits" },
 					{ "account_name", account_name },
 					{ "id", existing_account->getId() },
+				});
+			}
+			else if (phone.Accounts().size() >= ApplicationConfig.maxAccounts) {
+				return tp::response(403, {
+					{ "message", "Max Account Allowed Reached." },
 				});
 			}
 			else {
@@ -208,6 +207,7 @@ void TinyPhoneHttpServer::Start() {
 			BOOST_FOREACH(SIPAccount* account, phone.Accounts()) {
 				json account_data = {
 					{"id" , account->getId() },
+					{"uri" , account->getInfo().uri },
 					{"name" , account->Name()},
 					{"active" , account->getInfo().regIsActive },
 					{"status" , account->getInfo().regStatusText }
@@ -226,7 +226,7 @@ void TinyPhoneHttpServer::Start() {
 		([&phone](string account_name) {
 		try {
 			pj_thread_auto_register();
-			SIPAccount* acc = phone.AccountByURI(account_name);
+			SIPAccount* acc = phone.AccountByName(account_name);
 			if (acc != nullptr) {
 				acc->reRegister();
 				json response = {
@@ -253,7 +253,7 @@ void TinyPhoneHttpServer::Start() {
 		([&phone](string account_name) {
 		try {
 			pj_thread_auto_register();
-			SIPAccount* acc = phone.AccountByURI(account_name);
+			SIPAccount* acc = phone.AccountByName(account_name);
 			if (acc != nullptr) {
 				phone.Logout(acc);
 				json response = {

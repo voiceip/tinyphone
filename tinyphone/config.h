@@ -8,7 +8,7 @@
 #include "json.h"
 #include "consts.h"
 #include "utils.h"
-#include "net.h"
+
 
 #define SIP_REG_DURATION 180
 #define SIP_REG_RETRY_INTERVAL 30
@@ -53,21 +53,6 @@ namespace tp {
 
 	static auto _default_codes = splitString(SIP_ALLOWED_AUDIO_CODECS, ' ');
 
-	static appConfig ApplicationConfig = {
-		PJSIP_TRANSPORT_UDP,
-		SIP_REG_DURATION,
-		SIP_REG_DURATION / 2,
-		SIP_REG_RETRY_INTERVAL,
-		SIP_REG_FIRST_RETRY_INTERVAL,
-		false,
-		DEFAULT_UA_PREFIX_STRING,
-		SIP_MAX_CALLS,
-		SIP_MAX_ACC,
-		_default_codes,
-		DEFUALT_PJ_LOG_LEVEL,
-		false
-	};
-
 	static void to_json(nlohmann::json& j, const appConfig& p) {
 		j = nlohmann::json{
 			{"transport", p.transport },
@@ -100,23 +85,10 @@ namespace tp {
 		j.at("enableNoiseCancel").get_to(p.enableNoiseCancel);
     }
 
-   static void InitConfig() {
-	   tp::HttpResponse remoteConfig = file_get_contents(REMOTE_CONFIG_URL);
-	   if (remoteConfig.code / 100 != 2) {
-		   tp::DisplayError("Failed to fetch Remote Config! Return Code: " + std::to_string(remoteConfig.code));
-		   exit(1);
-	   }
-	   std::cout << "======= Remote Application Config ======" << std::endl << remoteConfig.body << std::endl;
+    extern appConfig ApplicationConfig;
 
-	   try {
-		   auto j = nlohmann::json::parse(remoteConfig.body);
-		   ApplicationConfig = j.get<tp::appConfig>();
-	   }
-	   catch (...) {
-		   tp::DisplayError("Failed Parsing Remote Config! Please contact support.");
-		   exit(1);
-	   }
-   }
+	void InitConfig();
 }
+
 
 #endif

@@ -41,6 +41,21 @@ namespace tp {
 		pj::Endpoint* endpoint;
 		EventStream* eventStream;
 
+	private:
+		void AddTransportSuffix(std::string &str) {
+			switch (ApplicationConfig.transport)
+			{
+			case PJSIP_TRANSPORT_TCP:
+				str = str + ";transport=tcp";
+				break;
+			case PJSIP_TRANSPORT_TLS:
+				str += ";transport=tls";
+				break;
+			default:
+				break;
+			}
+		}
+
 	public:
 		int input_audio_dev = 0, output_audio_dev = 0;
 
@@ -145,14 +160,13 @@ namespace tp {
 			}
 		}
 
-		SIPAccount* AccountByURI(string uri) {
+		SIPAccount* AccountByName(string name) {
 			if (!HasAccounts())
 				return nullptr;
 			else {
-				string full_uri = "sip:" + uri;
 				SIPAccount* account = nullptr;
 				BOOST_FOREACH(SIPAccount* acc, accounts) {
-					if (acc->getInfo().uri == full_uri) {
+					if (acc->Name() == name) {
 						account = acc;
 						break;
 					}
@@ -181,7 +195,7 @@ namespace tp {
 
 		std::future<int> AddAccount(AccountConfig& config) throw (std::invalid_argument) {
 			string account_name = SIP_ACCOUNT_NAME(config.username, config.domain);
-			auto exits = AccountByURI(account_name);
+			auto exits = AccountByName(account_name);
 			if (exits != nullptr) {
 				throw std::invalid_argument("Account already exists");
 			}
@@ -189,6 +203,8 @@ namespace tp {
 				pj::AccountConfig acc_cfg;
 				acc_cfg.idUri = ("sip:" + account_name);
 				acc_cfg.regConfig.registrarUri = ("sip:" + config.domain);
+				
+				AddTransportSuffix(acc_cfg.regConfig.registrarUri);
 				acc_cfg.sipConfig.authCreds.push_back(AuthCredInfo("digest", "*", config.username, 0, config.password));
 				
 				if (config.proxy.size() > 0) {
@@ -219,6 +235,7 @@ namespace tp {
 		}
 
 		SIPCall* MakeCall(string uri, SIPAccount* account) throw(pj::Error) {
+			AddTransportSuffix(uri);
 			SIPCall *call = new SIPCall(*account);
 			CallOpParam prm(true);
 			prm.opt.audioCount = 1;
