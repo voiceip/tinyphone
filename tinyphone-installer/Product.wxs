@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?define UpgradeCode = "f53dd57f-44cb-4f54-b861-1513f5f7914e"?>
+<?define BaseName = "Strowger Tinyphone"?>
 <?if $(var.tinyphone.Configuration) = "Debug" ?>
-<?define ShortcutName = "Strowger Tinyphone Debug" ?>
+<?define ShortcutName = "$(var.BaseName) Debug" ?>
 <?else?>
-<?define ShortcutName = "Strowger Tinyphone" ?>
+<?define ShortcutName = $(var.BaseName) ?>
 <?endif?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="Strowger Tinyphone" Language="1033" Version="35.0.0.0" Manufacturer="Flipkart India" UpgradeCode="$(var.UpgradeCode)">
-    <Package InstallerVersion="200" Compressed="yes" Description="Strowger TinyPhone Installer" InstallScope="perMachine" />
+  <Product Id="*" Name="$(var.BaseName)" Language="1033" Version="35.0.0.0" Manufacturer="Flipkart India" UpgradeCode="$(var.UpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" Description="$(var.BaseName) Installer" InstallScope="perMachine" />
     <MajorUpgrade Schedule="afterInstallInitialize" AllowSameVersionUpgrades="yes"  DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
     <Feature Id="ProductFeature" Title="Tinyphone" Level="1">
@@ -20,8 +21,8 @@
     <Property Id="ARPPRODUCTICON" Value="icon.ico"/>
     <Property Id='ARPHELPLINK'>https://github.com/voiceip/tinyphone</Property>
 
-    <CustomAction Id="PostInstScript.SetParam" Return="check"  Property="PostInstScript" Value="Something" /> 
-                
+    <CustomAction Id="PostInstScript.SetParam" Return="check"  Property="PostInstScript" Value="[ProcessorArchitecture]" /> 
+
     <InstallExecuteSequence>
       <!--<RemoveExistingProducts Before="InstallInitialize"/> -->
       <Custom Action ="PostInstScript.SetParam" After="InstallFiles">NOT Installed</Custom>
@@ -30,8 +31,7 @@
   </Product>
   <Fragment>
     <Binary Id="MSIActions" SourceFile="$(var.installer-actions.TargetPath)" />
-    <!--Return="ignore" -->
-    <CustomAction Id="PostInstScript" Return="check" BinaryKey="MSIActions" DllEntry="PostInstall"
+    <CustomAction Id="PostInstScript" Return="ignore" BinaryKey="MSIActions" DllEntry="PostInstall"
           Execute="deferred" Impersonate="no" /> 
   </Fragment>
   <Fragment>

@@ -221,6 +221,33 @@ void TinyPhoneHttpServer::Start() {
 		}
 	});
 
+	CROW_ROUTE(app, "/accounts/<string>/reregister")
+		.methods("POST"_method)
+		([&phone](string account_name) {
+		try {
+			pj_thread_auto_register();
+			SIPAccount* acc = phone.AccountByURI(account_name);
+			if (acc != nullptr) {
+				acc->reRegister();
+				json response = {
+					{ "message",  "Re-Register Triggered" },
+					{ "account_name", account_name }
+				};
+				return tp::response(200, response);
+			}
+			else {
+				return tp::response(400, {
+					{ "message", "Account Not Found" },
+					{ "account_name" , account_name }
+				});
+			}
+
+		}
+		catch (...) {
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
+		}
+	});
+
 	CROW_ROUTE(app, "/accounts/<string>/logout")
 		.methods("POST"_method)
 		([&phone](string account_name) {

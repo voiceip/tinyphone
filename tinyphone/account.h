@@ -76,6 +76,15 @@ public:
 		}
 	}
 
+	void reRegister() {
+		PJ_LOG(3, (__FILENAME__, "ReReigstering %s ", account_name.c_str()));
+		setRegistration(true);
+	}
+
+	void UnRegister() {
+		setRegistration(false);
+	}
+
 	virtual void onRegState(OnRegStateParam &prm) 
 	{
 		AccountInfo ai = getInfo();
