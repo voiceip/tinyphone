@@ -3,7 +3,6 @@
 #ifndef UTILS_HEADER_FILE_H
 #define UTILS_HEADER_FILE_H
 
-#include "stdafx.h"
 #include <pj/pool.h>
 #include <pj/string.h>
 #include <string.h>

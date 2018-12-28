@@ -7,8 +7,7 @@
 #include <string>
 #include "json.h"
 #include "consts.h"
-#include "utils.h"
-
+#include <pjsua-lib/pjsua.h>
 
 #define SIP_REG_DURATION 180
 #define SIP_REG_RETRY_INTERVAL 30
@@ -45,13 +44,13 @@ namespace tp {
 		int pjLogLevel;
 
 		bool enableNoiseCancel;
+		bool useDefaultAudioDevice; 
+		std::vector<std::string> prefferedAudioDevices;
 
 		std::string ua(){
 			return uaPrefix + APP_VERSION;
 		};
 	};
-
-	static auto _default_codes = splitString(SIP_ALLOWED_AUDIO_CODECS, ' ');
 
 	static void to_json(nlohmann::json& j, const appConfig& p) {
 		j = nlohmann::json{
@@ -67,6 +66,8 @@ namespace tp {
 			{"audioCodecs", p.audioCodecs },
 			{"pjLogLevel", p.pjLogLevel },
 			{"enableNoiseCancel", p.enableNoiseCancel },
+			{"useDefaultAudioDevice", p.useDefaultAudioDevice },
+			{"prefferedAudioDevices", p.prefferedAudioDevices },
 		};
     }
 
@@ -83,11 +84,13 @@ namespace tp {
 		j.at("audioCodecs").get_to(p.audioCodecs);
 		j.at("pjLogLevel").get_to(p.pjLogLevel);
 		j.at("enableNoiseCancel").get_to(p.enableNoiseCancel);
+		j.at("useDefaultAudioDevice").get_to(p.useDefaultAudioDevice);
+		j.at("prefferedAudioDevices").get_to(p.prefferedAudioDevices);
     }
 
     extern appConfig ApplicationConfig;
 
-	void InitConfig();
+    void InitConfig();
 }
 
 

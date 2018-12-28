@@ -42,18 +42,8 @@ namespace tp {
 		EventStream* eventStream;
 
 	private:
-		void AddTransportSuffix(std::string &str) {
-			switch (ApplicationConfig.transport)
-			{
-			case PJSIP_TRANSPORT_TCP:
-				str = str + ";transport=tcp";
-				break;
-			case PJSIP_TRANSPORT_TLS:
-				str += ";transport=tls";
-				break;
-			default:
-				break;
-			}
+		void addTransportSuffix(std::string &str) {
+			tp::AddTransportSuffix(str, ApplicationConfig.transport);
 		}
 
 	public:
@@ -112,8 +102,7 @@ namespace tp {
 			if (input_device == -1 || output_device == -1) {
 				audio_manager.refreshDevs();
 				AudioDevInfoVector devices = audio_manager.enumDev();
-				vector<string> preffered_devices{ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" };
-				BOOST_FOREACH(string& search_string, preffered_devices) {
+				BOOST_FOREACH(string& search_string, ApplicationConfig.prefferedAudioDevices) {
 					int dev_idx = 0;
 					BOOST_FOREACH(AudioDevInfo* info, devices) {
 						string dev_name = info->name;
@@ -204,7 +193,7 @@ namespace tp {
 				acc_cfg.idUri = ("sip:" + account_name);
 				acc_cfg.regConfig.registrarUri = ("sip:" + config.domain);
 				
-				AddTransportSuffix(acc_cfg.regConfig.registrarUri);
+				addTransportSuffix(acc_cfg.regConfig.registrarUri);
 				acc_cfg.sipConfig.authCreds.push_back(AuthCredInfo("digest", "*", config.username, 0, config.password));
 				
 				if (config.proxy.size() > 0) {
@@ -235,7 +224,7 @@ namespace tp {
 		}
 
 		SIPCall* MakeCall(string uri, SIPAccount* account) throw(pj::Error) {
-			AddTransportSuffix(uri);
+			addTransportSuffix(uri);
 			SIPCall *call = new SIPCall(*account);
 			CallOpParam prm(true);
 			prm.opt.audioCount = 1;

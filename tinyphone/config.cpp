@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include "config.h"
 #include "net.h"
+#include "utils.h"
 
 namespace tp {
+
+	auto _default_codes = splitString(SIP_ALLOWED_AUDIO_CODECS, ' ');
 
 	appConfig ApplicationConfig = {
 		PJSIP_TRANSPORT_UDP,
@@ -16,7 +19,9 @@ namespace tp {
 		SIP_MAX_ACC,
 		_default_codes,
 		DEFUALT_PJ_LOG_LEVEL,
-		false
+		false,
+		false,
+		{ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" }
 	};
 
 	void InitConfig() {
@@ -31,21 +36,24 @@ namespace tp {
 			tp::DisplayError(message);
 			exit(1);
 		}
-		std::cout << "======= Remote Config ======" << std::endl << remoteConfig.body << std::endl;
-
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 		try {
 			auto j = nlohmann::json::parse(remoteConfig.body);
 			ApplicationConfig = j.get<tp::appConfig>();
 
 			nlohmann::json k = ApplicationConfig;
 
+			SetConsoleTextAttribute(hConsole, FOREGROUND_YELLOW);
 			std::cout << "======= Application Config ======" << std::endl << k.dump(4) << std::endl;
-
-
 		}
 		catch (...) {
+			SetConsoleTextAttribute(hConsole, FOREGROUND_YELLOW);
+			std::cout << "======= Remote Config ======" << std::endl << remoteConfig.body << std::endl;
+
 			tp::DisplayError("Failed Parsing Remote Config! Please contact support.");
 			exit(1);
 		}
+		SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE);
+
 	}
 }

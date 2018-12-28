@@ -40,7 +40,10 @@ void TinyPhoneHttpServer::Start() {
 	CROW_LOG_INFO << "Starting the TinyPhone HTTP API";
 	TinyPhone phone(endpoint);
 	phone.SetCodecs();
-	phone.ConfigureAudioDevices();
+
+	if (!ApplicationConfig.useDefaultAudioDevice) {
+		phone.ConfigureAudioDevices();
+	}
 	phone.CreateEventStream(&updates);
 
 	crow::App<TinyPhoneMiddleware> app;

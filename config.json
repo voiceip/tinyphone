@@ -10,5 +10,7 @@
 	"refreshIntervalSec" : 60,
 	"transport": 2,
 	"uaPrefix": "TinyPhone Pjsua2 v",
-	"enableNoiseCancel" : true
+	"enableNoiseCancel" : true,
+	"prefferedAudioDevices" : [ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" ],
+	"useDefaultAudioDevice" : false
 }
