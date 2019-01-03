@@ -101,6 +101,14 @@
       <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;libcurl.lib;bcg729.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <CustomBuildStep>
+      <Command>$(SolutionDir)..\bin\StampVer.exe -v$(SolutionDir)stampver.inf -i4 -j4 $(TargetPath)</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>$(TargetDir)dummy;%(Outputs)</Outputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
+      <Message>Stamping Build Version</Message>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -136,6 +144,14 @@
       <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;libcurl.lib;bcg729.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <CustomBuildStep>
+      <Command>$(SolutionDir)..\bin\StampVer.exe -v$(SolutionDir)stampver.inf -i4 -j4 $(TargetPath)</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>$(TargetDir)dummy;%(Outputs)</Outputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
+      <Message>Stamping Build Version</Message>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -192,6 +208,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="stampver.inf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
