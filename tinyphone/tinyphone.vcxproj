@@ -99,6 +99,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\lib\bcg729\build\src\Release;..\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\lib;C:\lib\boost_1_68_0\lib32-msvc-14.0;..\lib\opus\win32\VS2015\Win32\Debug;..\lib\vp8vfw\vp8\lib\Win32;..\lib\pjproject\pjsip\lib;..\lib\pjproject\pjnath\lib;..\lib\pjproject\pjmedia\lib;..\lib\pjproject\pjlib-util\lib;..\lib\pjproject\pjlib\lib;..\lib\pjproject\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;libcurl.lib;bcg729.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;libcurl.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>false</EnableUAC>
     </Link>
     <CustomBuildStep>
@@ -142,6 +143,7 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\lib\bcg729\build\src\Release;..\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\lib;C:\lib\boost_1_68_0\lib32-msvc-14.0;..\lib\opus\win32\VS2015\Win32\Debug;..\lib\vp8vfw\vp8\lib\Win32;..\lib\pjproject\pjsip\lib;..\lib\pjproject\pjnath\lib;..\lib\pjproject\pjmedia\lib;..\lib\pjproject\pjlib-util\lib;..\lib\pjproject\pjlib\lib;..\lib\pjproject\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;libcurl.lib;bcg729.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;libcurl.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>false</EnableUAC>
     </Link>
     <CustomBuildStep>
