@@ -7,14 +7,8 @@
 #include <string>
 #include "json.h"
 #include "consts.h"
+#include "utils.h"
 #include <pjsua-lib/pjsua.h>
-
-#define SIP_REG_DURATION 180
-#define SIP_REG_RETRY_INTERVAL 30
-#define SIP_REG_FIRST_RETRY_INTERVAL 15
-#define SIP_ALLOWED_AUDIO_CODECS "PCMA/8000/1 PCMU/8000/1"
-
-#define DEFAULT_UA_PREFIX_STRING "TinyPhone Pjsua2 v" 
 
 #define SIP_MAX_CALLS	4
 
@@ -48,7 +42,9 @@ namespace tp {
 		std::vector<std::string> prefferedAudioDevices;
 
 		std::string ua(){
-			return uaPrefix + APP_VERSION;
+			std::string productVersion;
+			GetProductVersion(productVersion);
+			return uaPrefix + productVersion;
 		};
 	};
 

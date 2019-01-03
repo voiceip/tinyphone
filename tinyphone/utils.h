@@ -83,6 +83,8 @@ namespace tp {
 	std::string GetSIPURI(std::string str, std::string domain);
 
 	void ParseSIPURI(std::string in, tp::SIPUri* out);
+
+	bool GetProductVersion(std::string &version);
 }
 #endif
  

@@ -280,8 +280,13 @@ void InitPJSUAEndpoint(std::string logfile) {
 			break;
 		}
 
+		std::string productVersion;
+		GetProductVersion(productVersion);
+
+		CROW_LOG_INFO << "Running Product Version: " << productVersion;
 		CROW_LOG_INFO << "Using Transport Protocol: " << ApplicationConfig.transport;
 		CROW_LOG_INFO << "Using Transport Port: " << port;
+		CROW_LOG_INFO << "Using UA: " << ApplicationConfig.ua();
 		
 		tcfg.port = port;
 		auto status = ep.transportCreate((pjsip_transport_type_e)ApplicationConfig.transport, tcfg);

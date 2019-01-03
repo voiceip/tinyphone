@@ -2,6 +2,8 @@
 #include "utils.h"
 #include <thread>
 #include <boost/algorithm/string.hpp>
+#include <windows.h>
+#include <winver.h>
 
 using namespace std;
 
@@ -158,5 +160,43 @@ namespace tp {
 				out->domain = in.substr(start);
 			}
 		}
+	}
+
+	bool GetProductVersion(std::string &version)
+	{
+		// get the filename of the executable containing the version resource
+		TCHAR szFilename[MAX_PATH + 1] = { 0 };
+		if (GetModuleFileName(NULL, szFilename, MAX_PATH) == 0){
+			std::cerr << "GetModuleFileName failed with error %d" <<  GetLastError() << endl;
+			return false;
+		}
+
+		// allocate a block of memory for the version info
+		DWORD dummy;
+		DWORD dwSize = GetFileVersionInfoSize(szFilename, &dummy);
+		if (dwSize == 0){
+			std::cerr <<  "GetFileVersionInfoSize failed with error %d" << GetLastError() << endl;
+			return false;
+		}
+		std::vector<BYTE> data(dwSize);
+
+		// load the version info
+		if (!GetFileVersionInfo(szFilename, NULL, dwSize, &data[0])){
+			std::cerr << "GetFileVersionInfo failed with error %d" <<  GetLastError() << endl;
+			return false;
+		}
+
+		UINT                uiVerLen = 0;
+		VS_FIXEDFILEINFO*   pFixedInfo = 0;     // pointer to fixed file info structure get the fixed file info (language-independent) 
+		if (VerQueryValue(&data[0], TEXT("\\"), (void**)&pFixedInfo, (UINT *)&uiVerLen) == 0) {
+			return false;
+		}
+
+		CStringA appVersion;
+		appVersion.Format("%u.%u.%u.%u",
+			HIWORD(pFixedInfo->dwProductVersionMS),LOWORD(pFixedInfo->dwProductVersionMS),
+			HIWORD(pFixedInfo->dwProductVersionLS),LOWORD(pFixedInfo->dwProductVersionLS));
+		version = appVersion;
+		return true;
 	}
 }

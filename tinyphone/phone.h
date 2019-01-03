@@ -42,8 +42,9 @@ namespace tp {
 		EventStream* eventStream;
 
 	private:
-		void addTransportSuffix(std::string &str) {
+		std::string addTransportSuffix(std::string &str) {
 			tp::AddTransportSuffix(str, ApplicationConfig.transport);
+			return str;
 		}
 
 	public:
@@ -170,6 +171,7 @@ namespace tp {
 				if (*it == acc) {
 					delete (*it);
 					it = accounts.erase(it);
+					break;
 				}
 			}
 		}

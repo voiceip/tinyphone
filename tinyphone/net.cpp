@@ -2,6 +2,7 @@
 #include "net.h"
 #include <curl/curl.h>
 #include <boost/asio.hpp>
+#include <fstream>
 
 namespace tp {
 
@@ -41,6 +42,13 @@ namespace tp {
 		return response;
 	}
 
+
+	std::string file_get_contents(std::string  const& path) throw (std::exception) {
+		//return (std::stringstream() << std::ifstream(path).rdbuf()).str();
+		std::stringstream buffer;
+		buffer << std::ifstream(path).rdbuf();
+		return buffer.str();
+	}
 
 	std::string local_ip_address() {
 		boost::asio::io_service io_service;

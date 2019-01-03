@@ -7,8 +7,8 @@
 <?define ShortcutName = $(var.BaseName) ?>
 <?endif?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Id="*" Name="$(var.BaseName)" Language="1033" Version="35.0.0.0" Manufacturer="Flipkart India" UpgradeCode="$(var.UpgradeCode)">
-    <Package InstallerVersion="200" Compressed="yes" Description="$(var.BaseName) Installer" InstallScope="perMachine" />
+  <Product Id="*" Name="$(var.BaseName)" Language="1033" Version="35.2.0.0" Manufacturer="Flipkart India" UpgradeCode="$(var.UpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" Description="$(var.ShortcutName) Installer" InstallScope="perMachine" />
     <MajorUpgrade Schedule="afterInstallInitialize" AllowSameVersionUpgrades="yes"  DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
     <Feature Id="ProductFeature" Title="Tinyphone" Level="1">
