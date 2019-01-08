@@ -175,6 +175,7 @@ void TinyPhoneHttpServer::Start() {
 						return tp::response(408, {
 							{ "message", "Account login still in progress" },
 							{ "account_name", account_name },
+							{ "result", 202 }
 						});
 					}
 				}
@@ -261,14 +262,16 @@ void TinyPhoneHttpServer::Start() {
 				phone.Logout(acc);
 				json response = {
 					{ "message",  "Logged Out" },
-					{ "account_name", account_name }
+					{ "account_name", account_name },
+					{ "result", 200 }
 				};
 				return tp::response(200, response);
 			}
 			else {
 				return tp::response(400, {
 					{ "message", "Account Not Found" },
-					{ "account_name" , account_name }
+					{ "account_name" , account_name },
+					{ "result", 400 }
 				});
 			}
 
@@ -464,6 +467,7 @@ void TinyPhoneHttpServer::Start() {
 			CROW_LOG_INFO << "Atempting logout of TinyPhone";
 			json response = {
 				{ "message",  "Logged Out" },
+				{ "result", 200 },
 				{ "accounts", json::array() },
 			};
 			pj_thread_auto_register();
