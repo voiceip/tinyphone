@@ -15,5 +15,8 @@
 #define STRING_REMOVE_CHAR(str, ch) str.erase(std::remove(str.begin(), str.end(), ch), str.end())
 
 #define REMOTE_CONFIG_URL "http://10.47.2.22/config-store/tinyphone-config.json"
+#define HEADER_SECURITY_CODE "X-SECURITY-CODE"
+
+#define SECURITY_SALT "St$%C1aNrV$D"
 
 #endif

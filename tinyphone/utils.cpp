@@ -4,6 +4,9 @@
 #include <boost/algorithm/string.hpp>
 #include <windows.h>
 #include <winver.h>
+#include <cryptopp/sha3.h>
+#include <cryptopp/hex.h>
+#include <cryptopp/filters.h>
 
 using namespace std;
 
@@ -198,5 +201,21 @@ namespace tp {
 			HIWORD(pFixedInfo->dwProductVersionLS),LOWORD(pFixedInfo->dwProductVersionLS));
 		version = appVersion;
 		return true;
+	}
+
+	std::string sha256(std::string data) {
+		
+		CryptoPP::SHA3_256 hash;
+		byte digest[CryptoPP::SHA3_256::DIGESTSIZE];
+
+		hash.CalculateDigest(digest, (byte*)data.c_str(), data.length());
+
+		CryptoPP::HexEncoder encoder;
+		std::string output;
+		encoder.Attach(new CryptoPP::StringSink(output));
+		encoder.Put(digest, sizeof(digest));
+		encoder.MessageEnd();
+
+		return output;
 	}
 }

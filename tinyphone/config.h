@@ -41,6 +41,8 @@ namespace tp {
 		bool useDefaultAudioDevice; 
 		std::vector<std::string> prefferedAudioDevices;
 
+		std::string securityCode;
+
 		std::string ua(){
 			std::string productVersion;
 			GetProductVersion(productVersion);
@@ -64,6 +66,7 @@ namespace tp {
 			{"enableNoiseCancel", p.enableNoiseCancel },
 			{"useDefaultAudioDevice", p.useDefaultAudioDevice },
 			{"prefferedAudioDevices", p.prefferedAudioDevices },
+			{"securityCode", p.securityCode },
 		};
     }
 
@@ -82,6 +85,7 @@ namespace tp {
 		j.at("enableNoiseCancel").get_to(p.enableNoiseCancel);
 		j.at("useDefaultAudioDevice").get_to(p.useDefaultAudioDevice);
 		j.at("prefferedAudioDevices").get_to(p.prefferedAudioDevices);
+		j.at("securityCode").get_to(p.securityCode);		
     }
 
     extern appConfig ApplicationConfig;

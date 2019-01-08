@@ -491,11 +491,25 @@ void TinyPhoneHttpServer::Start() {
 	CROW_ROUTE(app, "/exit")
 		.methods("POST"_method)
 		([&app](const crow::request& req) {
-		CROW_LOG_INFO << "Shutdown Request from client: " << req.body;
-		app.stop();
+		auto it = req.headers.find(HEADER_SECURITY_CODE);
 		json response = {
-			{ "message",  "Server Shutdown Triggered" },
+			{"message",  "Server Shutdown Recieved"},
+			{ "result",  401 },
 		};
+		CROW_LOG_INFO << "Shutdown Request from client: " << req.body;
+		if (it != req.headers.end()) {
+			auto value = it->second;
+			auto hash = sha256(SECURITY_SALT + value);
+			if (hash == ApplicationConfig.securityCode) {
+				CROW_LOG_INFO << "Shutdown Request from client authenticated";
+				response["result"] = 200;
+				app.stop();
+			}
+			else {
+				CROW_LOG_INFO << "Shutdown Request security code invalid: " << hash ;
+				response["message"] = "Incorrect Security Code";
+			}
+		}
 		return tp::response(200, response);
 	});
 

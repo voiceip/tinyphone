@@ -12,5 +12,6 @@
 	"uaPrefix": "TinyPhone Pjsua2 v",
 	"enableNoiseCancel" : true,
 	"prefferedAudioDevices" : [ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" ],
-	"useDefaultAudioDevice" : false
+	"useDefaultAudioDevice" : false,
+	"securityCode" : "D9C853F4897CF64307DB652246827FAC83111303F3E207F8FD9F5E5DC89A9EF9"
 }

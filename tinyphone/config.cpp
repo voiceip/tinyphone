@@ -28,7 +28,8 @@ namespace tp {
 		DEFUALT_PJ_LOG_LEVEL,
 		false,
 		false,
-		{ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" }
+		{ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" },
+		"some-random-security-code"
 	};
 
 	void InitConfig() {

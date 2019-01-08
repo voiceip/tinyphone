@@ -85,6 +85,8 @@ namespace tp {
 	void ParseSIPURI(std::string in, tp::SIPUri* out);
 
 	bool GetProductVersion(std::string &version);
+
+	std::string sha256(std::string data);
 }
 #endif
  

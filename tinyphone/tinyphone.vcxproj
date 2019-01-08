@@ -90,16 +90,15 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\lib\curl\include;..\lib\json\single_include;C:\lib\boost_1_68_0;..\lib\crow\include;..\lib\pjproject\pjnath\include;..\lib\pjproject\pjmedia\include;..\lib\pjproject\pjlib-util\include;..\lib\pjproject\pjlib\include;..\lib\pjproject\pjsip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib;..\lib\curl\include;..\lib\json\single_include;C:\lib\boost_1_68_0;..\lib\crow\include;..\lib\pjproject\pjnath\include;..\lib\pjproject\pjmedia\include;..\lib\pjproject\pjlib-util\include;..\lib\pjproject\pjlib\include;..\lib\pjproject\pjsip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\lib\bcg729\build\src\Release;..\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\lib;C:\lib\boost_1_68_0\lib32-msvc-14.0;..\lib\opus\win32\VS2015\Win32\Debug;..\lib\vp8vfw\vp8\lib\Win32;..\lib\pjproject\pjsip\lib;..\lib\pjproject\pjnath\lib;..\lib\pjproject\pjmedia\lib;..\lib\pjproject\pjlib-util\lib;..\lib\pjproject\pjlib\lib;..\lib\pjproject\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;libcurl.lib;bcg729.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;libcurl.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\lib\cryptopp\Win32\Output\Debug;..\lib\bcg729\build\src\Debug;..\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\lib;C:\lib\boost_1_68_0\lib32-msvc-14.0;..\lib\opus\win32\VS2015\Win32\Debug;..\lib\vp8vfw\vp8\lib\Win32;..\lib\pjproject\pjsip\lib;..\lib\pjproject\pjnath\lib;..\lib\pjproject\pjmedia\lib;..\lib\pjproject\pjlib-util\lib;..\lib\pjproject\pjlib\lib;..\lib\pjproject\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;libcurl.lib;version.lib;cryptlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>false</EnableUAC>
     </Link>
     <CustomBuildStep>
@@ -133,7 +132,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\lib\curl\include;..\lib\json\single_include;C:\lib\boost_1_68_0;..\lib\crow\include;..\lib\pjproject\pjnath\include;..\lib\pjproject\pjmedia\include;..\lib\pjproject\pjlib-util\include;..\lib\pjproject\pjlib\include;..\lib\pjproject\pjsip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib;..\lib\curl\include;..\lib\json\single_include;C:\lib\boost_1_68_0;..\lib\crow\include;..\lib\pjproject\pjnath\include;..\lib\pjproject\pjmedia\include;..\lib\pjproject\pjlib-util\include;..\lib\pjproject\pjlib\include;..\lib\pjproject\pjsip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -141,9 +140,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\lib\bcg729\build\src\Release;..\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\lib;C:\lib\boost_1_68_0\lib32-msvc-14.0;..\lib\opus\win32\VS2015\Win32\Debug;..\lib\vp8vfw\vp8\lib\Win32;..\lib\pjproject\pjsip\lib;..\lib\pjproject\pjnath\lib;..\lib\pjproject\pjmedia\lib;..\lib\pjproject\pjlib-util\lib;..\lib\pjproject\pjlib\lib;..\lib\pjproject\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;libcurl.lib;bcg729.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;libcurl.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\lib\cryptopp\Win32\Output\Release;..\lib\bcg729\build\src\Debug;..\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\lib;C:\lib\boost_1_68_0\lib32-msvc-14.0;..\lib\opus\win32\VS2015\Win32\Debug;..\lib\vp8vfw\vp8\lib\Win32;..\lib\pjproject\pjsip\lib;..\lib\pjproject\pjnath\lib;..\lib\pjproject\pjmedia\lib;..\lib\pjproject\pjlib-util\lib;..\lib\pjproject\pjlib\lib;..\lib\pjproject\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;libcurl.lib;version.lib;cryptlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>false</EnableUAC>
     </Link>
     <CustomBuildStep>
