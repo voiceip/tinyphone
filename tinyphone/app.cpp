@@ -8,7 +8,6 @@
 #include "net.h"
 #include "consts.h"
 #include "config.h"
-#include <boost/filesystem.hpp>
 #include <ctime>
 
 #ifdef _DEBUG
@@ -37,8 +36,7 @@ LRESULT CALLBACK WindowProcedure(HWND, UINT, WPARAM, LPARAM);
 void InitNotifyIconData();
 void InitPJSUAEndpoint(std::string logfile);
 void ExitApplication();
-string GetLogFile(std::string filename, std::string ext = "log");
-boost::filesystem::path GetLogDir();
+
 
 int WINAPI WinMain(HINSTANCE hThisInstance,
 	HINSTANCE hPrevInstance,
@@ -64,8 +62,8 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 	/*Initialize the NOTIFYICONDATA structure only once*/
 	InitNotifyIconData();
 
-	string sipLogFile = GetLogFile("tinyphone","log");
-	string httpLogFile = GetLogFile("tinyphone-http","log");
+	string sipLogFile = GetLogFile(SIP_LOG_FILE,"log");
+	string httpLogFile = GetLogFile(HTTP_LOG_FILE,"log");
 
 	InitPJSUAEndpoint(sipLogFile);
 	TinyPhoneHttpServer server(&ep, httpLogFile);
@@ -154,7 +152,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 				break;
 			case ID_TRAY_LOGDIR:
 			{
-				auto path = GetLogFile("tinyphone", "log");
+				auto path = GetLogFile(SIP_LOG_FILE, "log");
 				cout << "Open Folder " << GetLogDir() << endl;
 				BrowseToFile(path.c_str());
 			}
@@ -213,29 +211,6 @@ void InitNotifyIconData()
 }
 
 
-boost::filesystem::path GetLogDir() {
-	auto tmp_dir = boost::filesystem::temp_directory_path();
-	auto tiny_dir = tmp_dir.append("tinyphone");
-	if (!boost::filesystem::exists(tiny_dir))
-		boost::filesystem::create_directory(tiny_dir);
-	return tiny_dir;
-}
-
-string GetLogFile(std::string filename, std::string ext) {
-	time_t rawtime;
-	struct tm * timeinfo;
-	char buffer[80];
-
-	time(&rawtime);
-	timeinfo = localtime(&rawtime);
-
-	strftime(buffer, sizeof(buffer), "%d-%m-%Y-", timeinfo);
-	std::string prefix(buffer);
-
-	boost::filesystem::path tiny_dir = GetLogDir();
-	auto logfile = tiny_dir.append(prefix + filename + "." + ext);
-	return logfile.string();
-}
 
 void InitPJSUAEndpoint(std::string logfile) {
 	/* Create endpoint instance! */

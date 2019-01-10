@@ -12,6 +12,9 @@
 #include "channel.h"
 #include "json.h"
 #include "config.h"
+#include "microtar.h"
+#include <stdio.h>
+#include <algorithm>
 
 using namespace std;
 using namespace pj;
@@ -160,7 +163,6 @@ void TinyPhoneHttpServer::Start() {
 				});
 			}
 			else {
-
 				future<int> result = phone.AddAccount(loginConfig);
 				auto sync = req.url_params.get("sync") == nullptr ? false : true;
 				if (sync) {
@@ -274,7 +276,6 @@ void TinyPhoneHttpServer::Start() {
 					{ "result", 400 }
 				});
 			}
-
 		}
 		catch (...) {
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
@@ -486,6 +487,41 @@ void TinyPhoneHttpServer::Start() {
 		}
 	});
 
+
+	CROW_ROUTE(app, "/logs")
+		.methods("GET"_method)
+		([]() {
+		try {
+			std::string tmp_file = boost::filesystem::temp_directory_path().string() + "/" + boost::filesystem::unique_path().string() + ".tar";
+		
+			mtar_t tar;
+			mtar_open(&tar, tmp_file.c_str(), "w");
+
+			std::string sip_log_file = GetLogFile(SIP_LOG_FILE, "log");
+			std::string http_log_file = GetLogFile(HTTP_LOG_FILE, "log");
+
+			mtar_write_file(&tar, LogFileName(SIP_LOG_FILE, "log"),  sip_log_file);
+			mtar_write_file(&tar, LogFileName(HTTP_LOG_FILE, "log"), http_log_file);
+			mtar_finalize(&tar);
+			mtar_close(&tar);
+	
+			auto tar_bytes = file_all_bytes(tmp_file);
+			remove(tmp_file.c_str());
+
+			auto response = crow::response(tar_bytes);
+			response.set_header("Content-Type", "application/octet-stream"); 
+
+			std::string ip_addr = local_ip_address();
+			std::replace(ip_addr.begin(), ip_addr.end(), '.', '_');
+			std::string log_file_name = LogFileName("logs-" + ip_addr, "tar");
+	
+			response.set_header("Content-Disposition", "attachment; filename=\""+ log_file_name +"\"");
+			return response;
+		}
+		catch (...) {
+			return crow::response(500, "Something went wrong!");
+		}
+	});
 
 
 	CROW_ROUTE(app, "/exit")

@@ -19,4 +19,7 @@
 
 #define SECURITY_SALT "St$%C1aNrV$D"
 
+#define SIP_LOG_FILE "tinyphone"
+#define HTTP_LOG_FILE "tinyphone-http"
+
 #endif

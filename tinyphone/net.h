@@ -18,8 +18,6 @@ namespace tp {
 
 	tp::HttpResponse url_get_contents(std::string url) throw (std::exception);
 
-	std::string file_get_contents(std::string  const& path) throw (std::exception);
-
 	std::string local_ip_address();
 
 	bool is_tcp_port_in_use(unsigned short port);

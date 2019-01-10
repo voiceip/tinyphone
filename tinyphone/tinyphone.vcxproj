@@ -180,6 +180,7 @@
     <ClInclude Include="events.h" />
     <ClInclude Include="guicon.h" />
     <ClInclude Include="json.h" />
+    <ClInclude Include="microtar.h" />
     <ClInclude Include="net.h" />
     <ClInclude Include="phone.h" />
     <ClInclude Include="resource.h" />
@@ -193,6 +194,7 @@
     <ClCompile Include="call.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="guicon.cpp" />
+    <ClCompile Include="microtar.cpp" />
     <ClCompile Include="net.cpp" />
     <ClCompile Include="server.cpp" />
     <ClCompile Include="stdafx.cpp">

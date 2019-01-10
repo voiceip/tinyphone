@@ -14,6 +14,7 @@
 #include "consts.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
+#include <boost/filesystem.hpp>
 
 static PJ_IDEF(pj_str_t) pj_str(std::string str)
 {
@@ -87,6 +88,19 @@ namespace tp {
 	bool GetProductVersion(std::string &version);
 
 	std::string sha256(std::string data);
+
+	std::string LogFileName(std::string filename, std::string ext);
+
+	std::string GetLogFile(std::string filename, std::string ext = "log");
+
+	boost::filesystem::path GetLogDir();
+
+	std::string file_get_contents(std::string  const& path) throw (std::exception);
+
+	std::vector<char> file_all_bytes(std::string filename);
+	
+	std::ifstream::pos_type filesize(std::string filename);
+
 }
 #endif
  

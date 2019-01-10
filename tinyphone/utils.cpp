@@ -7,6 +7,8 @@
 #include <cryptopp/sha3.h>
 #include <cryptopp/hex.h>
 #include <cryptopp/filters.h>
+#include <fstream>
+
 
 using namespace std;
 
@@ -217,5 +219,56 @@ namespace tp {
 		encoder.MessageEnd();
 
 		return output;
+	}
+
+
+	boost::filesystem::path GetLogDir() {
+		auto tmp_dir = boost::filesystem::temp_directory_path();
+		auto tiny_dir = tmp_dir.append("tinyphone");
+		if (!boost::filesystem::exists(tiny_dir))
+			boost::filesystem::create_directory(tiny_dir);
+		return tiny_dir;
+	}
+
+	std::string LogFileName(std::string filename, std::string ext) {
+		time_t rawtime;
+		struct tm * timeinfo;
+		char buffer[80];
+
+		time(&rawtime);
+		timeinfo = localtime(&rawtime);
+
+		strftime(buffer, sizeof(buffer), "%d-%m-%Y-", timeinfo);
+		std::string prefix(buffer);
+
+		return prefix + filename + "." + ext;
+	}
+
+	std::string GetLogFile(std::string filename, std::string ext) {
+		boost::filesystem::path tiny_dir = GetLogDir();
+		auto logfile = tiny_dir.append(LogFileName(filename, ext));
+		return logfile.string();
+	}
+
+	std::string file_get_contents(std::string  const& path) throw (std::exception) {
+		//return (std::stringstream() << std::ifstream(path).rdbuf()).str();
+		std::stringstream buffer;
+		buffer << std::ifstream(path).rdbuf();
+		return buffer.str();
+	}
+
+	std::vector<char> file_all_bytes(std::string filename){
+		ifstream ifs(filename, ios::binary | ios::ate);
+		ifstream::pos_type pos = ifs.tellg();
+		std::vector<char>  result(pos);
+		ifs.seekg(0, ios::beg);
+		ifs.read(&result[0], pos);
+		return result;
+	}
+
+	std::ifstream::pos_type filesize(std::string filename)
+	{
+		std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
+		return in.tellg();
 	}
 }
