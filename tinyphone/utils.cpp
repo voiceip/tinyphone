@@ -257,6 +257,12 @@ namespace tp {
 		return buffer.str();
 	}
 
+	bool file_exists(std::string fileName)
+	{
+	    std::ifstream infile(fileName);
+	    return infile.good();
+	}
+
 	std::vector<char> file_all_bytes(std::string filename){
 		ifstream ifs(filename, ios::binary | ios::ate);
 		ifstream::pos_type pos = ifs.tellg();

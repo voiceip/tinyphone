@@ -380,7 +380,7 @@ int mtar_write_file(mtar_t *tar, std::string name, std::string path) {
 	char buf[1024];
 	FILE *fp;
 	size_t nread;
-	unsigned size = tp::filesize(path);
+	size_t size = tp::filesize(path);
 	if (size > 0) {
 		fp = fopen(path.c_str(), "rb");
 		if (fp) {
@@ -395,7 +395,7 @@ int mtar_write_file(mtar_t *tar, std::string name, std::string path) {
 	return MTAR_ENOTFOUND;
 }
 
-int mtar_write_file(mtar_t *tar, std::string path, unsigned size) {
+int mtar_write_file(mtar_t *tar, std::string path, size_t size) {
 	int err;
 	unsigned write_size = 0;
 	std::ifstream fin(path, std::ifstream::binary);

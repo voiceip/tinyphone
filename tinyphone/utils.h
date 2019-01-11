@@ -101,6 +101,8 @@ namespace tp {
 	
 	std::ifstream::pos_type filesize(std::string filename);
 
+	bool file_exists(std::string fileName);
+
 }
 #endif
  
