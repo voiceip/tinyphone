@@ -5,14 +5,15 @@
 
 #include <pjsua2.hpp>
 #include <iostream>
+#include <thread>
+#include <future>
+#include <chrono>
 #include <boost/foreach.hpp>
 #include "enum.h"
 #include "events.h"
 #include "call.h"
 #include "utils.h"
-#include <thread>
-#include <future>
-#include <chrono>
+#include "config.h"
 
 using namespace std;
 using namespace pj;
@@ -95,7 +96,6 @@ public:
 				create_result_promise.set_value(prm.code);
 				create_result_promise_fullfilled++;
 			}
-			
 		}
 		catch (std::future_error& e) {
 			UNUSED_ARG(e);
@@ -118,6 +118,19 @@ public:
 		BOOST_FOREACH(SIPCall* c, calls) {
 			if (c != call) {
 				c->HoldCall();
+			}
+		}
+	}
+
+	virtual void onCallEnd(SIPCall *call) {
+		using namespace tp;
+		if (ApplicationConfig.autoUnHold) {
+			BOOST_FOREACH(SIPCall* c, calls) {
+				if (c != call && c->HoldState()._to_integral() != (+HoldStatus::NOT_IN_HOLD)._to_integral() ) {
+					PJ_LOG(3, (__FILENAME__, "Auto UnHold Call: [%d]", c->getId()));
+					c->UnHoldCall();
+					break;
+				}
 			}
 		}
 	}

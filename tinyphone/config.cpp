@@ -31,7 +31,8 @@ namespace tp {
 		false,
 		false,
 		{ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" },
-		"some-random-security-code"
+		"some-random-security-code",
+		false
 	};
 
 	void InitConfig() {
@@ -59,7 +60,7 @@ namespace tp {
 		if(file_exists(LOCAL_CONFIG_FILE)){
 			jsonConfig = file_get_contents(LOCAL_CONFIG_FILE);
 		} else if (jsonConfig.size() == 0 ){
-			message += "\nLocal Config Fallback also failed.";
+			message += "\nERROR: Local Config Fallback also failed.";
 			tp::DisplayError(message);
 			exit(1);
 		}

@@ -43,6 +43,8 @@ namespace tp {
 
 		std::string securityCode;
 
+		bool autoUnHold;
+
 		std::string ua(){
 			std::string productVersion;
 			GetProductVersion(productVersion);
@@ -67,6 +69,7 @@ namespace tp {
 			{"useDefaultAudioDevice", p.useDefaultAudioDevice },
 			{"prefferedAudioDevices", p.prefferedAudioDevices },
 			{"securityCode", p.securityCode },
+			{"autoUnHold", p.autoUnHold },
 		};
     }
 
@@ -85,9 +88,10 @@ namespace tp {
 		j.at("enableNoiseCancel").get_to(p.enableNoiseCancel);
 		j.at("useDefaultAudioDevice").get_to(p.useDefaultAudioDevice);
 		j.at("prefferedAudioDevices").get_to(p.prefferedAudioDevices);
-		j.at("securityCode").get_to(p.securityCode);		
+		j.at("securityCode").get_to(p.securityCode);	
+		j.at("autoUnHold").get_to(p.autoUnHold);
     }
-
+   
     extern appConfig ApplicationConfig;
 
     void InitConfig();

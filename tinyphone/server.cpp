@@ -51,7 +51,7 @@ void TinyPhoneHttpServer::Start() {
 
 	crow::App<TinyPhoneMiddleware> app;
 	std::mutex mtx;;
-	//app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
+	app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
 	app.loglevel(crow::LogLevel::Info);
 	crow::logger::setHandler(new TinyPhoneHTTPLogHandler(logfile));
 	int http_port = 6060;

@@ -6,12 +6,13 @@
 	"maxCalls": 4,
 	"pjLogLevel": 3,
 	"retryIntervalSec": 30,
-	"timeoutSec": 180,
+	"timeoutSec": 300,
 	"refreshIntervalSec" : 60,
 	"transport": 2,
 	"uaPrefix": "TinyPhone Pjsua2 v",
 	"enableNoiseCancel" : true,
 	"prefferedAudioDevices" : [ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" ],
-	"useDefaultAudioDevice" : false,
-	"securityCode" : "D9C853F4897CF64307DB652246827FAC83111303F3E207F8FD9F5E5DC89A9EF9"
+	"useDefaultAudioDevice" : true,
+	"securityCode" : "D9C853F4897CF64307DB652246827FAC83111303F3E207F8FD9F5E5DC89A9EF9",
+	"autoUnHold" : true
 }

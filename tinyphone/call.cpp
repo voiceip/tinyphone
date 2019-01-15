@@ -16,6 +16,7 @@ void SIPCall::onCallState(OnCallStateParam &prm)
 	case PJSIP_INV_STATE_DISCONNECTED:
 		onCallEnd();
 		account->removeCall(this);
+		account->onCallEnd(this);
 		/* Delete the call */
 		delete this;
 		break;

@@ -44,7 +44,7 @@ struct TinyPhoneMiddleware
 
 	void before_handle(crow::request& /*req*/, crow::response& /*res*/, context& /*ctx*/)
 	{
-		CROW_LOG_DEBUG << " - MESSAGE: " << message;
+		//CROW_LOG_DEBUG << " - MESSAGE: " << message;
 	}
 
 	void after_handle(crow::request& /*req*/, crow::response& /*res*/, context& /*ctx*/)
