@@ -83,11 +83,11 @@ bool SIPCall::HoldCall() {
 		if (call_info.media.size() > 0) {
 			auto current_media = call_info.media.front();
 			if (current_media.status != PJSUA_CALL_MEDIA_LOCAL_HOLD && current_media.status != PJSUA_CALL_MEDIA_NONE) {
-				//CallOpParam prm;
-				//prm.options = PJSUA_CALL_UPDATE_CONTACT;
-				//setHold(prm);
 				PJ_LOG(3, (__FILENAME__, "Call %d Hold Triggered", call_info.id));
-				pjsua_call_set_hold(call_info.id, NULL);
+				CallOpParam prm;
+				prm.options = PJSUA_CALL_UPDATE_CONTACT;
+				setHold(prm);
+				//pjsua_call_set_hold(call_info.id, NULL);
 				return true;
 			}
 			else
