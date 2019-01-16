@@ -57,8 +57,10 @@ namespace tp {
 		~TinyPhone() {
 			pj_thread_auto_register();
 			std::cout << "Shutting Down TinyPhone" << std::endl;
-			HangupAllCalls();
-			Logout();
+			if (endpoint->libGetState() == PJSUA_STATE_RUNNING) {
+				HangupAllCalls();
+				Logout();
+			}
 			delete eventStream;
 			std::cout << "Shutting Down TinyPhone Complete" << std::endl;
 		}

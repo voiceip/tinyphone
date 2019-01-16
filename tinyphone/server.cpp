@@ -560,6 +560,7 @@ void TinyPhoneHttpServer::Start() {
 
 	CROW_LOG_INFO << "Terminating current running call(s) if any";
 
+	pj_thread_auto_register();
 	phone.HangupAllCalls();
 	endpoint->libDestroy();
 

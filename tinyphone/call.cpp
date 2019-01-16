@@ -32,15 +32,29 @@ void SIPCall::onCallMediaState(OnCallMediaStateParam &prm)
 {
 	CallInfo ci = getInfo();
 
+	const char *status_name[] = {
+		"None",
+		"Active",
+		"Local hold",
+		"Remote hold",
+		"Error"
+	};
+
 	// Iterate all the call medias
 	for (unsigned i = 0; i < ci.media.size(); i++) {
 		if (ci.media[i].type == PJMEDIA_TYPE_AUDIO && getMedia(i)) {
-			AudioMedia *aud_med = (AudioMedia *)getMedia(i);
-			// Connect the call audio media to sound device
-			AudDevManager& mgr = Endpoint::instance().audDevManager();
-			PJ_LOG(3, (__FILENAME__, "Connecting Call to Media Device Input #%d , Output # %d", mgr.getCaptureDev(), mgr.getPlaybackDev()));
-			aud_med->startTransmit(mgr.getPlaybackDevMedia());
-			mgr.getCaptureDevMedia().startTransmit(*aud_med);
+			if (ci.media[i].status == PJSUA_CALL_MEDIA_ACTIVE || ci.media[i].status == PJSUA_CALL_MEDIA_REMOTE_HOLD) {
+				AudioMedia *aud_med = (AudioMedia *)getMedia(i);
+				// Connect the call audio media to sound device
+				AudDevManager& mgr = Endpoint::instance().audDevManager();
+				PJ_LOG(3, (__FILENAME__, "Connecting Call to Media Device Input #%d , Output # %d", mgr.getCaptureDev(), mgr.getPlaybackDev()));
+				aud_med->startTransmit(mgr.getPlaybackDevMedia());
+				mgr.getCaptureDevMedia().startTransmit(*aud_med);
+			}
+			else {
+				pj_assert(ci.media[i].status <= PJ_ARRAY_SIZE(status_name));
+				PJ_LOG(3, (__FILENAME__, "Call [%d] OnCallMediaState Media State %s", ci.id , status_name[ci.media[i].status]));
+			}
 		}
 	}
 }
@@ -69,9 +83,11 @@ bool SIPCall::HoldCall() {
 		if (call_info.media.size() > 0) {
 			auto current_media = call_info.media.front();
 			if (current_media.status != PJSUA_CALL_MEDIA_LOCAL_HOLD && current_media.status != PJSUA_CALL_MEDIA_NONE) {
-				CallOpParam prm;
-				prm.options = PJSUA_CALL_UPDATE_CONTACT;
-				setHold(prm);
+				//CallOpParam prm;
+				//prm.options = PJSUA_CALL_UPDATE_CONTACT;
+				//setHold(prm);
+				PJ_LOG(3, (__FILENAME__, "Call %d Hold Triggered", call_info.id));
+				pjsua_call_set_hold(call_info.id, NULL);
 				return true;
 			}
 			else

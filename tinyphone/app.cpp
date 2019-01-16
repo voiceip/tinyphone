@@ -38,7 +38,7 @@ void InitPJSUAEndpoint(std::string logfile);
 void ExitApplication();
 
 
-int WINAPI WinMain(HINSTANCE hThisInstance,
+int WINAPI WinMain(HINSTANCE hThisInstance,		
 	HINSTANCE hPrevInstance,
 	LPSTR lpszArgument,
 	int nCmdShow)
