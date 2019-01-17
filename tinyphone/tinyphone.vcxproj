@@ -172,6 +172,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="aboutDialog.h" />
     <ClInclude Include="account.h" />
     <ClInclude Include="call.h" />
     <ClInclude Include="channel.h" />
@@ -192,6 +193,7 @@
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="aboutDialog.cpp" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="call.cpp" />
     <ClCompile Include="config.cpp" />
@@ -219,4 +221,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="resource.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
