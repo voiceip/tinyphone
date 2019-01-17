@@ -15,6 +15,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
 #include <boost/filesystem.hpp>
+#include <ctime>
 
 static PJ_IDEF(pj_str_t) pj_str(std::string str)
 {
@@ -89,9 +90,9 @@ namespace tp {
 
 	std::string sha256(std::string data);
 
-	std::string LogFileName(std::string filename, std::string ext);
+	std::string LogFileName(std::string filename, std::string ext, tm* date = nullptr);
 
-	std::string GetLogFile(std::string filename, std::string ext = "log");
+	std::string GetLogFile(std::string filename, std::string ext = "log", tm* date = nullptr);
 
 	boost::filesystem::path GetLogDir();
 
@@ -102,6 +103,8 @@ namespace tp {
 	std::ifstream::pos_type filesize(std::string filename);
 
 	bool file_exists(std::string fileName);
+
+	tm* now();
 
 }
 #endif

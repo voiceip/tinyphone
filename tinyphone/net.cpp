@@ -49,7 +49,7 @@ namespace tp {
 		std::string _ip_address = "127.0.0.1";
 
 		std::string h = boost::asio::ip::host_name();
-		std::cout << "Host name is " << h << '\n';
+		std::cout << "Host name is " << h << std::endl;
 		std::cout << "IP addresses are: ";
 		std::for_each(resolver.resolve({ h, "" }), {}, [&_ip_address](const auto& re) {
 			boost::asio::ip::address address = re.endpoint().address();

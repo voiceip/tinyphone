@@ -16,10 +16,14 @@
 #include "log.h"
 #include <stdio.h>
 #include <algorithm>
+#include "boost/date_time/posix_time/posix_time.hpp"
+
 
 using namespace std;
 using namespace pj;
 using json = nlohmann::json;
+using namespace boost::posix_time;
+
 
 #define DEFAULT_HTTP_SERVER_ERROR_REPONSE  {{ "message", "Something went Wrong :(" }}
 
@@ -59,8 +63,11 @@ void TinyPhoneHttpServer::Start() {
 
 	/* Define HTTP Endpoints */
 	CROW_ROUTE(app, "/")([]() {
+		std::string productVersion;
+		GetProductVersion(productVersion);
 		json response = {
-			{ "message", "Hello World" },
+			{ "message", "Hi!" },
+			{ "version", productVersion },
 		};
 		return tp::response(200, response);
 	});
@@ -491,15 +498,25 @@ void TinyPhoneHttpServer::Start() {
 
 	CROW_ROUTE(app, "/logs")
 		.methods("GET"_method)
-		([]() {
+		([](const crow::request& req) {
 		try {
 			std::string tmp_file = boost::filesystem::temp_directory_path().string() + "/" + boost::filesystem::unique_path().string() + ".tar";
 		
-			mtar_t tar;
+			mtar_t tar; tm* pt_tm;
 			mtar_open(&tar, tmp_file.c_str(), "w");
 
-			mtar_write_file(&tar, LogFileName(SIP_LOG_FILE, "log"), tp::sipLogFile);
-			mtar_write_file(&tar, LogFileName(HTTP_LOG_FILE, "log"), tp::httpLogFile);
+			auto date = req.url_params.get("date");
+			if (date == nullptr) {
+				pt_tm = tp::launchDate;
+				mtar_write_file(&tar, LogFileName(SIP_LOG_FILE, "log", tp::launchDate), tp::sipLogFile);
+				mtar_write_file(&tar, LogFileName(HTTP_LOG_FILE, "log", tp::launchDate), tp::httpLogFile);
+			} else {
+				std::string dt = string(date) + " 00:00:00";
+				ptime t(time_from_string(dt));
+				pt_tm = &to_tm(t);
+				mtar_write_file(&tar, LogFileName(SIP_LOG_FILE, "log", pt_tm), GetLogFile(SIP_LOG_FILE, "log", pt_tm));
+				mtar_write_file(&tar, LogFileName(HTTP_LOG_FILE, "log", pt_tm), GetLogFile(HTTP_LOG_FILE, "log", pt_tm));
+			}
 			mtar_finalize(&tar);
 			mtar_close(&tar);
 	
@@ -511,7 +528,7 @@ void TinyPhoneHttpServer::Start() {
 
 			std::string ip_addr = local_ip_address();
 			std::replace(ip_addr.begin(), ip_addr.end(), '.', '_');
-			std::string log_file_name = LogFileName("logs-" + ip_addr, "tar");
+			std::string log_file_name = LogFileName("logs-" + ip_addr, "tar", pt_tm);
 	
 			response.set_header("Content-Disposition", "attachment; filename=\""+ log_file_name +"\"");
 			return response;

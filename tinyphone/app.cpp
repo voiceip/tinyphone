@@ -33,8 +33,9 @@ char szClassName[] = "TinyPhone";
 Endpoint ep;
 
 namespace tp {
-	string sipLogFile = GetLogFile(SIP_LOG_FILE, "log");
-	string httpLogFile = GetLogFile(HTTP_LOG_FILE, "log");
+	string sipLogFile;
+	string httpLogFile;
+	tm* launchDate;
 }
 
 /*procedures  */
@@ -64,6 +65,10 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 #endif
 
 	InitConfig();
+
+	tp::launchDate = now();
+	tp::sipLogFile = GetLogFile(SIP_LOG_FILE, "log");
+	tp::httpLogFile = GetLogFile(HTTP_LOG_FILE, "log");
 
 	/*Initialize the NOTIFYICONDATA structure only once*/
 	InitNotifyIconData();

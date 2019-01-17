@@ -230,13 +230,22 @@ namespace tp {
 		return tiny_dir;
 	}
 
-	std::string LogFileName(std::string filename, std::string ext) {
+
+	tm* now() {
+		time_t rawtime;
+		struct tm * timeinfo;
+		time(&rawtime);
+		timeinfo = localtime(&rawtime);
+		return timeinfo;
+	}
+
+	std::string LogFileName(std::string filename, std::string ext, tm* date) {
 		time_t rawtime;
 		struct tm * timeinfo;
 		char buffer[80];
 
 		time(&rawtime);
-		timeinfo = localtime(&rawtime);
+		timeinfo = date == nullptr ? localtime(&rawtime) :  date;
 
 		strftime(buffer, sizeof(buffer), "%d-%m-%Y-", timeinfo);
 		std::string prefix(buffer);
@@ -244,9 +253,9 @@ namespace tp {
 		return prefix + filename + "." + ext;
 	}
 
-	std::string GetLogFile(std::string filename, std::string ext) {
+	std::string GetLogFile(std::string filename, std::string ext, tm* date) {
 		boost::filesystem::path tiny_dir = GetLogDir();
-		auto logfile = tiny_dir.append(LogFileName(filename, ext));
+		auto logfile = tiny_dir.append(LogFileName(filename, ext,date));
 		return logfile.string();
 	}
 
