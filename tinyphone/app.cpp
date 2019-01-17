@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <windows.h>
 #include <shellapi.h>
+#include <ctime>
 #include "resource.h"
 #include "guicon.h"
 #include "server.h"
@@ -8,7 +9,7 @@
 #include "net.h"
 #include "consts.h"
 #include "config.h"
-#include <ctime>
+#include "log.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "libpjproject-i386-Win32-vc14-Debug-Static.lib")
@@ -30,6 +31,11 @@ NOTIFYICONDATA notifyIconData;
 TCHAR szTIP[64] = TEXT("Strowger TinyPhone");
 char szClassName[] = "TinyPhone";
 Endpoint ep;
+
+namespace tp {
+	string sipLogFile = GetLogFile(SIP_LOG_FILE, "log");
+	string httpLogFile = GetLogFile(HTTP_LOG_FILE, "log");
+}
 
 /*procedures  */
 LRESULT CALLBACK WindowProcedure(HWND, UINT, WPARAM, LPARAM);
@@ -62,11 +68,8 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 	/*Initialize the NOTIFYICONDATA structure only once*/
 	InitNotifyIconData();
 
-	string sipLogFile = GetLogFile(SIP_LOG_FILE,"log");
-	string httpLogFile = GetLogFile(HTTP_LOG_FILE,"log");
-
-	InitPJSUAEndpoint(sipLogFile);
-	TinyPhoneHttpServer server(&ep, httpLogFile);
+	InitPJSUAEndpoint(tp::sipLogFile);
+	TinyPhoneHttpServer server(&ep, tp::httpLogFile);
 
 	//Run the server in non-ui thread.
 	std::thread thread_object([&server]() {
@@ -152,9 +155,8 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 				break;
 			case ID_TRAY_LOGDIR:
 			{
-				auto path = GetLogFile(SIP_LOG_FILE, "log");
 				cout << "Open Folder " << GetLogDir() << endl;
-				BrowseToFile(path.c_str());
+				BrowseToFile(tp::sipLogFile.c_str());
 			}
 				break;
 			default:

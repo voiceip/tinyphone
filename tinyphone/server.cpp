@@ -13,6 +13,7 @@
 #include "json.h"
 #include "config.h"
 #include "microtar.h"
+#include "log.h"
 #include <stdio.h>
 #include <algorithm>
 
@@ -497,11 +498,8 @@ void TinyPhoneHttpServer::Start() {
 			mtar_t tar;
 			mtar_open(&tar, tmp_file.c_str(), "w");
 
-			std::string sip_log_file = GetLogFile(SIP_LOG_FILE, "log");
-			std::string http_log_file = GetLogFile(HTTP_LOG_FILE, "log");
-
-			mtar_write_file(&tar, LogFileName(SIP_LOG_FILE, "log"),  sip_log_file);
-			mtar_write_file(&tar, LogFileName(HTTP_LOG_FILE, "log"), http_log_file);
+			mtar_write_file(&tar, LogFileName(SIP_LOG_FILE, "log"), tp::sipLogFile);
+			mtar_write_file(&tar, LogFileName(HTTP_LOG_FILE, "log"), tp::httpLogFile);
 			mtar_finalize(&tar);
 			mtar_close(&tar);
 	
