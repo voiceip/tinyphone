@@ -24,14 +24,14 @@
     <Property Id="ARPPRODUCTICON" Value="icon.ico"/>
     <Property Id='ARPHELPLINK'>https://github.com/voiceip/tinyphone</Property>
 
-    <Property Id="WixQuietExecCmdLine" Value='"[WindowsFolder]\System32\taskkill.exe" /IM $(var.tinyphone.TargetFileName)' Hidden="yes"/>
+    <Property Id="WixQuietExecCmdLine" Value='"[WindowsFolder]\System32\taskkill.exe" /F /IM $(var.tinyphone.TargetFileName)' Hidden="yes"/>
     <CustomAction Id="Tinyphone.TaskKill" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="immediate" Return="ignore"/>
 
     <CustomAction Id="PostInstScript.SetParam" Return="check"  Property="PostInstScript" Value="[ProcessorArchitecture]" /> 
 
     <InstallExecuteSequence>
       <!--<RemoveExistingProducts Before="InstallInitialize"/> -->
-       <Custom Action='Tinyphone.TaskKill' Before='InstallValidate'/>
+      <!--<Custom Action='Tinyphone.TaskKill' Before='InstallValidate'/>-->
       <Custom Action ="PostInstScript.SetParam" After="InstallFiles">NOT Installed</Custom>
       <Custom Action='PostInstScript' After="PostInstScript.SetParam">NOT Installed</Custom>
     </InstallExecuteSequence>
