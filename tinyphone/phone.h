@@ -81,6 +81,7 @@ namespace tp {
 
 			const pj_str_t ID_ALL = { "*", 1 };
 			pjsua_codec_set_priority(&ID_ALL, PJMEDIA_CODEC_PRIO_DISABLED);
+			int priority = 0;
 			BOOST_FOREACH(std::string codec, ApplicationConfig.audioCodecs) {
 				EnableCodec(codec, PJMEDIA_CODEC_PRIO_NORMAL);
 			}
@@ -94,7 +95,7 @@ namespace tp {
 			auto codec = pj_str(codec_name);
 			auto status = pjsua_codec_set_priority(&codec, priority);
 			if (status == PJ_SUCCESS)
-				PJ_LOG(3, (__FILENAME__, "%s activated", codec.ptr));
+				PJ_LOG(3, (__FILENAME__, "%s activated, priority %d", codec.ptr, priority));
 			else
 				PJ_LOG(3, (__FILENAME__, "Failed activating %s, err=%d", codec.ptr, status));
 			free(codec.ptr);
