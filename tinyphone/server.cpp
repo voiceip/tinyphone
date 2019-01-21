@@ -207,6 +207,13 @@ void TinyPhoneHttpServer::Start() {
 			CROW_LOG_ERROR << "Exception catched : " << e.reason;
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
+		catch (std::domain_error& e) {
+			std::string response_msg = "System Error: " + string(e.what());
+			return tp::response(500, {
+				{ "message", response_msg },
+				{ "result", 503 }
+			});
+		}
 	});
 
 	CROW_ROUTE(app, "/accounts")

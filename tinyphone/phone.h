@@ -82,7 +82,7 @@ namespace tp {
 			const pj_str_t ID_ALL = { "*", 1 };
 			pjsua_codec_set_priority(&ID_ALL, PJMEDIA_CODEC_PRIO_DISABLED);
 			BOOST_FOREACH(std::string codec, ApplicationConfig.audioCodecs) {
-				EnableCodec(codec);
+				EnableCodec(codec, PJMEDIA_CODEC_PRIO_NORMAL);
 			}
 		}
 
@@ -90,9 +90,9 @@ namespace tp {
 			eventStream = new EventStream(ch);
 		}
 
-		void EnableCodec(std::string codec_name) {
+		void EnableCodec(std::string codec_name, pj_uint8_t priority) {
 			auto codec = pj_str(codec_name);
-			auto status = pjsua_codec_set_priority(&codec, PJMEDIA_CODEC_PRIO_NORMAL);
+			auto status = pjsua_codec_set_priority(&codec, priority);
 			if (status == PJ_SUCCESS)
 				PJ_LOG(3, (__FILENAME__, "%s activated", codec.ptr));
 			else
@@ -100,9 +100,24 @@ namespace tp {
 			free(codec.ptr);
 		}
 
-		void ConfigureAudioDevices(int input_device = -1, int output_device = -1) {
+		bool TestAudioDevice() {
+			try {
+				AudioMedia& cap_med = Endpoint::instance().audDevManager().getCaptureDevMedia();
+				AudioMedia& play_med = Endpoint::instance().audDevManager().getPlaybackDevMedia();
+				cap_med.startTransmit(play_med);
+				pj_thread_sleep(50);
+				cap_med.stopTransmit(play_med);
+				return true;
+			}
+			catch (Error& err) {
+				PJ_LOG(1, (__FILENAME__, "TestAudioDevice Error %s", err.reason));
+				return false;
+			}
+		}
+
+		void ConfigureAudioDevices(int input_device = 0, int output_device = 0) {
 			AudDevManager& audio_manager = Endpoint::instance().audDevManager();
-			if (input_device == -1 || output_device == -1) {
+			if (input_device == 0 && output_device == 0) {
 				audio_manager.refreshDevs();
 				AudioDevInfoVector devices = audio_manager.enumDev();
 				BOOST_FOREACH(string& search_string, ApplicationConfig.prefferedAudioDevices) {
@@ -186,13 +201,17 @@ namespace tp {
 			}
 		}
 
-		std::future<int> AddAccount(AccountConfig& config) throw (std::invalid_argument) {
+		std::future<int> AddAccount(AccountConfig& config) throw (std::exception) {
 			string account_name = SIP_ACCOUNT_NAME(config.username, config.domain);
 			auto exits = AccountByName(account_name);
 			if (exits != nullptr) {
 				throw std::invalid_argument("Account already exists");
 			}
 			else {
+				if (ApplicationConfig.testAudioDevice && !TestAudioDevice()) {
+					throw std::domain_error("Audio Device Test Failed, Please Contact IT Support");
+				}
+
 				pj::AccountConfig acc_cfg;
 				acc_cfg.idUri = ("sip:" + account_name);
 				acc_cfg.regConfig.registrarUri = ("sip:" + config.domain);

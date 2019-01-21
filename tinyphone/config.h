@@ -44,6 +44,7 @@ namespace tp {
 		std::string securityCode;
 
 		bool autoUnHold;
+		bool testAudioDevice;
 
 		std::string ua(){
 			std::string productVersion;
@@ -70,6 +71,7 @@ namespace tp {
 			{"prefferedAudioDevices", p.prefferedAudioDevices },
 			{"securityCode", p.securityCode },
 			{"autoUnHold", p.autoUnHold },
+			{"testAudioDevice", p.testAudioDevice },
 		};
     }
 
@@ -90,6 +92,7 @@ namespace tp {
 		j.at("prefferedAudioDevices").get_to(p.prefferedAudioDevices);
 		j.at("securityCode").get_to(p.securityCode);	
 		j.at("autoUnHold").get_to(p.autoUnHold);
+		j.at("testAudioDevice").get_to(p.testAudioDevice);
     }
    
     extern appConfig ApplicationConfig;

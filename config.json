@@ -1,5 +1,5 @@
 {
-	"audioCodecs": ["PCMA/8000/1", "PCMU/8000/1"],
+	"audioCodecs": ["PCMA/8000/1", "PCMU/8000/1", "G729/8000/1"],
 	"dropCallsOnFail": false,
 	"firstRetryIntervalSec": 15,
 	"maxAccounts": 3,
@@ -14,5 +14,6 @@
 	"prefferedAudioDevices" : [ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" ],
 	"useDefaultAudioDevice" : true,
 	"securityCode" : "D9C853F4897CF64307DB652246827FAC83111303F3E207F8FD9F5E5DC89A9EF9",
-	"autoUnHold" : true
+	"autoUnHold" : true,
+	"testAudioDevice" : true
 }

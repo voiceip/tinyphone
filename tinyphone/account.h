@@ -140,16 +140,21 @@ public:
 	{
 		SIPCall *call = new SIPCall(*this, iprm.callId);
 		CallInfo ci = call->getInfo();
-		CallOpParam prm;
+		try {
+			CallOpParam prm;
 
-		PJ_LOG(3, (__FILENAME__, "Incomming Call: [%s] [%s]", ci.remoteUri.c_str(), ci.stateText.c_str()));
+			PJ_LOG(3, (__FILENAME__, "Incomming Call: [%s] [%s]", ci.remoteUri.c_str(), ci.stateText.c_str()));
 
-		eventStream->publishEvent(ci, iprm);
+			eventStream->publishEvent(ci, iprm);
 
-		calls.push_back(call);
-		prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
-		call->answer(prm);
-		onCallEstablished(call);
+			calls.push_back(call);
+			prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
+			call->answer(prm);
+			onCallEstablished(call);
+		}
+		catch (pj::Error& e) {
+			PJ_LOG(1, (__FILENAME__, "ERROR Answering IncomingCall [%s] - [%s]", ci.remoteUri.c_str(), e.reason));
+		}
 	}
 
 };
