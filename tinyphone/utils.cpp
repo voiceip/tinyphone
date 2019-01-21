@@ -8,7 +8,7 @@
 #include <cryptopp/hex.h>
 #include <cryptopp/filters.h>
 #include <fstream>
-
+#include <mmsystem.h>
 
 using namespace std;
 
@@ -26,6 +26,8 @@ namespace tp {
 		SetConsoleTextAttribute(hConsoleErr, FOREGROUND_RED);
 		fprintf(stderr, "\nERROR: %s\n", message.c_str());
 		SetConsoleTextAttribute(hConsoleErr, FOREGROUND_WHITE);
+
+		PlaySound("SystemHand", NULL, SND_ASYNC);
 
 		wchar_t *wmsg = new wchar_t[message.length() + 1]; //memory allocation
 		mbstowcs(wmsg, message.c_str(), message.length() + 1);

@@ -154,6 +154,10 @@ public:
 		}
 		catch (pj::Error& e) {
 			PJ_LOG(1, (__FILENAME__, "ERROR Answering IncomingCall [%s] - [%s]", ci.remoteUri.c_str(), e.reason));
+			if (tp::ApplicationConfig.unregisterOnDeviceError) {
+				UnRegister(); //TODO: Fix properly.
+			}
+			tp::DisplayError("Error Connecting Incoming Call, Please Contact Support");
 		}
 	}
 
