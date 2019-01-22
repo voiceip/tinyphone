@@ -9,6 +9,7 @@
 #include <cryptopp/filters.h>
 #include <fstream>
 #include <mmsystem.h>
+#include <future>
 
 using namespace std;
 
@@ -20,7 +21,14 @@ void print_thread_name()
 
 namespace tp {
 
-	void DisplayError(std::string message) {
+	void ShowWinAlert(std::string title, std::string message) {
+		wchar_t *wmsg = new wchar_t[message.length() + 1]; //memory allocation
+		mbstowcs(wmsg, message.c_str(), message.length() + 1);
+		MessageBoxW(NULL, wmsg, L"Error!", MB_ICONEXCLAMATION | MB_OK);
+		delete[]wmsg;
+	}
+
+	void DisplayError(std::string message, OPS mode) {
 
 		HANDLE hConsoleErr = GetStdHandle(STD_ERROR_HANDLE);
 		SetConsoleTextAttribute(hConsoleErr, FOREGROUND_RED);
@@ -28,11 +36,16 @@ namespace tp {
 		SetConsoleTextAttribute(hConsoleErr, FOREGROUND_WHITE);
 
 		PlaySound("SystemHand", NULL, SND_ASYNC);
-
-		wchar_t *wmsg = new wchar_t[message.length() + 1]; //memory allocation
-		mbstowcs(wmsg, message.c_str(), message.length() + 1);
-		MessageBoxW(NULL, wmsg, L"Error!", MB_ICONEXCLAMATION | MB_OK);
-		delete[]wmsg;
+		if (mode == OPS::ASYNC) {
+			std::thread t([message]() {
+				ShowWinAlert("Error", message);
+			});
+			t.detach();
+			//std::async(std::launch::async, ShowWinAlert,"Error", message);
+		}
+		else {
+			ShowWinAlert("Error", message);
+		}
 	}
 
 	bool IsPSTNNnmber(std::string number)

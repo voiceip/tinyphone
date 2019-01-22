@@ -159,8 +159,9 @@ void TinyPhoneHttpServer::Start() {
 			
 			auto existing_account = phone.AccountByName(account_name);
 			if (existing_account != nullptr) {
-				return tp::response(400, {
-					{ "message", "Account already exits" },
+				phone.EnableAccount(existing_account);
+				return tp::response(208, {
+					{ "message", "Account already exists" },
 					{ "account_name", account_name },
 					{ "id", existing_account->getId() },
 				});
@@ -572,7 +573,7 @@ void TinyPhoneHttpServer::Start() {
 	});
 
 	if (is_tcp_port_in_use(http_port)) {
-		tp::DisplayError("Failed to Bind Port! \nIs another instance of tinyphone running?");
+		tp::DisplayError("Failed to Bind Port! \nIs another instance of tinyphone running?", OPS::SYNC);
 	}
 	else {
 		app.port(http_port)

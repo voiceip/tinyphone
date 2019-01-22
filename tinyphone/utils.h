@@ -74,7 +74,11 @@ namespace tp {
 		std::string parameters;
 	};
 
-	void DisplayError(std::string message);
+	enum OPS {
+		SYNC, ASYNC
+	};
+
+	void DisplayError(std::string message, OPS mode);
 
 	bool IsPSTNNnmber(std::string number);
 

@@ -61,7 +61,7 @@ namespace tp {
 			jsonConfig = file_get_contents(LOCAL_CONFIG_FILE);
 		} else if (jsonConfig.size() == 0 ){
 			message += "\nERROR: Local Config Fallback also failed.";
-			tp::DisplayError(message);
+			tp::DisplayError(message, OPS::SYNC);
 			exit(1);
 		}
 #endif // ALLOW_OFFLINE_CONFIG
@@ -80,7 +80,7 @@ namespace tp {
 			SetConsoleTextAttribute(hConsole, FOREGROUND_YELLOW);
 			std::cout << "======= Remote Config ======" << std::endl << jsonConfig << std::endl;
 
-			tp::DisplayError("Failed Parsing Config! Please contact support.");
+			tp::DisplayError("Failed Parsing Config! Please contact support.", OPS::SYNC);
 			exit(1);
 		}
 		SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE);

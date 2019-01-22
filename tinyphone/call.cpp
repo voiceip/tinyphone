@@ -2,6 +2,8 @@
 #include "call.h"
 #include "account.h"
 #include "utils.h"
+#include "config.h"
+#include <pjsua-lib/pjsua_internal.h>
 
 void SIPCall::onCallState(OnCallStateParam &prm)
 {
@@ -31,7 +33,6 @@ void SIPCall::onCallState(OnCallStateParam &prm)
 void SIPCall::onCallMediaState(OnCallMediaStateParam &prm)
 {
 	CallInfo ci = getInfo();
-
 	const char *status_name[] = {
 		"None",
 		"Active",
@@ -40,22 +41,37 @@ void SIPCall::onCallMediaState(OnCallMediaStateParam &prm)
 		"Error"
 	};
 
-	// Iterate all the call medias
-	for (unsigned i = 0; i < ci.media.size(); i++) {
-		if (ci.media[i].type == PJMEDIA_TYPE_AUDIO && getMedia(i)) {
-			if (ci.media[i].status == PJSUA_CALL_MEDIA_ACTIVE || ci.media[i].status == PJSUA_CALL_MEDIA_REMOTE_HOLD) {
-				AudioMedia *aud_med = (AudioMedia *)getMedia(i);
-				// Connect the call audio media to sound device
-				AudDevManager& mgr = Endpoint::instance().audDevManager();
-				PJ_LOG(3, (__FILENAME__, "Connecting Call to Media Device Input #%d , Output # %d", mgr.getCaptureDev(), mgr.getPlaybackDev()));
-				aud_med->startTransmit(mgr.getPlaybackDevMedia());
-				mgr.getCaptureDevMedia().startTransmit(*aud_med);
-			}
-			else {
-				pj_assert(ci.media[i].status <= PJ_ARRAY_SIZE(status_name));
-				PJ_LOG(3, (__FILENAME__, "Call [%d] OnCallMediaState Media State %s", ci.id , status_name[ci.media[i].status]));
+	try {
+		// Iterate all the call medias
+		for (unsigned i = 0; i < ci.media.size(); i++) {
+			if (ci.media[i].type == PJMEDIA_TYPE_AUDIO && getMedia(i)) {
+				if (ci.media[i].status == PJSUA_CALL_MEDIA_ACTIVE || ci.media[i].status == PJSUA_CALL_MEDIA_REMOTE_HOLD) {
+					AudioMedia *aud_med = (AudioMedia *)getMedia(i);
+					// Connect the call audio media to sound device
+					AudDevManager& mgr = Endpoint::instance().audDevManager();
+					PJ_LOG(3, (__FILENAME__, "Connecting Call to Media Device Input #%d , Output # %d", mgr.getCaptureDev(), mgr.getPlaybackDev()));
+					aud_med->startTransmit(mgr.getPlaybackDevMedia());
+					mgr.getCaptureDevMedia().startTransmit(*aud_med);
+				}
+				else {
+					pj_assert(ci.media[i].status <= PJ_ARRAY_SIZE(status_name));
+					PJ_LOG(3, (__FILENAME__, "Call [%d] OnCallMediaState Media State %s", ci.id, status_name[ci.media[i].status]));
+				}
 			}
 		}
+	}
+	catch (...) {
+		PJ_LOG(3, (__FILENAME__, "Call [%d] OnCallMediaState Media Connect Error", ci.id));
+		Hangup();
+		tp::DisplayError("ERROR Connecting Call Media Stream, Please Contact IT Support", tp::OPS::ASYNC);
+		/*
+		//TODO: Fix throws Application Error
+		if (tp::ApplicationConfig.unregisterOnDeviceError) {
+			std::thread t([this]() {
+				getAccount()->UnRegister();
+			});
+			t.detach();	
+		}*/
 	}
 }
 
@@ -157,6 +173,30 @@ void SIPCall::onCallEnd() {
 }
 
 void SIPCall::Hangup() {
-	CallOpParam prm;
-	hangup(prm);
+	try {
+		auto call_id = getId();
+		auto call_info = getInfo();
+		if (call_info.state == PJSIP_INV_STATE_CALLING || (call_info.role == PJSIP_ROLE_UAS && call_info.state == PJSIP_INV_STATE_CONNECTING)) {
+			pjsip_tx_data *tdata = NULL;
+			// Generate an INVITE END message
+			pjsua_call call = pjsua_get_var()->calls[call_id];
+			if (pjsip_inv_end_session(call.inv, 487, NULL, &tdata) != PJ_SUCCESS || !tdata) {
+				pjsip_inv_terminate(call.inv, 487, PJ_TRUE);
+			}
+			else {
+				// Send that END request
+				if (pjsip_endpt_send_request(pjsua_get_pjsip_endpt(), tdata, -1, NULL, NULL) != PJ_SUCCESS) {
+					pjsip_inv_terminate(call.inv, 487, PJ_TRUE);
+				}
+			}
+			return;
+		}
+		pjsua_call_hangup(call_id, 0, NULL, NULL);
+	}
+	catch (...) {
+		CallOpParam prm;
+		hangup(prm);
+	}
+
+	
 }

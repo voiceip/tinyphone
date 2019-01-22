@@ -103,8 +103,10 @@ namespace tp {
 
 		bool TestAudioDevice() {
 			try {
-				AudioMedia& cap_med = Endpoint::instance().audDevManager().getCaptureDevMedia();
-				AudioMedia& play_med = Endpoint::instance().audDevManager().getPlaybackDevMedia();
+				AudDevManager& audio_manager = Endpoint::instance().audDevManager();
+				audio_manager.refreshDevs();
+				AudioMedia& cap_med = audio_manager.getCaptureDevMedia();
+				AudioMedia& play_med = audio_manager.getPlaybackDevMedia();
 				cap_med.startTransmit(play_med);
 				pj_thread_sleep(50);
 				cap_med.stopTransmit(play_med);
@@ -200,6 +202,13 @@ namespace tp {
 				delete (*it);
 				it = accounts.erase(it);
 			}
+		}
+
+		void EnableAccount(SIPAccount* account) throw (std::exception) {
+			if (ApplicationConfig.testAudioDevice && !TestAudioDevice()) {
+				throw std::domain_error("Audio Device Test Failed, Please Contact IT Support");
+			}
+			account->reRegister();
 		}
 
 		std::future<int> AddAccount(AccountConfig& config) throw (std::exception) {

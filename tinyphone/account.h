@@ -83,6 +83,7 @@ public:
 	}
 
 	void UnRegister() {
+		PJ_LOG(3, (__FILENAME__, "UnRegister %s ", account_name.c_str()));
 		setRegistration(false);
 	}
 
@@ -143,7 +144,7 @@ public:
 		try {
 			CallOpParam prm;
 
-			PJ_LOG(3, (__FILENAME__, "Incomming Call: [%s] [%s]", ci.remoteUri.c_str(), ci.stateText.c_str()));
+			PJ_LOG(3, (__FILENAME__, "Incoming Call: [%s] [%s]", ci.remoteUri.c_str(), ci.stateText.c_str()));
 
 			eventStream->publishEvent(ci, iprm);
 
@@ -152,12 +153,9 @@ public:
 			call->answer(prm);
 			onCallEstablished(call);
 		}
-		catch (pj::Error& e) {
-			PJ_LOG(1, (__FILENAME__, "ERROR Answering IncomingCall [%s] - [%s]", ci.remoteUri.c_str(), e.reason));
-			if (tp::ApplicationConfig.unregisterOnDeviceError) {
-				UnRegister(); //TODO: Fix properly.
-			}
-			tp::DisplayError("Error Connecting Incoming Call, Please Contact Support");
+		catch (...) {
+			PJ_LOG(3, (__FILENAME__, "ERROR Answering IncomingCall [%s]", ci.remoteUri.c_str()));
+			call->Hangup();
 		}
 	}
 
