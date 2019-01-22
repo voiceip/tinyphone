@@ -18,6 +18,7 @@
 #endif
 
 #define WM_SYSICON  WM_APP
+#define MAX_TOOLTIP_LENGTH 96
 
 using namespace std;
 using namespace pj;
@@ -28,7 +29,7 @@ UINT WM_TASKBAR = 0;
 HWND Hwnd;
 HMENU Hmenu;
 NOTIFYICONDATA notifyIconData;
-TCHAR szTIP[64] = TEXT("Strowger TinyPhone");
+TCHAR szTIP[MAX_TOOLTIP_LENGTH] = TEXT("Strowger TinyPhone");
 char szClassName[] = "TinyPhone";
 Endpoint ep;
 
@@ -212,7 +213,17 @@ void InitNotifyIconData()
 	notifyIconData.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
 	notifyIconData.uCallbackMessage = WM_SYSICON; //Set up our invented Windows Message
 	notifyIconData.hIcon = (HICON)LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_ICON1));
-	strncpy_s(notifyIconData.szTip, szTIP, sizeof(szTIP));
+
+	try {
+		std::string productVersion;
+		GetProductVersion(productVersion);
+		char buff[MAX_TOOLTIP_LENGTH];
+		snprintf(buff, sizeof(buff), "%s %s", szTIP, productVersion.c_str());
+		strncpy_s(notifyIconData.szTip, buff, sizeof(buff));
+	}
+	catch (...) {
+		strncpy_s(notifyIconData.szTip, szTIP, sizeof(szTIP));
+	}
 
 	Shell_NotifyIcon(NIM_ADD, &notifyIconData);
 }
