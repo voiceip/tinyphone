@@ -110,6 +110,8 @@ namespace tp {
 
 	tm* now();
 
+	char* getMACAddress();
+
 }
 #endif
  

@@ -77,6 +77,8 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 	InitPJSUAEndpoint(tp::sipLogFile);
 	TinyPhoneHttpServer server(&ep, tp::httpLogFile);
 
+	CROW_LOG_INFO << "System Mac Address: " << getMACAddress();
+
 	//Run the server in non-ui thread.
 	std::thread thread_object([&server]() {
 		server.Start();
