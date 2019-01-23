@@ -31,8 +31,8 @@ namespace tp {
 	void DisplayError(std::string message, OPS mode) {
 
 		HANDLE hConsoleErr = GetStdHandle(STD_ERROR_HANDLE);
-		SetConsoleTextAttribute(hConsoleErr, FOREGROUND_RED);
-		fprintf(stderr, "\nERROR: %s\n", message.c_str());
+		SetConsoleTextAttribute(hConsoleErr, FOREGROUND_RED | FOREGROUND_INTENSITY);
+		fprintf(stderr, "ERROR: %s\n", message.c_str());
 		SetConsoleTextAttribute(hConsoleErr, FOREGROUND_WHITE);
 
 		PlaySound("SystemHand", NULL, SND_ASYNC);

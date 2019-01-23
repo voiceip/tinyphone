@@ -16,5 +16,5 @@
 	"securityCode" : "D9C853F4897CF64307DB652246827FAC83111303F3E207F8FD9F5E5DC89A9EF9",
 	"autoUnHold" : true,
 	"testAudioDevice" : true,
-	"unregisterOnDeviceError" : false
+	"unregisterOnDeviceError" : true
 }

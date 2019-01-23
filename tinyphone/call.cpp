@@ -62,16 +62,12 @@ void SIPCall::onCallMediaState(OnCallMediaStateParam &prm)
 	}
 	catch (...) {
 		PJ_LOG(3, (__FILENAME__, "Call [%d] OnCallMediaState Media Connect Error", ci.id));
-		Hangup();
 		tp::DisplayError("ERROR Connecting Call Media Stream, Please Contact IT Support", tp::OPS::ASYNC);
-		/*
-		//TODO: Fix throws Application Error
 		if (tp::ApplicationConfig.unregisterOnDeviceError) {
-			std::thread t([this]() {
-				getAccount()->UnRegister();
-			});
-			t.detach();	
-		}*/
+			PJ_LOG(3, (__FILENAME__, "Call [%d] OnCallMediaState unregisterOnDeviceError Acc: [%s]", ci.id, account->Name().c_str()));
+			account->UnRegister();	
+		}
+		Hangup();
 	}
 }
 
