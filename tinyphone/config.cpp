@@ -2,6 +2,7 @@
 #include "config.h"
 #include "net.h"
 #include "utils.h"
+#include <boost/format.hpp> 
 
 #define SIP_REG_DURATION 180
 #define SIP_REG_RETRY_INTERVAL 30
@@ -39,6 +40,28 @@ namespace tp {
 		tp::HttpResponse remoteConfig = url_get_contents(REMOTE_CONFIG_URL);
 		std::string jsonConfig;
 		std::string message;
+
+		//for (auto i = remoteConfig.headers.begin(); i != remoteConfig.headers.end(); ++i)
+		//	std::cout << i->first << ":" << i->second << ' ' << std::endl;
+
+		auto contentType = std::find_if(remoteConfig.headers.begin(), remoteConfig.headers.end(), 
+			[](const std::pair<std::string, std::string>& element) { return element.first == "Content-Type"; });
+
+		if (remoteConfig.code / 100 != 2 || (contentType != remoteConfig.headers.end() && contentType->second != "application/json" )) {
+			//Try Secondary Location
+			std::string productVersion;
+			#ifdef _DEBUG
+			productVersion = "HEAD";
+			#else
+			GetProductVersion(productVersion);
+			productVersion = "v" + productVersion;
+			#endif
+
+			std::string url = str(boost::format(REMOTE_CONFIG_URL_SECONDARY) % (productVersion));
+			std::cout << "Config Load From Secondary : " << url << std::endl;
+			remoteConfig = url_get_contents(url);
+		}
+
 		if (remoteConfig.code / 100 != 2) {
 			message = "Failed to fetch Remote Config!";
 			if (remoteConfig.error != "")

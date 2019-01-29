@@ -12,6 +12,30 @@ namespace tp {
 		return size * nmemb;
 	}
 
+	size_t CurlHeadersCallback(void *buffer, size_t tSize, size_t tCount, void *userp) {
+		char *d = (char*)buffer;
+		auto *pHeaders = (std::vector<std::pair<std::string, std::string>> *)(userp);
+
+		int result = 0;
+
+		size_t length = tSize * tCount, index = 0;
+		while (index < length)
+		{
+			unsigned char *temp = (unsigned char *)buffer + index;
+			if ((temp[0] == '\r') || (temp[0] == '\n'))
+				break;
+			index++;
+		}
+
+		if (pHeaders != NULL) {
+			std::string str((unsigned char*)buffer, (unsigned char*)buffer + index);
+			size_t pos = str.find(": ");
+			if (pos != std::string::npos)
+				pHeaders->push_back(std::make_pair(str.substr(0, pos), str.substr(pos + 2)));
+		}
+		return tCount;
+	}
+
 	tp::HttpResponse url_get_contents(std::string url) throw (std::exception) {
 		CURL *curl;
 		tp::HttpResponse response;
@@ -26,6 +50,9 @@ namespace tp {
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response.body);
 			curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L); //10s timeout
 
+			curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, CurlHeadersCallback);
+			curl_easy_setopt(curl, CURLOPT_WRITEHEADER, &response.headers);
+
 			auto res = curl_easy_perform(curl);
 			if (res != CURLE_OK) {
 				response.error = curl_easy_strerror(res);
@@ -33,6 +60,7 @@ namespace tp {
 			}
 			else {
 				curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response.code);
+
 			}
 			curl_easy_cleanup(curl);
 		}

@@ -14,7 +14,9 @@
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #define STRING_REMOVE_CHAR(str, ch) str.erase(std::remove(str.begin(), str.end(), ch), str.end())
 
-#define REMOTE_CONFIG_URL "http://rebrand.ly/tpconfig"
+#define REMOTE_CONFIG_URL "http://ekrt.it/tpconf"
+#define REMOTE_CONFIG_URL_SECONDARY "https://raw.githubusercontent.com/voiceip/tinyphone/%s/config.json"
+
 #define HEADER_SECURITY_CODE "X-SECURITY-CODE"
 
 #define SECURITY_SALT "St$%C1aNrV$D"

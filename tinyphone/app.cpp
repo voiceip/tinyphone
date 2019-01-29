@@ -65,14 +65,14 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 	RedirectIOToConsole();
 #endif
 
+	/*Initialize the NOTIFYICONDATA structure only once*/
+	InitNotifyIconData();
+
 	InitConfig();
 
 	tp::launchDate = now();
 	tp::sipLogFile = GetLogFile(SIP_LOG_FILE, "log");
 	tp::httpLogFile = GetLogFile(HTTP_LOG_FILE, "log");
-
-	/*Initialize the NOTIFYICONDATA structure only once*/
-	InitNotifyIconData();
 
 	InitPJSUAEndpoint(tp::sipLogFile);
 	TinyPhoneHttpServer server(&ep, tp::httpLogFile);
