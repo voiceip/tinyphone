@@ -48,7 +48,7 @@ namespace tp {
 
 			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CurlWriteCallback);
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response.body);
-			curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10L); //10s timeout
+			curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L); //5s timeout
 
 			curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, CurlHeadersCallback);
 			curl_easy_setopt(curl, CURLOPT_WRITEHEADER, &response.headers);
