@@ -209,6 +209,9 @@ void TinyPhoneHttpServer::Start() {
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 		catch (std::domain_error& e) {
+			if (ApplicationConfig.deviceErrorAlert) {
+				tp::DisplayError(MSG_CONTACT_IT_SUPPORT, tp::OPS::ASYNC);
+			}
 			std::string response_msg = "System Error: " + string(e.what());
 			return tp::response(500, {
 				{ "message", response_msg },

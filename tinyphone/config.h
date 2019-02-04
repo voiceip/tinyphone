@@ -47,6 +47,8 @@ namespace tp {
 		bool testAudioDevice;
 		bool unregisterOnDeviceError;
 
+		bool deviceErrorAlert;
+
 		std::string ua(){
 			std::string productVersion;
 			GetProductVersion(productVersion);
@@ -74,6 +76,7 @@ namespace tp {
 			{"autoUnHold", p.autoUnHold },
 			{"testAudioDevice", p.testAudioDevice },
 			{"unregisterOnDeviceError", p.unregisterOnDeviceError },
+			{"deviceErrorAlert", p.deviceErrorAlert },
 			
 		};
     }
@@ -97,6 +100,7 @@ namespace tp {
 		j.at("autoUnHold").get_to(p.autoUnHold);
 		j.at("testAudioDevice").get_to(p.testAudioDevice);
 		j.at("unregisterOnDeviceError").get_to(p.unregisterOnDeviceError);
+		j.at("deviceErrorAlert").get_to(p.deviceErrorAlert);
     }
    
     extern appConfig ApplicationConfig;

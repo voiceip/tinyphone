@@ -24,4 +24,6 @@
 #define SIP_LOG_FILE "tinyphone"
 #define HTTP_LOG_FILE "tinyphone-http"
 
+#define MSG_CONTACT_IT_SUPPORT "ERROR Connecting Audio Device, Please Contact IT Support"
+
 #endif
