@@ -24,7 +24,7 @@ namespace tp {
 	void ShowWinAlert(std::string title, std::string message) {
 		wchar_t *wmsg = new wchar_t[message.length() + 1]; //memory allocation
 		mbstowcs(wmsg, message.c_str(), message.length() + 1);
-		MessageBoxW(NULL, wmsg, L"Error!", MB_ICONEXCLAMATION | MB_OK);
+		MessageBoxW(NULL, wmsg, L"Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 		delete[]wmsg;
 	}
 
