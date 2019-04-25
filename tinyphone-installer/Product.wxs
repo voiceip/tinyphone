@@ -60,6 +60,12 @@
           <Shortcut Id="desktopShortcut" Directory="DesktopFolder" Name="$(var.ShortcutName)" WorkingDirectory="INSTALLFOLDER" Advertise="yes" Icon="icon.ico" IconIndex="0" />
         </File>
       </Component>
+      <Component Id="RegistryEntries" Guid="{9d45b01b-b3d2-4c21-9d94-df7c007c12c9}">
+          <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\tinyphone.exe\PerfOptions"
+              Action="createAndRemoveOnUninstall">
+            <RegistryValue Type="integer" Name="CpuPriorityClass" Value="3"/>
+          </RegistryKey>
+      </Component> 
     </ComponentGroup>
     <ComponentGroup Id="ProductSystemComponents" Directory="SystemFolder" >
       <Component Id="DLLComponent" Guid="{AE75A17D-3EBF-4B68-AA32-73D18D983315}">
