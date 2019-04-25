@@ -27,13 +27,14 @@ namespace tp {
 		DEFAULT_UA_PREFIX_STRING,
 		SIP_MAX_CALLS,
 		SIP_MAX_ACC,
+		4,
 		_default_codes,
 		DEFUALT_PJ_LOG_LEVEL,
 		false,
 		false,
 		{ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" },
 		"some-random-security-code",
-		false
+		false,
 	};
 
 	void InitConfig() {

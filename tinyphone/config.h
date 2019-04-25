@@ -33,6 +33,7 @@ namespace tp {
 		std::string uaPrefix;
 		size_t maxCalls;
 		size_t maxAccounts;
+		size_t pjThreadCount;
 		std::vector<std::string> audioCodecs;
 
 		int pjLogLevel;
@@ -77,6 +78,7 @@ namespace tp {
 			{"testAudioDevice", p.testAudioDevice },
 			{"unregisterOnDeviceError", p.unregisterOnDeviceError },
 			{"deviceErrorAlert", p.deviceErrorAlert },
+			{"pjThreadCount", p.pjThreadCount },
 			
 		};
     }
@@ -101,6 +103,7 @@ namespace tp {
 		j.at("testAudioDevice").get_to(p.testAudioDevice);
 		j.at("unregisterOnDeviceError").get_to(p.unregisterOnDeviceError);
 		j.at("deviceErrorAlert").get_to(p.deviceErrorAlert);
+		j.at("pjThreadCount").get_to(p.pjThreadCount);
     }
    
     extern appConfig ApplicationConfig;
