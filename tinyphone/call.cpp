@@ -49,10 +49,10 @@ void SIPCall::onCallMediaState(OnCallMediaStateParam &prm)
 					AudioMedia *aud_med = (AudioMedia *)getMedia(i);
 					// Connect the call audio media to sound device
 					AudDevManager& mgr = Endpoint::instance().audDevManager();
-					PJ_LOG(3, (__FILENAME__, "Connecting Call [%s] to Media Device Input #%d , Output # %d", ci.id, mgr.getCaptureDev(), mgr.getPlaybackDev()));
+					PJ_LOG(3, (__FILENAME__, "Connecting Call to Media Device Input #%d , Output # %d", mgr.getCaptureDev(), mgr.getPlaybackDev()));
 					aud_med->startTransmit(mgr.getPlaybackDevMedia());
 					mgr.getCaptureDevMedia().startTransmit(*aud_med);
-					//break;
+					break;
 				}
 				else {
 					pj_assert(ci.media[i].status <= PJ_ARRAY_SIZE(status_name));
