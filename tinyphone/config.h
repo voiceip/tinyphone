@@ -34,6 +34,7 @@ namespace tp {
 		size_t maxCalls;
 		size_t maxAccounts;
 		size_t pjThreadCount;
+		size_t pjMediaThreadCount;
 		std::vector<std::string> audioCodecs;
 
 		int pjLogLevel;
@@ -79,6 +80,7 @@ namespace tp {
 			{"unregisterOnDeviceError", p.unregisterOnDeviceError },
 			{"deviceErrorAlert", p.deviceErrorAlert },
 			{"pjThreadCount", p.pjThreadCount },
+			{"pjMediaThreadCount", p.pjMediaThreadCount },
 			
 		};
     }
@@ -104,6 +106,7 @@ namespace tp {
 		j.at("unregisterOnDeviceError").get_to(p.unregisterOnDeviceError);
 		j.at("deviceErrorAlert").get_to(p.deviceErrorAlert);
 		j.at("pjThreadCount").get_to(p.pjThreadCount);
+		j.at("pjMediaThreadCount").get_to(p.pjMediaThreadCount);
     }
    
     extern appConfig ApplicationConfig;

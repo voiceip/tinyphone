@@ -247,6 +247,7 @@ void InitPJSUAEndpoint(std::string logfile) {
 		ep_cfg.logConfig.decor |= PJ_LOG_HAS_CR | PJ_LOG_HAS_DAY_OF_MON |  PJ_LOG_HAS_MONTH |  PJ_LOG_HAS_YEAR ;
 		ep_cfg.uaConfig.userAgent = ApplicationConfig.ua();
 		ep_cfg.uaConfig.threadCnt = ApplicationConfig.pjThreadCount;
+		ep_cfg.medConfig.threadCnt = ApplicationConfig.pjMediaThreadCount;
 
 		if (ApplicationConfig.enableNoiseCancel) {
 			ep_cfg.medConfig.noVad = true;
