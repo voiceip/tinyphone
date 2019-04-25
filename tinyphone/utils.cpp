@@ -331,13 +331,15 @@ namespace tp {
 			do {
 				// technically should look at pAdapterInfo->AddressLength
 				//   and not assume it is 6.
-				sprintf(mac_addr, "%02X:%02X:%02X:%02X:%02X:%02X",
-					pAdapterInfo->Address[0], pAdapterInfo->Address[1],
-					pAdapterInfo->Address[2], pAdapterInfo->Address[3],
-					pAdapterInfo->Address[4], pAdapterInfo->Address[5]);
-				printf("Address: %s, mac: %s\n", pAdapterInfo->IpAddressList.IpAddress.String, mac_addr);
-				// print them all, return the last one.
-				// return mac_addr;
+				if (pAdapterInfo->AddressLength == 6 && pAdapterInfo->Address[0] != '0') {
+					sprintf(mac_addr, "%02X:%02X:%02X:%02X:%02X:%02X",
+						pAdapterInfo->Address[0], pAdapterInfo->Address[1],
+						pAdapterInfo->Address[2], pAdapterInfo->Address[3],
+						pAdapterInfo->Address[4], pAdapterInfo->Address[5]);
+					printf("Address: %s, mac: %s\n", pAdapterInfo->IpAddressList.IpAddress.String, mac_addr);
+					// print them all, return the last one.
+					// return mac_addr;
+				}
 				pAdapterInfo = pAdapterInfo->Next;
 			} while (pAdapterInfo);
 		}

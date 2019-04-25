@@ -579,7 +579,8 @@ void TinyPhoneHttpServer::Start() {
 		tp::DisplayError("Failed to Bind Port! \nIs another instance of tinyphone running?", OPS::SYNC);
 	}
 	else {
-		app.port(http_port)
+		app.bindaddr("0.0.0.0")
+			.port(http_port)
 			.multithreaded()
 			.run();
 	}
