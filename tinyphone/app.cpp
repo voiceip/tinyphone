@@ -248,6 +248,7 @@ void InitPJSUAEndpoint(std::string logfile) {
 		ep_cfg.uaConfig.userAgent = ApplicationConfig.ua();
 		ep_cfg.uaConfig.threadCnt = ApplicationConfig.pjThreadCount;
 		ep_cfg.medConfig.threadCnt = ApplicationConfig.pjMediaThreadCount;
+		ep_cfg.medConfig.noVad = ApplicationConfig.disableVAD;
 
 		if (ApplicationConfig.enableNoiseCancel) {
 			ep_cfg.medConfig.noVad = true;

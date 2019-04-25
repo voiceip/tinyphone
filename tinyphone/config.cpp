@@ -36,6 +36,7 @@ namespace tp {
 		{ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" },
 		"some-random-security-code",
 		false,
+		false
 	};
 
 	void InitConfig() {

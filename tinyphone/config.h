@@ -50,6 +50,7 @@ namespace tp {
 		bool unregisterOnDeviceError;
 
 		bool deviceErrorAlert;
+		bool disableVAD;
 
 		std::string ua(){
 			std::string productVersion;
@@ -81,6 +82,7 @@ namespace tp {
 			{"deviceErrorAlert", p.deviceErrorAlert },
 			{"pjThreadCount", p.pjThreadCount },
 			{"pjMediaThreadCount", p.pjMediaThreadCount },
+			{"disableVAD", p.disableVAD },
 			
 		};
     }
@@ -107,6 +109,7 @@ namespace tp {
 		j.at("deviceErrorAlert").get_to(p.deviceErrorAlert);
 		j.at("pjThreadCount").get_to(p.pjThreadCount);
 		j.at("pjMediaThreadCount").get_to(p.pjMediaThreadCount);
+		j.at("disableVAD").get_to(p.disableVAD);
     }
    
     extern appConfig ApplicationConfig;
