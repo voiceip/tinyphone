@@ -36,7 +36,9 @@ namespace tp {
 		{ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" },
 		"some-random-security-code",
 		false,
-		false
+		false,
+		PJSUA_DEFAULT_CLOCK_RATE,
+		PJSUA_DEFAULT_EC_TAIL_LEN
 	};
 
 	void InitConfig() {

@@ -52,6 +52,9 @@ namespace tp {
 		bool deviceErrorAlert;
 		bool disableVAD;
 
+		size_t clockRate;
+		size_t ecTailLen;
+
 		std::string ua(){
 			std::string productVersion;
 			GetProductVersion(productVersion);
@@ -83,6 +86,8 @@ namespace tp {
 			{"pjThreadCount", p.pjThreadCount },
 			{"pjMediaThreadCount", p.pjMediaThreadCount },
 			{"disableVAD", p.disableVAD },
+			{"clockRate", p.clockRate },
+			{"ecTailLen", p.ecTailLen },
 			
 		};
     }
@@ -110,6 +115,8 @@ namespace tp {
 		j.at("pjThreadCount").get_to(p.pjThreadCount);
 		j.at("pjMediaThreadCount").get_to(p.pjMediaThreadCount);
 		j.at("disableVAD").get_to(p.disableVAD);
+		j.at("clockRate").get_to(p.clockRate);
+		j.at("ecTailLen").get_to(p.ecTailLen);
     }
    
     extern appConfig ApplicationConfig;

@@ -249,11 +249,13 @@ void InitPJSUAEndpoint(std::string logfile) {
 		ep_cfg.uaConfig.threadCnt = ApplicationConfig.pjThreadCount;
 		ep_cfg.medConfig.threadCnt = ApplicationConfig.pjMediaThreadCount;
 		ep_cfg.medConfig.noVad = ApplicationConfig.disableVAD;
+		ep_cfg.medConfig.clockRate = ApplicationConfig.clockRate;
 
 		if (ApplicationConfig.enableNoiseCancel) {
-			ep_cfg.medConfig.noVad = true;
-			ep_cfg.medConfig.ecTailLen = PJSUA_DEFAULT_EC_TAIL_LEN;
+			ep_cfg.medConfig.ecTailLen = ApplicationConfig.ecTailLen;
 			ep_cfg.medConfig.ecOptions = PJMEDIA_ECHO_DEFAULT | PJMEDIA_ECHO_USE_NOISE_SUPPRESSOR;
+		} else {
+			ep_cfg.medConfig.ecTailLen = 0;
 		}
 
 		ep.libInit(ep_cfg);
