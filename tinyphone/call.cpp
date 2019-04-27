@@ -141,8 +141,12 @@ bool SIPCall::UnHoldCall() {
 
 void SIPCall::onCallEnd() {
 	ToneGenerator toneGenerator;
-	AudioMedia& play_med = Endpoint::instance().audDevManager().getPlaybackDevMedia();
 	try {
+		AudioMedia& play_med = Endpoint::instance().audDevManager().getPlaybackDevMedia();
+
+		//Print Call Stats
+		PJ_LOG(3,(__FILENAME__, "Call %d Disconnected, dumping media stats..", getId()));
+		PJ_LOG(3,(__FILENAME__, "%s", dump(true, "   ").c_str()));
 
 		ToneDesc tone;
 		tone.freq1 = 425;

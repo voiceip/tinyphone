@@ -25,5 +25,6 @@
 #define HTTP_LOG_FILE "tinyphone-http"
 
 #define MSG_CONTACT_IT_SUPPORT "ERROR Connecting Audio Device, Please Contact Floor IT Support"
+#define MSG_DEVICE_ERROR "Audio Device Test Failed, Please Contact Floor IT Support"
 
 #endif

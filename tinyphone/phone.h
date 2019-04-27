@@ -206,7 +206,7 @@ namespace tp {
 
 		void EnableAccount(SIPAccount* account) throw (std::exception) {
 			if (ApplicationConfig.testAudioDevice && !TestAudioDevice()) {
-				throw std::domain_error("Audio Device Test Failed, Please Contact IT Support");
+				throw std::domain_error(MSG_DEVICE_ERROR);
 			}
 			account->reRegister();
 		}
@@ -219,7 +219,7 @@ namespace tp {
 			}
 			else {
 				if (ApplicationConfig.testAudioDevice && !TestAudioDevice()) {
-					throw std::domain_error("Audio Device Test Failed, Please Contact IT Support");
+					throw std::domain_error(MSG_DEVICE_ERROR);
 				}
 
 				pj::AccountConfig acc_cfg;
