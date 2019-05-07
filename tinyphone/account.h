@@ -91,8 +91,8 @@ public:
 	{
 		AccountInfo ai = getInfo();
 		PJ_LOG(3, (__FILENAME__, "RegStateChange %s : %s, Code: %d", account_name.c_str(), (ai.regIsActive ? " Register" : "Unregister"), prm.code));
-		eventStream->publishEvent(ai, prm);
 		try {
+			eventStream->publishEvent(ai, prm);
 			if (!create_result_promise_fullfilled) {
 				create_result_promise.set_value(prm.code);
 				create_result_promise_fullfilled++;
@@ -100,6 +100,8 @@ public:
 		}
 		catch (std::future_error& e) {
 			UNUSED_ARG(e);
+		} catch (...){
+			PJ_LOG(3, (__FILENAME__, "ERROR: onRegState Unknown Error %s ", account_name.c_str()));
 		}
 	}
 

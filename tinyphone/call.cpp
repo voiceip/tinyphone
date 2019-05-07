@@ -12,20 +12,24 @@ void SIPCall::onCallState(OnCallStateParam &prm)
 
 	PJ_LOG(3, (__FILENAME__, "CallState Change: %s [%s]", ci.remoteUri.c_str(), ci.stateText.c_str()));
 
-	account->eventStream->publishEvent(ci, prm);
+	try{
+		account->eventStream->publishEvent(ci, prm);
 
-	switch (ci.state) {
-	case PJSIP_INV_STATE_DISCONNECTED:
-		onCallEnd();
-		account->removeCall(this);
-		account->onCallEnd(this);
-		/* Delete the call */
-		delete this;
-		break;
-	case PJSIP_INV_STATE_CONFIRMED:
-		break;
-	default:
-		break;
+		switch (ci.state) {
+		case PJSIP_INV_STATE_DISCONNECTED:
+			onCallEnd();
+			account->removeCall(this);
+			account->onCallEnd(this);
+			/* Delete the call */
+			delete this;
+			break;
+		case PJSIP_INV_STATE_CONFIRMED:
+			break;
+		default:
+			break;
+		}
+	} catch (...) {
+		PJ_LOG(3, (__FILENAME__, "Call [%d] onCallState Error", ci.id));
 	}
 }
 
@@ -42,16 +46,13 @@ void SIPCall::onCallMediaState(OnCallMediaStateParam &prm)
 	};
 
 	try {
+		AudioMedia *aud_med = NULL;
 		// Iterate all the call medias
 		for (unsigned i = 0; i < ci.media.size(); i++) {
 			if (ci.media[i].type == PJMEDIA_TYPE_AUDIO && getMedia(i)) {
 				if (ci.media[i].status == PJSUA_CALL_MEDIA_ACTIVE || ci.media[i].status == PJSUA_CALL_MEDIA_REMOTE_HOLD) {
-					AudioMedia *aud_med = (AudioMedia *)getMedia(i);
-					// Connect the call audio media to sound device
-					AudDevManager& mgr = Endpoint::instance().audDevManager();
-					PJ_LOG(3, (__FILENAME__, "Connecting Call to Media Device Input #%d , Output # %d", mgr.getCaptureDev(), mgr.getPlaybackDev()));
-					aud_med->startTransmit(mgr.getPlaybackDevMedia());
-					mgr.getCaptureDevMedia().startTransmit(*aud_med);
+					PJ_LOG(3, (__FILENAME__, "Found Call [%d] Media Resource [%d]", ci.id, i));
+					aud_med = (AudioMedia *)getMedia(i);
 					break;
 				}
 				else {
@@ -59,6 +60,18 @@ void SIPCall::onCallMediaState(OnCallMediaStateParam &prm)
 					PJ_LOG(3, (__FILENAME__, "Call [%d] OnCallMediaState Media State %s", ci.id, status_name[ci.media[i].status]));
 				}
 			}
+		}
+
+		if (aud_med) {
+			// Connect the call audio media to sound device
+			AudDevManager& mgr = Endpoint::instance().audDevManager();
+			PJ_LOG(3, (__FILENAME__, "Connecting Call [%d] to Media Device Input #%d , Output # %d", ci.id, mgr.getCaptureDev(), mgr.getPlaybackDev()));
+		   	// This will connect the sound device/mic to the call audio media
+		    mgr.getCaptureDevMedia().startTransmit(*aud_med);
+		    // And this will connect the call audio media to the sound device/speaker
+		    aud_med->startTransmit(mgr.getPlaybackDevMedia());
+		} else {
+			PJ_LOG(3, (__FILENAME__, "ERROR: Call [%d] OnCallMediaState Media Not Found", ci.id));
 		}
 	}
 	catch (...) {
