@@ -22,5 +22,6 @@
 	"disableVAD" : true,
 	"clockRate" : 8000,
 	"enableNoiseCancel" : false,
-	"ecTailLen" : 200
+	"ecTailLen" : 200,
+	"enableWSEvents" : false
 }

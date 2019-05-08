@@ -46,7 +46,8 @@ void TinyPhoneHttpServer::Start() {
 	channel<std::string> updates;
 	std::thread ws_publisher_thread;
 
-	CROW_LOG_INFO << "Starting the TinyPhone HTTP API";
+	std::cout << "Starting TinyPhone" << std::endl;
+
 	TinyPhone phone(endpoint);
 	phone.SetCodecs();
 
@@ -62,6 +63,7 @@ void TinyPhoneHttpServer::Start() {
 	crow::logger::setHandler(new TinyPhoneHTTPLogHandler(logfile));
 	int http_port = 6060;
 
+	CROW_LOG_INFO << "Starting the TinyPhone HTTP API";
 
 	/* Define HTTP Endpoints */
 	CROW_ROUTE(app, "/")([]() {
@@ -77,6 +79,7 @@ void TinyPhoneHttpServer::Start() {
 	std::unordered_set<crow::websocket::connection*> subscribers;
 
 	if (tp::ApplicationConfig.enableWSEvents) {
+		CROW_LOG_INFO << "Enabling WebSocket Endpoint";
 
 		CROW_ROUTE(app, "/events")
 			.websocket()

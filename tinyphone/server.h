@@ -23,6 +23,9 @@ public:
 
 	void log(std::string message, crow::LogLevel /*level*/) override {
 		log_writer << message ;
+#ifdef _DEBUG
+		std::cout << message;
+#endif
 		log_writer.flush();
 	}
 };
