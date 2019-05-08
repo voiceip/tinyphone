@@ -44,6 +44,7 @@ void TinyPhoneHttpServer::Start() {
 
 	pj_thread_auto_register();
 	channel<std::string> updates;
+	std::thread ws_publisher_thread;
 
 	CROW_LOG_INFO << "Starting the TinyPhone HTTP API";
 	TinyPhone phone(endpoint);
@@ -61,6 +62,7 @@ void TinyPhoneHttpServer::Start() {
 	crow::logger::setHandler(new TinyPhoneHTTPLogHandler(logfile));
 	int http_port = 6060;
 
+
 	/* Define HTTP Endpoints */
 	CROW_ROUTE(app, "/")([]() {
 		std::string productVersion;
@@ -74,44 +76,47 @@ void TinyPhoneHttpServer::Start() {
 
 	std::unordered_set<crow::websocket::connection*> subscribers;
 
-	CROW_ROUTE(app, "/events")
-		.websocket()
-		.onopen([&](crow::websocket::connection& conn) {
-		CROW_LOG_INFO << "new websocket connection";
-		std::lock_guard<std::mutex> _(mtx);
-		subscribers.insert(&conn);
-		json message = {
-			{ "message", "welcome" },
-			{ "subcription", "created" }
-		};
-		conn.send_text(message.dump());
-	})
-		.onclose([&](crow::websocket::connection& conn, const std::string& reason) {
-		CROW_LOG_INFO << "websocket connection closed: %s" << reason;
-		std::lock_guard<std::mutex> _(mtx);
-		subscribers.erase(&conn);
-	})
-		.onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary) {
-		json message = {
-			{ "message", "nothing here" },
-		};
-		conn.send_text(message.dump());
-	});
+	if (tp::ApplicationConfig.enableWSEvents) {
 
-	std::thread thread_object([&updates, &subscribers]() {
-		std::string data;
-		while (!updates.is_closed()) {
-			if (updates.pop(data, true)) {
-				for (auto u : subscribers)
-					u->send_text(data);
+		CROW_ROUTE(app, "/events")
+			.websocket()
+			.onopen([&](crow::websocket::connection& conn) {
+			CROW_LOG_INFO << "new websocket connection";
+			std::lock_guard<std::mutex> _(mtx);
+			subscribers.insert(&conn);
+			json message = {
+				{ "message", "welcome" },
+				{ "subcription", "created" }
+			};
+			conn.send_text(message.dump());
+		})
+			.onclose([&](crow::websocket::connection& conn, const std::string& reason) {
+			CROW_LOG_INFO << "websocket connection closed: %s" << reason;
+			std::lock_guard<std::mutex> _(mtx);
+			subscribers.erase(&conn);
+		})
+			.onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary) {
+			json message = {
+				{ "message", "nothing here" },
+			};
+			conn.send_text(message.dump());
+		});
+	
+		auto _thread = std::thread([&updates, &subscribers]() {
+			std::string data;
+			while (!updates.is_closed()) {
+				if (updates.pop(data, true)) {
+					for (auto u : subscribers)
+						u->send_text(data);
+				}
 			}
-		}
-		CROW_LOG_INFO << "Exiting Channel Relayer Thread ";
-		//for (auto u : subscribers)
-		//	u->close();
-	});
-
-
+			CROW_LOG_INFO << "Exiting Channel Relayer Thread ";
+			//for (auto u : subscribers)
+			//	u->close();
+		});
+		ws_publisher_thread = std::move(_thread);
+	}
+	
 	CROW_ROUTE(app, "/devices")
 		.methods("GET"_method)
 		([&phone]() {
@@ -594,7 +599,10 @@ void TinyPhoneHttpServer::Start() {
 	CROW_LOG_INFO << "Server has been shutdown... Will Exit now....";
 
 	updates.close();
-	thread_object.join();
+
+	if (tp::ApplicationConfig.enableWSEvents) {
+		ws_publisher_thread.join();
+	}
 
 	CROW_LOG_INFO << "Shutdown Complete..";
 

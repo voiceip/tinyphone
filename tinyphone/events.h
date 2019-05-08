@@ -9,6 +9,7 @@
 #include <pjsua2.hpp>
 #include "json.h"
 #include "utils.h"
+#include "config.h"
 
 using namespace std;
 using namespace pj;
@@ -28,50 +29,56 @@ public:
 
 	void publishEvent(AccountInfo ai, OnRegStateParam &prm) {
 		UNUSED_ARG(prm);
-		json event = {
-			{ "type","ACCOUNT" },
-			{ "account", ai.uri},
-			{ "presence", ai.onlineStatusText },
-			{ "status", ai.regStatusText },
-			{ "id", ai.id },
-			{ "code",  prm.code },
-		};
-		if (ai.regIsActive)
-			event["register"] = true;
-		else
-			event["unregister"] = true;
-		chan->push(event.dump());
+		if (tp::ApplicationConfig.enableWSEvents) {
+			json event = {
+				{ "type","ACCOUNT" },
+				{ "account", ai.uri},
+				{ "presence", ai.onlineStatusText },
+				{ "status", ai.regStatusText },
+				{ "id", ai.id },
+				{ "code",  prm.code },
+			};
+			if (ai.regIsActive)
+				event["register"] = true;
+			else
+				event["unregister"] = true;
+			chan->push(event.dump());
+		}
 	}
 
 	void publishEvent(CallInfo ci, OnCallStateParam &prm) {
 		UNUSED_ARG(prm);
-		tp::SIPUri uri;
-		tp::ParseSIPURI(ci.remoteUri, &uri);
-		json event = {
-			{ "type","CALL" },
-			{ "id", ci.id },
-			{ "party", ci.remoteUri },
-			{ "callerId", uri.user },
-			{ "displayName", uri.name },
-			{ "state", ci.stateText },
-			{ "sid", ci.callIdString },
-		};
-		chan->push(event.dump());
+		if (tp::ApplicationConfig.enableWSEvents) {
+			tp::SIPUri uri;
+			tp::ParseSIPURI(ci.remoteUri, &uri);
+			json event = {
+				{ "type","CALL" },
+				{ "id", ci.id },
+				{ "party", ci.remoteUri },
+				{ "callerId", uri.user },
+				{ "displayName", uri.name },
+				{ "state", ci.stateText },
+				{ "sid", ci.callIdString },
+			};
+			chan->push(event.dump());
+		}
 	}
 
 	void publishEvent(CallInfo ci, OnIncomingCallParam &iprm) {
 		UNUSED_ARG(iprm);
-		tp::SIPUri uri;
-		tp::ParseSIPURI(ci.remoteUri, &uri);
-		json event = {
-			{"type","CALL"},
-			{"incomming", true},
-			{"party", ci.remoteUri },
-			{ "from", uri.user },
-			{ "displayName", uri.name },
-			{"state", ci.stateText },
-		};
-		chan->push(event.dump());
+		if (tp::ApplicationConfig.enableWSEvents) {
+			tp::SIPUri uri;
+			tp::ParseSIPURI(ci.remoteUri, &uri);
+			json event = {
+				{"type","CALL"},
+				{"incomming", true},
+				{"party", ci.remoteUri },
+				{ "from", uri.user },
+				{ "displayName", uri.name },
+				{"state", ci.stateText },
+			};
+			chan->push(event.dump());
+		}
 	}
 
 };

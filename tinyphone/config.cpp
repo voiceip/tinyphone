@@ -4,42 +4,12 @@
 #include "utils.h"
 #include <boost/format.hpp> 
 
-#define SIP_REG_DURATION 180
-#define SIP_REG_RETRY_INTERVAL 30
-#define SIP_REG_FIRST_RETRY_INTERVAL 15
-#define SIP_ALLOWED_AUDIO_CODECS "PCMA/8000/1 PCMU/8000/1"
-#define DEFAULT_UA_PREFIX_STRING "TinyPhone Pjsua2 v" 
-
 #define ALLOW_OFFLINE_CONFIG true
 #define LOCAL_CONFIG_FILE "config.json"
 
 namespace tp {
 
-	auto _default_codes = splitString(SIP_ALLOWED_AUDIO_CODECS, ' ');
-
-	appConfig ApplicationConfig = {
-		PJSIP_TRANSPORT_UDP,
-		SIP_REG_DURATION,
-		SIP_REG_DURATION / 2,
-		SIP_REG_RETRY_INTERVAL,
-		SIP_REG_FIRST_RETRY_INTERVAL,
-		false,
-		DEFAULT_UA_PREFIX_STRING,
-		SIP_MAX_CALLS,
-		SIP_MAX_ACC,
-		2,
-		2,
-		_default_codes,
-		DEFUALT_PJ_LOG_LEVEL,
-		false,
-		false,
-		{ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" },
-		"some-random-security-code",
-		false,
-		false,
-		PJSUA_DEFAULT_CLOCK_RATE,
-		PJSUA_DEFAULT_EC_TAIL_LEN
-	};
+	appConfig ApplicationConfig;
 
 	void InitConfig() {
 		tp::HttpResponse remoteConfig = url_get_contents(REMOTE_CONFIG_URL);
@@ -87,6 +57,7 @@ namespace tp {
 #ifdef ALLOW_OFFLINE_CONFIG
 		if(file_exists(LOCAL_CONFIG_FILE)){
 			jsonConfig = file_get_contents(LOCAL_CONFIG_FILE);
+			std::cout << "Config Override From Local File" << std::endl;
 		} else if (jsonConfig.size() == 0 ){
 			message += "\nERROR: Local Config Fallback also failed.";
 			tp::DisplayError(message, OPS::SYNC);

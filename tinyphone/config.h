@@ -55,6 +55,8 @@ namespace tp {
 		size_t clockRate;
 		size_t ecTailLen;
 
+		bool enableWSEvents;
+
 		std::string ua(){
 			std::string productVersion;
 			GetProductVersion(productVersion);
@@ -88,6 +90,7 @@ namespace tp {
 			{"disableVAD", p.disableVAD },
 			{"clockRate", p.clockRate },
 			{"ecTailLen", p.ecTailLen },
+			{"enableWSEvents", p.enableWSEvents },
 			
 		};
     }
@@ -117,6 +120,7 @@ namespace tp {
 		j.at("disableVAD").get_to(p.disableVAD);
 		j.at("clockRate").get_to(p.clockRate);
 		j.at("ecTailLen").get_to(p.ecTailLen);
+		j.at("enableWSEvents").get_to(p.enableWSEvents);
     }
    
     extern appConfig ApplicationConfig;
