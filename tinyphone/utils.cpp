@@ -10,8 +10,10 @@
 #include <fstream>
 #include <mmsystem.h>
 #include <future>
-
+#include <strsafe.h>
 using namespace std;
+
+#pragma warning( disable : 4995 )
 
 void print_thread_name()
 {
@@ -32,8 +34,35 @@ namespace tp {
 
 		HANDLE hConsoleErr = GetStdHandle(STD_ERROR_HANDLE);
 		SetConsoleTextAttribute(hConsoleErr, FOREGROUND_RED | FOREGROUND_INTENSITY);
+		
+		LPVOID lpMsgBuf;
+		LPVOID lpDisplayBuf;
+		DWORD dw = GetLastError();
+
+		FormatMessage(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER |
+			FORMAT_MESSAGE_FROM_SYSTEM |
+			FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL,
+			dw,
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+			(LPTSTR)&lpMsgBuf,
+			0, NULL);
+
+		lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
+			(lstrlen((LPCTSTR)lpMsgBuf)
+				+ lstrlen((LPCTSTR)message.c_str()) + 40)
+			* sizeof(TCHAR));
+		StringCchPrintf((LPTSTR)lpDisplayBuf,
+			LocalSize(lpDisplayBuf) / sizeof(TCHAR),
+			TEXT("Code: %d: %s"), dw, lpMsgBuf);
+
 		fprintf(stderr, "ERROR: %s\n", message.c_str());
+		fprintf(stderr, "ERROR Info: %s\n", lpDisplayBuf);
 		SetConsoleTextAttribute(hConsoleErr, FOREGROUND_WHITE);
+
+		LocalFree(lpMsgBuf);
+		LocalFree(lpDisplayBuf);
 
 		PlaySound("SystemHand", NULL, SND_ASYNC);
 		if (mode == OPS::ASYNC) {

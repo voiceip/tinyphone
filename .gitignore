@@ -256,3 +256,7 @@ WiX.Toolset.DummyFile.txt
 nunit-*.xml
 GitHubVS.sln.DotSettings
 
+*.wav
+*.mp3
+*.ogg
+
