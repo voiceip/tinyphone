@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "account.h"
+#include "phone.h"
 
 using namespace std;
 using namespace pj;
@@ -69,7 +70,6 @@ namespace tp {
 	}
 
 	void SIPAccount::onCallEnd(SIPCall *call) {
-		using namespace tp;
 		if (ApplicationConfig.autoUnHold) {
 			BOOST_FOREACH(SIPCall* c, calls) {
 				if (c != call && c->HoldState()._to_integral() != (+HoldStatus::NOT_IN_HOLD)._to_integral() ) {
@@ -79,7 +79,7 @@ namespace tp {
 				}
 			}
 		}
-		//refreshDevices();
+		phone->refreshDevices();
 	}
 
 	void SIPAccount::onIncomingCall(OnIncomingCallParam &iprm)
@@ -101,7 +101,7 @@ namespace tp {
 		catch (...) {
 			PJ_LOG(3, (__FILENAME__, "ERROR Answering IncomingCall [%s]", ci.remoteUri.c_str()));
 			call->Hangup();
-			//refreshDevices();
+			phone->refreshDevices();
 		}
 	}
 

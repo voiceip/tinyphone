@@ -112,6 +112,8 @@ namespace tp {
 
 		void ConfigureAudioDevices();
 
+		void refreshDevices();
+
 		std::vector<SIPAccount *> Accounts() {
 			return accounts;
 		}

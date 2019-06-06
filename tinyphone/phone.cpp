@@ -17,10 +17,11 @@ namespace tp {
 		AudDevManager& audio_manager = Endpoint::instance().audDevManager();
 		audio_manager.refreshDevs();
 		AudioDevInfoVector devices = audio_manager.enumDev();
-		PJ_LOG(4, (__FILENAME__, "Refreshed Device Count: %d", (int)devices.size()));
+		PJ_LOG(3, (__FILENAME__, "Refreshed Device Count: %d", (int)devices.size()));
 		if (ApplicationConfig.useDefaultAudioDevice) {
-			input_audio_dev = 0;
-			output_audio_dev = 0;
+			PJ_LOG(3, (__FILENAME__, "Using Default Audio Device(s)"));
+			input_audio_dev = -1;
+			output_audio_dev = -2;
 		} else {
 			BOOST_FOREACH(string& search_string, ApplicationConfig.prefferedAudioDevices) {
 				int dev_idx = 0;
@@ -43,6 +44,11 @@ namespace tp {
 		}
 		audio_manager.setCaptureDev(input_audio_dev);
 		audio_manager.setPlaybackDev(output_audio_dev);
+	}
+
+	void TinyPhone::refreshDevices() {
+		PJ_LOG(4, (__FILENAME__, "Refreshing Audio Devices"));
+		ConfigureAudioDevices();
 	}
 
 }
