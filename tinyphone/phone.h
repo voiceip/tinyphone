@@ -25,15 +25,7 @@ namespace tp {
 		string proxy;
 	};
 
-	void from_json(const nlohmann::json& j, AccountConfig& p) {
-		j.at("username").get_to(p.username);
-		j.at("domain").get_to(p.domain);
-		j.at("password").get_to(p.password);
-
-		if (j.find("proxy") != j.end()) {
-			j.at("proxy").get_to(p.proxy);
-		}
-	}
+	void from_json(const nlohmann::json& j, AccountConfig& p);
 
 	class TinyPhone
 	{
@@ -118,37 +110,7 @@ namespace tp {
 			}
 		}
 
-		void ConfigureAudioDevices(int input_device = 0, int output_device = 0) {
-			AudDevManager& audio_manager = Endpoint::instance().audDevManager();
-			if (input_device == 0 && output_device == 0) {
-				audio_manager.refreshDevs();
-				AudioDevInfoVector devices = audio_manager.enumDev();
-				BOOST_FOREACH(string& search_string, ApplicationConfig.prefferedAudioDevices) {
-					int dev_idx = 0;
-					BOOST_FOREACH(AudioDevInfo* info, devices) {
-						string dev_name = info->name;
-						boost::to_lower(dev_name);
-						if (dev_name.find(search_string) != string::npos) {
-							if (info->inputCount > 0 && input_audio_dev <= 0) {
-								input_audio_dev = dev_idx;
-								PJ_LOG(3, (__FILENAME__, "Selected Input #%d %s", dev_idx, info->name.c_str()));
-							}
-							if (info->outputCount > 0 && output_audio_dev <= 0) {
-								output_audio_dev = dev_idx;
-								PJ_LOG(3, (__FILENAME__, "Selected Output #%d %s", dev_idx, info->name.c_str()));
-							}
-						}
-						dev_idx++;
-					}
-				}
-			}
-			else {
-				input_audio_dev = input_device;
-				output_audio_dev = output_device;
-			}
-			audio_manager.setCaptureDev(input_audio_dev);
-			audio_manager.setPlaybackDev(output_audio_dev);
-		}
+		void ConfigureAudioDevices();
 
 		std::vector<SIPAccount *> Accounts() {
 			return accounts;
@@ -242,7 +204,7 @@ namespace tp {
 				acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
 				acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
 
-				SIPAccount *acc(new SIPAccount(account_name, eventStream));
+				SIPAccount *acc(new SIPAccount(this, account_name, eventStream));
 				acc->domain = config.domain;
 				auto res = acc->Create(acc_cfg);
 

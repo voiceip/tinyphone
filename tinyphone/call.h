@@ -17,35 +17,35 @@ using namespace pj;
 
 namespace tp {
 	BETTER_ENUM(HoldStatus, int32_t, NOT_IN_HOLD = 0x00, LOCAL_HOLD = 0x01, REMOTE_HOLD = 0x02);
-}
 
-class SIPAccount;
+	class SIPAccount;
 
-class SIPCall : public Call
-{
-private:
-	SIPAccount *account;
-
-public:
-	SIPCall(Account &acc, int call_id = PJSUA_INVALID_ID)
-		: Call(acc, call_id)
+	class SIPCall : public Call
 	{
-		account = (SIPAccount *)&acc;
-	}
+	private:
+		SIPAccount *account;
 
-	SIPAccount* getAccount() {
-		return account;
-	}
+	public:
+		SIPCall(Account &acc, int call_id = PJSUA_INVALID_ID)
+			: Call(acc, call_id)
+		{
+			account = (SIPAccount *)&acc;
+		}
 
-	virtual void onCallState(OnCallStateParam &prm);
-	virtual void onCallMediaState(OnCallMediaStateParam &prm);
-	virtual bool HoldCall();
-	virtual bool UnHoldCall();
-	virtual tp::HoldStatus HoldState();
-	virtual void onCallEnd();
-	virtual void Hangup();
+		SIPAccount* getAccount() {
+			return account;
+		}
 
-};
+		virtual void onCallState(OnCallStateParam &prm);
+		virtual void onCallMediaState(OnCallMediaStateParam &prm);
+		virtual bool HoldCall();
+		virtual bool UnHoldCall();
+		virtual tp::HoldStatus HoldState();
+		virtual void onCallEnd();
+		virtual void Hangup();
+
+	};
  
+}
 
 #endif

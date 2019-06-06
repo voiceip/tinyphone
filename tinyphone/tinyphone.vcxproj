@@ -192,12 +192,14 @@
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="account.cpp" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="call.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="guicon.cpp" />
     <ClCompile Include="microtar.cpp" />
     <ClCompile Include="net.cpp" />
+    <ClCompile Include="phone.cpp" />
     <ClCompile Include="server.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

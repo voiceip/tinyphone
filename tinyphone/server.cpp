@@ -51,9 +51,8 @@ void TinyPhoneHttpServer::Start() {
 	TinyPhone phone(endpoint);
 	phone.SetCodecs();
 
-	if (!ApplicationConfig.useDefaultAudioDevice) {
-		phone.ConfigureAudioDevices();
-	}
+	phone.ConfigureAudioDevices();
+	
 	phone.CreateEventStream(&updates);
 
 	crow::App<TinyPhoneMiddleware> app;
@@ -237,7 +236,7 @@ void TinyPhoneHttpServer::Start() {
 				{ "accounts", json::array() },
 			};
 			pj_thread_auto_register();
-			BOOST_FOREACH(SIPAccount* account, phone.Accounts()) {
+			BOOST_FOREACH(tp::SIPAccount* account, phone.Accounts()) {
 				json account_data = {
 					{"id" , account->getId() },
 					{"uri" , account->getInfo().uri },
@@ -259,7 +258,7 @@ void TinyPhoneHttpServer::Start() {
 		([&phone](string account_name) {
 		try {
 			pj_thread_auto_register();
-			SIPAccount* acc = phone.AccountByName(account_name);
+			tp::SIPAccount* acc = phone.AccountByName(account_name);
 			if (acc != nullptr) {
 				acc->reRegister();
 				json response = {
@@ -286,7 +285,7 @@ void TinyPhoneHttpServer::Start() {
 		([&phone](string account_name) {
 		try {
 			pj_thread_auto_register();
-			SIPAccount* acc = phone.AccountByName(account_name);
+			tp::SIPAccount* acc = phone.AccountByName(account_name);
 			if (acc != nullptr) {
 				phone.Logout(acc);
 				json response = {
@@ -317,7 +316,7 @@ void TinyPhoneHttpServer::Start() {
 
 		pj_thread_auto_register();
 
-		SIPAccount* account = phone.PrimaryAccount();
+		tp::SIPAccount* account = phone.PrimaryAccount();
 		if (account == nullptr) {
 			return tp::response(400, {
 				{ "message", "No Account Registed/Active Yet" },
@@ -499,7 +498,7 @@ void TinyPhoneHttpServer::Start() {
 				{ "accounts", json::array() },
 			};
 			pj_thread_auto_register();
-			BOOST_FOREACH(SIPAccount* account, phone.Accounts()) {
+			BOOST_FOREACH(tp::SIPAccount* account, phone.Accounts()) {
 				json account_data = {
 					{ "id" , account->getId() },
 					{ "name" , account->Name() },

@@ -98,6 +98,12 @@
     <ClCompile Include="microtar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="phone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="account.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\tinyphone.ico">
