@@ -25,3 +25,6 @@
 [submodule "lib/cryptopp"]
 	path = lib/cryptopp
 	url = git@github.com:weidai11/cryptopp.git
+[submodule "lib/portaudio"]
+	path = lib/portaudio
+	url = https://git.assembla.com/portaudio.git
