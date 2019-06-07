@@ -34,6 +34,8 @@ namespace tp {
 		EventStream* eventStream;
 
 	private:
+	    std::recursive_mutex add_acc_mutex;
+
 		std::string addTransportSuffix(std::string &str) {
 			tp::AddTransportSuffix(str, ApplicationConfig.transport);
 			return str;
@@ -175,45 +177,7 @@ namespace tp {
 			account->reRegister();
 		}
 
-		std::future<int> AddAccount(AccountConfig& config) throw (std::exception) {
-			string account_name = SIP_ACCOUNT_NAME(config.username, config.domain);
-			auto exits = AccountByName(account_name);
-			if (exits != nullptr) {
-				throw std::invalid_argument("Account already exists");
-			}
-			else {
-				if (ApplicationConfig.testAudioDevice && !TestAudioDevice()) {
-					throw std::domain_error(MSG_DEVICE_ERROR);
-				}
-
-				pj::AccountConfig acc_cfg;
-				acc_cfg.idUri = ("sip:" + account_name);
-				acc_cfg.regConfig.registrarUri = ("sip:" + config.domain);
-				
-				addTransportSuffix(acc_cfg.regConfig.registrarUri);
-				acc_cfg.sipConfig.authCreds.push_back(AuthCredInfo("digest", "*", config.username, 0, config.password));
-				
-				if (config.proxy.size() > 0) {
-					acc_cfg.sipConfig.proxies = { config.proxy };
-				}
-
-				acc_cfg.regConfig.timeoutSec = ApplicationConfig.timeoutSec;
-				acc_cfg.regConfig.delayBeforeRefreshSec = ApplicationConfig.refreshIntervalSec;
-				acc_cfg.regConfig.retryIntervalSec = ApplicationConfig.retryIntervalSec;
-				acc_cfg.regConfig.firstRetryIntervalSec = ApplicationConfig.firstRetryIntervalSec;
-				acc_cfg.regConfig.dropCallsOnFail = ApplicationConfig.dropCallsOnFail;
-
-				acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
-				acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
-
-				SIPAccount *acc(new SIPAccount(this, account_name, eventStream));
-				acc->domain = config.domain;
-				auto res = acc->Create(acc_cfg);
-
-				accounts.push_back(acc);
-				return res;
-			}
-		}
+		std::future<int> AddAccount(AccountConfig& config) throw (std::exception);
 
 		SIPCall* MakeCall(string uri) throw(pj::Error) {
 			SIPAccount* account = PrimaryAccount();

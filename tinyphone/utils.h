@@ -16,6 +16,11 @@
 #include <boost/format.hpp>
 #include <boost/filesystem.hpp>
 #include <ctime>
+#include <mutex>
+
+
+#define synchronized(m) for(std::unique_lock<std::recursive_mutex> lk(m); lk; lk.unlock())
+
 
 static PJ_IDEF(pj_str_t) pj_str(std::string str)
 {

@@ -70,6 +70,8 @@
     <ComponentGroup Id="ProductSystemComponents" Directory="SystemFolder" >
       <Component Id="DLLComponent" Guid="{AE75A17D-3EBF-4B68-AA32-73D18D983315}">
         <File Id="libcurl.dll" Name="libcurl.dll" Source="$(var.tinyphone.ProjectDir)\..\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\bin\libcurl.dll" />
+        <File Id="portaudio_x86.dll" Name="portaudio_x86.dll" Source="$(var.tinyphone.ProjectDir)\..\lib\portaudio\build\msvc\Win32\Release\portaudio_x86.dll" />
+
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="ProductSupportComponents" Directory="ApplicationProgramsFolder">
