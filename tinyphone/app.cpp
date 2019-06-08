@@ -10,6 +10,7 @@
 #include "consts.h"
 #include "config.h"
 #include "log.h"
+#include "splash.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "libpjproject-i386-Win32-vc14-Debug-Static.lib")
@@ -32,6 +33,8 @@ NOTIFYICONDATA notifyIconData;
 TCHAR szTIP[MAX_TOOLTIP_LENGTH] = TEXT("Strowger TinyPhone");
 char szClassName[] = "TinyPhone";
 Endpoint ep;
+SPLASH splashScreen;
+
 
 namespace tp {
 	string sipLogFile;
@@ -68,6 +71,9 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 	/*Initialize the NOTIFYICONDATA structure only once*/
 	InitNotifyIconData();
 
+	splashScreen.Init(Hwnd, hThisInstance, IDB_SPLASH);
+	splashScreen.Show();
+
 	InitConfig();
 
 	tp::launchDate = now();
@@ -86,6 +92,8 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 		PostQuitMessage(0);
 		exit(0);
 	});
+
+	splashScreen.Hide();
 
 	/* Run the message loop. It will run until GetMessage() returns 0 */
 	while (GetMessage(&messages, NULL, 0, 0))

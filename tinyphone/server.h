@@ -21,7 +21,7 @@ public:
 		log_writer.close();
 	}
 
-	void log(std::string message, crow::LogLevel /*level*/) override {
+	void log(const std::string &message, crow::LogLevel /*level*/) override {
 		log_writer << message ;
 #ifdef _DEBUG
 		std::cout << message;

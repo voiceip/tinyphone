@@ -603,7 +603,6 @@ void TinyPhoneHttpServer::Start() {
 		}
 	}
 
-
 	if (is_tcp_port_in_use(http_port)) {
 		tp::DisplayError("Failed to Bind Port!\n\nPlease ensure port " + std::to_string(http_port) + " is not used by any other application.", OPS::SYNC);
 	}
