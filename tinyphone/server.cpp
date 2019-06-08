@@ -586,7 +586,7 @@ void TinyPhoneHttpServer::Start() {
 	});
 
 	if (is_tcp_port_in_use(http_port)) {
-		const int result = MessageBoxW(NULL, L"Failed to Bind Port \nDo you want to quit the other instance ?", L"Tinyphone Error",  MB_YESNO);
+		const int result = MessageBoxW(NULL, L"Failed to Start! Tinyphone is already running.\n\nDo you want to quit the other instance ?", L"Tinyphone Error",  MB_YESNO);
 		switch (result)
 		{
 		case IDYES:
@@ -605,7 +605,7 @@ void TinyPhoneHttpServer::Start() {
 
 
 	if (is_tcp_port_in_use(http_port)) {
-		tp::DisplayError("Failed to Bind Port! \nPlease ensure port " + std::to_string(http_port) + " is not used by any other application.", OPS::SYNC);
+		tp::DisplayError("Failed to Bind Port!\n\nPlease ensure port " + std::to_string(http_port) + " is not used by any other application.", OPS::SYNC);
 	}
 	else {
 		app.bindaddr("0.0.0.0")
