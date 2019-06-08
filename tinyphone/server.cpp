@@ -18,12 +18,10 @@
 #include <algorithm>
 #include "boost/date_time/posix_time/posix_time.hpp"
 
-
 using namespace std;
 using namespace pj;
 using json = nlohmann::json;
 using namespace boost::posix_time;
-
 
 #define DEFAULT_HTTP_SERVER_ERROR_REPONSE  {{ "message", "Something went Wrong :(" }}
 
@@ -564,9 +562,14 @@ void TinyPhoneHttpServer::Start() {
 		json response = {
 			{"message",  "Server Shutdown Recieved"},
 			{ "result",  401 },
+			{"source", req.remoteIpAddress },
 		};
-		CROW_LOG_INFO << "Shutdown Request from client: " << req.body;
-		if (it != req.headers.end()) {
+		CROW_LOG_INFO << "Shutdown Request from client: " << req.remoteIpAddress;
+		if (req.remoteIpAddress.compare("127.0.0.1") == 0) {
+			CROW_LOG_INFO << "Shutdown Request from localhost authenticated";
+			response["result"] = 200;
+			app.stop();
+		} else if (it != req.headers.end()) {
 			auto value = it->second;
 			auto hash = sha256(SECURITY_SALT + value);
 			if (hash == ApplicationConfig.securityCode) {
@@ -583,7 +586,26 @@ void TinyPhoneHttpServer::Start() {
 	});
 
 	if (is_tcp_port_in_use(http_port)) {
-		tp::DisplayError("Failed to Bind Port! \nIs another instance of tinyphone running?", OPS::SYNC);
+		const int result = MessageBoxW(NULL, L"Failed to Bind Port \nDo you want to quit the other instance ?", L"Tinyphone Error",  MB_YESNO);
+		switch (result)
+		{
+		case IDYES:
+			{
+			std::string url = "http://localhost:" + std::to_string(http_port) + std::string("/exit");
+			auto response = http_post(url, "");
+			CROW_LOG_INFO << "Kill Response: " << response.body;
+			std::this_thread::sleep_for(2s);
+			}
+			break;
+		case IDNO:
+			return;
+			break;
+		}
+	}
+
+
+	if (is_tcp_port_in_use(http_port)) {
+		tp::DisplayError("Failed to Bind Port! \nPlease ensure port " + std::to_string(http_port) + " is not used by any other application.", OPS::SYNC);
 	}
 	else {
 		app.bindaddr("0.0.0.0")

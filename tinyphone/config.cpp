@@ -12,7 +12,7 @@ namespace tp {
 	appConfig ApplicationConfig;
 
 	void InitConfig() {
-		tp::HttpResponse remoteConfig = url_get_contents(REMOTE_CONFIG_URL);
+		tp::HttpResponse remoteConfig = http_get(REMOTE_CONFIG_URL);
 		std::string jsonConfig;
 		std::string message;
 
@@ -34,7 +34,7 @@ namespace tp {
 
 			std::string url = str(boost::format(REMOTE_CONFIG_URL_SECONDARY) % (productVersion));
 			std::cout << "Config Load From Secondary : " << url << std::endl;
-			remoteConfig = url_get_contents(url);
+			remoteConfig = http_get(url);
 		}
 
 		if (remoteConfig.code / 100 != 2) {

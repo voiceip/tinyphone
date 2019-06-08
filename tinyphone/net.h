@@ -9,6 +9,11 @@
 
 namespace tp {
 
+	struct CurlPostData {
+		const char *readptr;
+		size_t sizeleft;
+	};
+
 	struct HttpResponse {
 		long code;
 		std::string body;
@@ -16,7 +21,9 @@ namespace tp {
 		std::string error;
 	};
 
-	tp::HttpResponse url_get_contents(std::string url) throw (std::exception);
+	tp::HttpResponse http_get(std::string url) throw (std::exception);
+
+	tp::HttpResponse http_post(std::string url, std::string body) throw (std::exception);
 
 	std::string local_ip_address();
 
