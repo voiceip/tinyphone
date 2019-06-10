@@ -1,6 +1,6 @@
 [submodule "lib/pjproject"]
 	path = lib/pjproject
-	url = https://github.com/pjsip/pjproject.git
+	url = git@github.com:voiceip/pjproject.git
 [submodule "lib/vp8vfw"]
 	path = lib/vp8vfw
 	url = https://github.com/XhmikosR/vp8vfw.git

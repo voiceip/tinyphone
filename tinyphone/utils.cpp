@@ -58,7 +58,7 @@ namespace tp {
 			TEXT("Code: %d: %s"), dw, lpMsgBuf);
 
 		fprintf(stderr, "ERROR: %s\n", message.c_str());
-		fprintf(stderr, "ERROR Info: %s\n", lpDisplayBuf);
+		fprintf(stderr, "ERROR Info: %s\n", (LPTSTR)lpDisplayBuf);
 		SetConsoleTextAttribute(hConsoleErr, FOREGROUND_WHITE);
 
 		LocalFree(lpMsgBuf);

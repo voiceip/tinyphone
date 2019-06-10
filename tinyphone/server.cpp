@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <algorithm>
 #include "boost/date_time/posix_time/posix_time.hpp"
+#include "portaudio.h"
 
 using namespace std;
 using namespace pj;
@@ -139,9 +140,15 @@ void TinyPhoneHttpServer::Start() {
 					{ "inputCount" ,  info->inputCount },
 					{ "outputCount" ,  info->outputCount },
 				};
+				if (std::string("PA").compare(info->driver) == 0) {
+					const PaDeviceInfo *deviceInfo = Pa_GetDeviceInfo(dev_idx);
+					const PaHostApiInfo *hostApiInfo = Pa_GetHostApiInfo(deviceInfo->hostApi);
+					dev_info["pa-api"] = hostApiInfo->name;
+				}
 				response["devices"].push_back(dev_info);
 				dev_idx++;
 			}
+
 			return tp::response(200, response);
 		}
 		catch (...) {

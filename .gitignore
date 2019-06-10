@@ -229,7 +229,7 @@ Temporary Items
 # =========================
 
 # Windows image file caches
-Thumbs.db
+Thumbs.d*
 ehthumbs.db
 
 # Folder config file
