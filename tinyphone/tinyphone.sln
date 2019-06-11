@@ -4,10 +4,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyphone", "tinyphone.vcxproj", "{968AADC8-5E16-44C2-919C-48683EF6729E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DEB70735-C071-495E-BE1A-52261235ED24} = {DEB70735-C071-495E-BE1A-52261235ED24}
+	EndProjectSection
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "tinyphone-installer", "..\tinyphone-installer\tinyphone-installer.wixproj", "{57F888FC-927D-405B-8CA4-4732C49E622E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "actions", "..\tinyphone-installer\actions\actions.vcxproj", "{5E5DB19E-DD1A-49FB-8788-D419ED63EB02}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "installer-actions", "..\tinyphone-installer\actions\actions.vcxproj", "{5E5DB19E-DD1A-49FB-8788-D419ED63EB02}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "statsd-cpp", "..\lib\statsd-cpp\statsd-cpp.vcxproj", "{DEB70735-C071-495E-BE1A-52261235ED24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +44,14 @@ Global
 		{5E5DB19E-DD1A-49FB-8788-D419ED63EB02}.Release|x64.Build.0 = Release|x64
 		{5E5DB19E-DD1A-49FB-8788-D419ED63EB02}.Release|x86.ActiveCfg = Release|Win32
 		{5E5DB19E-DD1A-49FB-8788-D419ED63EB02}.Release|x86.Build.0 = Release|Win32
+		{DEB70735-C071-495E-BE1A-52261235ED24}.Debug|x64.ActiveCfg = Debug|x64
+		{DEB70735-C071-495E-BE1A-52261235ED24}.Debug|x64.Build.0 = Debug|x64
+		{DEB70735-C071-495E-BE1A-52261235ED24}.Debug|x86.ActiveCfg = Debug|Win32
+		{DEB70735-C071-495E-BE1A-52261235ED24}.Debug|x86.Build.0 = Debug|Win32
+		{DEB70735-C071-495E-BE1A-52261235ED24}.Release|x64.ActiveCfg = Release|x64
+		{DEB70735-C071-495E-BE1A-52261235ED24}.Release|x64.Build.0 = Release|x64
+		{DEB70735-C071-495E-BE1A-52261235ED24}.Release|x86.ActiveCfg = Release|Win32
+		{DEB70735-C071-495E-BE1A-52261235ED24}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

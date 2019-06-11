@@ -51,6 +51,7 @@ void TinyPhoneHttpServer::Start() {
 	phone.SetCodecs();
 
 	phone.ConfigureAudioDevices();
+	phone.InitMetricsClient();
 	
 	phone.CreateEventStream(&updates);
 

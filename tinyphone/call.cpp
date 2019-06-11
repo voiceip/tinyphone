@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "config.h"
 #include <pjsua-lib/pjsua_internal.h>
+#include "metrics.h"
 
 namespace tp {
 
@@ -86,6 +87,7 @@ namespace tp {
 				account->UnRegister();
 			}
 			Hangup();
+			MetricsClient.increment("error.OnCallMediaState");
 		}
 	}
 
@@ -185,6 +187,7 @@ namespace tp {
 		}
 		catch (Error& err) {
 			UNUSED_ARG(err);
+			MetricsClient.increment("error.onCallEnd");
 			PJ_LOG(3, (__FILENAME__, "SIPCall::onCallEnd Error"));
 		}
 

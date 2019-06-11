@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "phone.h"
+#include "metrics.h"
 
 namespace tp {
 
@@ -56,45 +57,60 @@ namespace tp {
 	}
 
 	std::future<int> TinyPhone::AddAccount(AccountConfig& config) throw (std::exception) {
-			string account_name = SIP_ACCOUNT_NAME(config.username, config.domain);
-			synchronized(add_acc_mutex){
-				auto exits = AccountByName(account_name);
-				if (exits != nullptr) {
-					throw std::invalid_argument("Account already exists");
+		string account_name = SIP_ACCOUNT_NAME(config.username, config.domain);
+		synchronized(add_acc_mutex){
+			auto exits = AccountByName(account_name);
+			if (exits != nullptr) {
+				throw std::invalid_argument("Account already exists");
+			}
+			else {
+				if (ApplicationConfig.testAudioDevice && !TestAudioDevice()) {
+					throw std::domain_error(MSG_DEVICE_ERROR);
 				}
-				else {
-					if (ApplicationConfig.testAudioDevice && !TestAudioDevice()) {
-						throw std::domain_error(MSG_DEVICE_ERROR);
-					}
 
-					pj::AccountConfig acc_cfg;
-					acc_cfg.idUri = ("sip:" + account_name);
-					acc_cfg.regConfig.registrarUri = ("sip:" + config.domain);
-					
-					addTransportSuffix(acc_cfg.regConfig.registrarUri);
-					acc_cfg.sipConfig.authCreds.push_back(AuthCredInfo("digest", "*", config.username, 0, config.password));
-					
-					if (config.proxy.size() > 0) {
-						acc_cfg.sipConfig.proxies = { config.proxy };
-					}
-
-					acc_cfg.regConfig.timeoutSec = ApplicationConfig.timeoutSec;
-					acc_cfg.regConfig.delayBeforeRefreshSec = ApplicationConfig.refreshIntervalSec;
-					acc_cfg.regConfig.retryIntervalSec = ApplicationConfig.retryIntervalSec;
-					acc_cfg.regConfig.firstRetryIntervalSec = ApplicationConfig.firstRetryIntervalSec;
-					acc_cfg.regConfig.dropCallsOnFail = ApplicationConfig.dropCallsOnFail;
-
-					acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
-					acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
-
-					SIPAccount *acc(new SIPAccount(this, account_name, eventStream));
-					acc->domain = config.domain;
-					auto res = acc->Create(acc_cfg);
-
-					accounts.push_back(acc);
-					return res;
+				pj::AccountConfig acc_cfg;
+				acc_cfg.idUri = ("sip:" + account_name);
+				acc_cfg.regConfig.registrarUri = ("sip:" + config.domain);
+				
+				addTransportSuffix(acc_cfg.regConfig.registrarUri);
+				acc_cfg.sipConfig.authCreds.push_back(AuthCredInfo("digest", "*", config.username, 0, config.password));
+				
+				if (config.proxy.size() > 0) {
+					acc_cfg.sipConfig.proxies = { config.proxy };
 				}
+
+				acc_cfg.regConfig.timeoutSec = ApplicationConfig.timeoutSec;
+				acc_cfg.regConfig.delayBeforeRefreshSec = ApplicationConfig.refreshIntervalSec;
+				acc_cfg.regConfig.retryIntervalSec = ApplicationConfig.retryIntervalSec;
+				acc_cfg.regConfig.firstRetryIntervalSec = ApplicationConfig.firstRetryIntervalSec;
+				acc_cfg.regConfig.dropCallsOnFail = ApplicationConfig.dropCallsOnFail;
+
+				acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
+				acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
+
+				SIPAccount *acc(new SIPAccount(this, account_name, eventStream));
+				acc->domain = config.domain;
+				auto res = acc->Create(acc_cfg);
+
+				accounts.push_back(acc);
+				return res;
 			}
 		}
+	}
+
+	void TinyPhone::InitMetricsClient() {
+		std::string productVersion;
+		std::vector<std::string> tags{};
+
+		if (ApplicationConfig.enableMetrics) {
+			PJ_LOG(3, (__FILENAME__, "Creating Metrics Client to %s:%d", ApplicationConfig.metricsServerHostname.c_str(), ApplicationConfig.metricsServerPort));
+			tp::MetricsClient.open(ApplicationConfig.metricsServerHostname, ApplicationConfig.metricsServerPort);
+			tp::MetricsClient.setPrefix("tinyphone.");
+			GetProductVersion(productVersion);
+			tags.push_back(std::string("version=") + productVersion);
+			statsd::setGlobalTags(tags);
+			tp::MetricsClient.increment("launch");
+		} 
+	}
 
 }

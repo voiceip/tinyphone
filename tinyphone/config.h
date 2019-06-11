@@ -57,6 +57,11 @@ namespace tp {
 
 		bool enableWSEvents;
 
+		bool enableMetrics;
+		std::string metricsServerHostname;
+		int metricsServerPort;
+
+
 		std::string ua(){
 			std::string productVersion;
 			GetProductVersion(productVersion);
@@ -91,7 +96,9 @@ namespace tp {
 			{"clockRate", p.clockRate },
 			{"ecTailLen", p.ecTailLen },
 			{"enableWSEvents", p.enableWSEvents },
-			
+			{"enableMetrics", p.enableMetrics },
+			{"metricsServerHostname", p.metricsServerHostname },
+			{"metricsServerPort", p.metricsServerPort },
 		};
     }
 
@@ -121,6 +128,9 @@ namespace tp {
 		j.at("clockRate").get_to(p.clockRate);
 		j.at("ecTailLen").get_to(p.ecTailLen);
 		j.at("enableWSEvents").get_to(p.enableWSEvents);
+		j.at("enableMetrics").get_to(p.enableMetrics);
+		j.at("metricsServerHostname").get_to(p.metricsServerHostname);
+		j.at("metricsServerPort").get_to(p.metricsServerPort);
     }
    
     extern appConfig ApplicationConfig;

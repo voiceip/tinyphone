@@ -116,6 +116,8 @@ namespace tp {
 
 		void refreshDevices();
 
+		void InitMetricsClient();
+
 		std::vector<SIPAccount *> Accounts() {
 			return accounts;
 		}

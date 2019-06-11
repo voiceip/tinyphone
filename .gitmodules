@@ -28,3 +28,6 @@
 [submodule "lib/portaudio"]
 	path = lib/portaudio
 	url = https://git.assembla.com/portaudio.git
+[submodule "lib/statsd-cpp"]
+	path = lib/statsd-cpp
+	url = git@github.com:voiceip/statsd-cpp.git

@@ -7,6 +7,8 @@
 #include <iostream>
 #include <fstream>
 #include <pjsua2.hpp>
+#include <chrono>	
+#include "metrics.h"
 
 class TinyPhoneHTTPLogHandler : public crow::ILogHandler {
 private:
@@ -42,17 +44,21 @@ struct TinyPhoneMiddleware
 		message = newMsg;
 	}
 
-	struct context {
+	struct	context {
+		std::chrono::system_clock::time_point start;
 	};
 
-	void before_handle(crow::request& /*req*/, crow::response& /*res*/, context& /*ctx*/)
+	void before_handle(crow::request& /*req*/, crow::response& /*res*/, context& ctx)
 	{
-		//CROW_LOG_DEBUG << " - MESSAGE: " << message;
+		ctx.start = std::chrono::system_clock::now();
 	}
 
-	void after_handle(crow::request& /*req*/, crow::response& /*res*/, context& /*ctx*/)
+	void after_handle(crow::request& /*req*/, crow::response& res, context& ctx)
 	{
-		// no-op
+		auto now = std::chrono::system_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - ctx.start).count();
+		tp::MetricsClient.increment("http.response." + std::to_string(res.code));
+		tp::MetricsClient.timing("http.response.time", duration);
 	}
 };
 
