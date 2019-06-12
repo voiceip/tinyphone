@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "account.h"
 #include "phone.h"
+#include "metrics.h"
 
 using namespace std;
 using namespace pj;
@@ -80,7 +81,9 @@ namespace tp {
 				}
 			}
 		}
-		phone->refreshDevices();
+		if (ApplicationConfig.autoDeviceRefresh) {
+			phone->refreshDevices();
+		}
 	}
 
 	void SIPAccount::onIncomingCall(OnIncomingCallParam &iprm)

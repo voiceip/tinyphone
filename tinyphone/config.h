@@ -61,6 +61,8 @@ namespace tp {
 		std::string metricsServerHostname;
 		int metricsServerPort;
 
+		bool autoDeviceRefresh;
+
 
 		std::string ua(){
 			std::string productVersion;
@@ -99,6 +101,7 @@ namespace tp {
 			{"enableMetrics", p.enableMetrics },
 			{"metricsServerHostname", p.metricsServerHostname },
 			{"metricsServerPort", p.metricsServerPort },
+			{"autoDeviceRefresh", p.autoDeviceRefresh },
 		};
     }
 
@@ -131,6 +134,7 @@ namespace tp {
 		j.at("enableMetrics").get_to(p.enableMetrics);
 		j.at("metricsServerHostname").get_to(p.metricsServerHostname);
 		j.at("metricsServerPort").get_to(p.metricsServerPort);
+		j.at("autoDeviceRefresh").get_to(p.autoDeviceRefresh);
     }
    
     extern appConfig ApplicationConfig;
