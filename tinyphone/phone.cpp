@@ -102,15 +102,25 @@ namespace tp {
 	void TinyPhone::InitMetricsClient() {
 		std::string productVersion;
 		std::vector<std::string> tags{};
+		int status;
 
 		if (ApplicationConfig.enableMetrics) {
-			PJ_LOG(3, (__FILENAME__, "Creating Metrics Client to %s:%d", ApplicationConfig.metricsServerHostname.c_str(), ApplicationConfig.metricsServerPort));
-			tp::MetricsClient.open(ApplicationConfig.metricsServerHostname, ApplicationConfig.metricsServerPort);
-			tp::MetricsClient.setPrefix("tinyphone.");
-			GetProductVersion(productVersion);
-			tags.push_back(std::string("version=") + productVersion);
-			statsd::setGlobalTags(tags);
-			tp::MetricsClient.increment("launch");
+			PJ_LOG(3, (__FILENAME__, "Creating Metrics Client to %s:%d over %s", ApplicationConfig.metricsServerHostname.c_str(), ApplicationConfig.metricsServerPort, ApplicationConfig.metricsProto.c_str()));
+			
+			if (ApplicationConfig.metricsProto == "TCP"){
+				status = tp::MetricsClient.open(ApplicationConfig.metricsServerHostname, ApplicationConfig.metricsServerPort, SOCK_STREAM);
+			} else {
+				status = tp::MetricsClient.open(ApplicationConfig.metricsServerHostname, ApplicationConfig.metricsServerPort, SOCK_DGRAM);
+			}
+			if (status != 0) {
+				PJ_LOG(2, (__FILENAME__, " Metrics Client create failed"));
+			} else {
+				tp::MetricsClient.setPrefix("tinyphone.");
+				GetProductVersion(productVersion);
+				tags.push_back(std::string("version=") + productVersion);
+				statsd::setGlobalTags(tags);
+				tp::MetricsClient.increment("launch");
+			}
 		} 
 	}
 

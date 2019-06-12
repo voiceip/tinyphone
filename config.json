@@ -26,6 +26,7 @@
 	"enableWSEvents" : false,
 	"enableMetrics" : true,
 	"metricsServerHostname" : "10.32.249.27",
+	"metricsProto" : "TCP",
 	"metricsServerPort" : 8125,
 	"autoDeviceRefresh" :  true
 }
