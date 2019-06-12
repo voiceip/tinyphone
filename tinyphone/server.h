@@ -9,13 +9,18 @@
 #include <pjsua2.hpp>
 #include <chrono>	
 #include "metrics.h"
+#include "log.h"
 
 class TinyPhoneHTTPLogHandler : public crow::ILogHandler {
 private:
 	std::fstream log_writer;
+	boost::iostreams::stream_buffer<LoggerSink> sb;
 public:
 	TinyPhoneHTTPLogHandler(std::string log_file) {
 		log_writer.open(log_file, std::fstream::out | std::fstream::app);
+		sb.open(LoggerSink(log_writer));
+		std::cerr.clear();
+		std::cerr.rdbuf(&sb);
 	};
 
 	~TinyPhoneHTTPLogHandler() {
