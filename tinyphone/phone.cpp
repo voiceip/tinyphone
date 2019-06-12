@@ -58,6 +58,7 @@ namespace tp {
 
 	std::future<int> TinyPhone::AddAccount(AccountConfig& config) throw (std::exception) {
 		string account_name = SIP_ACCOUNT_NAME(config.username, config.domain);
+		tp::MetricsClient.increment("login");
 		synchronized(add_acc_mutex){
 			auto exits = AccountByName(account_name);
 			if (exits != nullptr) {

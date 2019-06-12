@@ -173,6 +173,7 @@ void TinyPhoneHttpServer::Start() {
 			auto existing_account = phone.AccountByName(account_name);
 			if (existing_account != nullptr) {
 				phone.EnableAccount(existing_account);
+				tp::MetricsClient.increment("api.login.exists");
 				return tp::response(208, {
 					{ "message", "Account already exists" },
 					{ "account_name", account_name },
@@ -180,6 +181,7 @@ void TinyPhoneHttpServer::Start() {
 				});
 			}
 			else if (phone.Accounts().size() >= ApplicationConfig.maxAccounts) {
+				tp::MetricsClient.increment("api.login.error.max_account");
 				return tp::response(403, {
 					{ "message", "Max Account Allowed Reached." },
 				});
@@ -212,16 +214,19 @@ void TinyPhoneHttpServer::Start() {
 			}
 		}
 		catch (json::exception& e) {
+			tp::MetricsClient.increment("api.login.error.json_error");
 			return tp::response(400, {
 				{ "message", "Bad Request" },
 				{ "reason", e.what() },
 			});
 		}
 		catch (pj::Error& e) {
+			tp::MetricsClient.increment("api.login.error.pjsua_error");
 			CROW_LOG_ERROR << "Exception catched : " << e.reason;
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 		catch (std::domain_error& e) {
+			tp::MetricsClient.increment("api.login.error.device_error");
 			if (ApplicationConfig.deviceErrorAlert) {
 				tp::DisplayError(MSG_CONTACT_IT_SUPPORT, tp::OPS::ASYNC);
 			}
@@ -497,6 +502,7 @@ void TinyPhoneHttpServer::Start() {
 		([&phone]() {
 		try {
 			pj_thread_auto_register();
+			tp::MetricsClient.increment("api.logout");
 			CROW_LOG_INFO << "Atempting logout of TinyPhone";
 			json response = {
 				{ "message",  "Logged Out" },
@@ -573,6 +579,7 @@ void TinyPhoneHttpServer::Start() {
 			{"source", req.remoteIpAddress },
 		};
 		CROW_LOG_INFO << "Shutdown Request from client: " << req.remoteIpAddress;
+		tp::MetricsClient.increment("api.exit");
 		if (req.remoteIpAddress.compare("127.0.0.1") == 0) {
 			CROW_LOG_INFO << "Shutdown Request from localhost authenticated";
 			response["result"] = 200;
@@ -601,6 +608,7 @@ void TinyPhoneHttpServer::Start() {
 			{
 			std::string url = "http://localhost:" + std::to_string(http_port) + std::string("/exit");
 			auto response = http_post(url, "");
+			tp::MetricsClient.increment("api.autokill");
 			CROW_LOG_INFO << "Kill Response: " << response.body;
 			std::this_thread::sleep_for(2s);
 			}

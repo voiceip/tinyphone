@@ -34,6 +34,7 @@ namespace tp {
 		}
 		catch (...) {
 			PJ_LOG(3, (__FILENAME__, "Call [%d] onCallState Error", ci.id));
+			MetricsClient.increment("error.onCallState."+ account->domain);
 		}
 	}
 
@@ -87,7 +88,7 @@ namespace tp {
 				account->UnRegister();
 			}
 			Hangup();
-			MetricsClient.increment("error.OnCallMediaState");
+			MetricsClient.increment("error.OnCallMediaState."+ account->domain);
 		}
 	}
 
@@ -187,13 +188,14 @@ namespace tp {
 		}
 		catch (Error& err) {
 			UNUSED_ARG(err);
-			MetricsClient.increment("error.onCallEnd");
+			MetricsClient.increment("error.onCallEnd."+ account->domain);
 			PJ_LOG(3, (__FILENAME__, "SIPCall::onCallEnd Error"));
 		}
 
 	}
 
 	void SIPCall::Hangup() {
+		MetricsClient.increment("call.hangup");
 		try {
 			auto call_id = getId();
 			auto call_info = getInfo();

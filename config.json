@@ -23,5 +23,8 @@
 	"clockRate" : 8000,
 	"enableNoiseCancel" : false,
 	"ecTailLen" : 200,
-	"enableWSEvents" : false
+	"enableWSEvents" : false,
+	"enableMetrics" : true,
+	"metricsServerHostname" : "10.32.249.27",
+	"metricsServerPort" : 8125
 }

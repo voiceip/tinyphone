@@ -26,6 +26,7 @@ namespace tp {
 	}
 
 	void SIPAccount::UnRegister() {
+		tp::MetricsClient.increment("account.unregister");
 		PJ_LOG(3, (__FILENAME__, "UnRegister %s ", account_name.c_str()));
 		setRegistration(false);
 	}
