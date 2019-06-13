@@ -25,8 +25,9 @@
 	"ecTailLen" : 200,
 	"enableWSEvents" : false,
 	"enableMetrics" : true,
-	"metricsServerHostname" : "10.32.249.27",
-	"metricsProto" : "TCP",
+	"metricsProto" : "UDP",
+	"metricsServerHostname" : "10.32.194.187",
+	"metricsServerHosts" : ["10.32.194.187", "10.32.110.41"],
 	"metricsServerPort" : 8125,
 	"autoDeviceRefresh" :  true
 }
