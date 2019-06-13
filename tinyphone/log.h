@@ -22,21 +22,31 @@ class LoggerSink : public boost::iostreams::sink
 
 public:
 	LoggerSink(std::fstream& _log_writer) : log_writer(_log_writer){}
+	~LoggerSink() {
+		//_flush();
+	}
 	std::streamsize write(const char* s, std::streamsize n)
 	{
+		if (n == 0)
+			return 0;
 		buff.append(s, n);
 		if (s[n - 1] == '\n') {
-			std::string out =  "(" + timestamp() + ") [ERROR   ] ";
-			out.append(buff);
-			log_writer << out;
-#ifdef _DEBUG
-			std::cout << out;
-#endif // _DEBUG
-			buff.clear();
+			_flush();
 		}
 		return n;
 	}
 private:
+
+	void _flush() {
+		std::string out = "(" + timestamp() + ") [ERROR   ] ";
+		out.append(buff);
+		log_writer << out;
+#ifdef _DEBUG
+		std::cout << out;
+#endif // _DEBUG
+		buff.clear();
+	}
+
 	static std::string timestamp()
 	{
 		char date[32];

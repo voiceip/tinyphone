@@ -59,7 +59,7 @@ namespace tp {
 
 		bool enableMetrics;
 		std::string metricsProto;
-		std::string metricsServerHostname;
+		std::vector<std::string> metricsServerHosts;
 		int metricsServerPort;
 
 		bool autoDeviceRefresh;
@@ -101,7 +101,7 @@ namespace tp {
 			{"enableWSEvents", p.enableWSEvents },
 			{"enableMetrics", p.enableMetrics },
 			{"metricsProto", p.metricsProto },
-			{"metricsServerHostname", p.metricsServerHostname },
+			{"metricsServerHosts", p.metricsServerHosts },
 			{"metricsServerPort", p.metricsServerPort },
 			{"autoDeviceRefresh", p.autoDeviceRefresh },
 		};
@@ -134,7 +134,7 @@ namespace tp {
 		j.at("ecTailLen").get_to(p.ecTailLen);
 		j.at("enableWSEvents").get_to(p.enableWSEvents);
 		j.at("enableMetrics").get_to(p.enableMetrics);
-		j.at("metricsServerHostname").get_to(p.metricsServerHostname);
+		j.at("metricsServerHosts").get_to(p.metricsServerHosts);
 		j.at("metricsProto").get_to(p.metricsProto);
 		j.at("metricsServerPort").get_to(p.metricsServerPort);
 		j.at("autoDeviceRefresh").get_to(p.autoDeviceRefresh);

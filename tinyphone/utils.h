@@ -83,6 +83,19 @@ namespace tp {
 		SYNC, ASYNC
 	};
 
+	template <typename I>
+	I random(I begin, I end)
+	{
+		const unsigned long n = std::distance(begin, end);
+		const unsigned long divisor = (RAND_MAX + 1) / n;
+
+		unsigned long k;
+		do { k = std::rand() / divisor; } while (k >= n);
+
+		std::advance(begin, k);
+		return begin;
+	}
+
 	void DisplayError(std::string message, OPS mode);
 
 	bool IsPSTNNnmber(std::string number);

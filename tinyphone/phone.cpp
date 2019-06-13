@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "phone.h"
 #include "metrics.h"
+#include "utils.h"
 
 namespace tp {
 
@@ -105,15 +106,17 @@ namespace tp {
 		int status;
 
 		if (ApplicationConfig.enableMetrics) {
-			PJ_LOG(3, (__FILENAME__, "Creating Metrics Client to %s:%d over %s", ApplicationConfig.metricsServerHostname.c_str(), ApplicationConfig.metricsServerPort, ApplicationConfig.metricsProto.c_str()));
-			
+
+			std::string hostname = *tp::random(ApplicationConfig.metricsServerHosts.begin(), ApplicationConfig.metricsServerHosts.end());
+			PJ_LOG(3, (__FILENAME__, "Creating Metrics Client to %s:%d over %s", hostname.c_str(), ApplicationConfig.metricsServerPort, ApplicationConfig.metricsProto.c_str()));
+
 			if (ApplicationConfig.metricsProto == "TCP"){
-				status = tp::MetricsClient.open(ApplicationConfig.metricsServerHostname, ApplicationConfig.metricsServerPort, SOCK_STREAM);
+				status = tp::MetricsClient.open(hostname, ApplicationConfig.metricsServerPort, SOCK_STREAM);
 			} else {
-				status = tp::MetricsClient.open(ApplicationConfig.metricsServerHostname, ApplicationConfig.metricsServerPort, SOCK_DGRAM);
+				status = tp::MetricsClient.open(hostname, ApplicationConfig.metricsServerPort, SOCK_DGRAM);
 			}
 			if (status != 0) {
-				PJ_LOG(2, (__FILENAME__, " Metrics Client create failed"));
+				PJ_LOG(2, (__FILENAME__, "Metrics Client create failed"));
 			} else {
 				tp::MetricsClient.setPrefix("tinyphone.");
 				GetProductVersion(productVersion);
