@@ -261,3 +261,4 @@ GitHubVS.sln.DotSettings
 *.ogg
 
 *.dll
+lib/datadog-cpp

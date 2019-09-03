@@ -11,12 +11,20 @@
 #include "config.h"
 #include "log.h"
 #include "splash.h"
+#include <iphlpapi.h>
+#include <algorithm> 
 
 #ifdef _DEBUG
 #pragma comment(lib, "libpjproject-i386-Win32-vc14-Debug-Static.lib")
 #else
 #pragma comment(lib, "libpjproject-i386-Win32-vc14-Release-Static.lib")
 #endif
+
+#pragma comment(lib, "IPHLPAPI.lib")
+
+#define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
+#define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
+
 
 #define WM_SYSICON  WM_APP
 #define MAX_TOOLTIP_LENGTH 96
@@ -48,6 +56,12 @@ void InitNotifyIconData();
 void InitPJSUAEndpoint(std::string logfile);
 void ExitApplication();
 
+
+void pj_logerror(pj_status_t status, char * message) {
+	if (status != PJ_SUCCESS) {
+		CROW_LOG_ERROR << "pjsua returned error : " << status;
+	}
+}
 
 int WINAPI WinMain(HINSTANCE hThisInstance,		
 	HINSTANCE hPrevInstance,
@@ -238,7 +252,59 @@ void InitNotifyIconData()
 	Shell_NotifyIcon(NIM_ADD, &notifyIconData);
 }
 
+std::vector<std::string> GetLocalDNSServers() {
+	FIXED_INFO *pFixedInfo;
+	ULONG ulOutBufLen;
+	DWORD dwRetVal;
+	IP_ADDR_STRING *pIPAddr;
+	std::vector <std::string> dnsServers;
 
+
+	pFixedInfo = (FIXED_INFO *)MALLOC(sizeof(FIXED_INFO));
+	if (pFixedInfo == NULL) {
+		printf("Error allocating memory needed to call GetNetworkParams\n");
+		return dnsServers;
+	}
+	ulOutBufLen = sizeof(FIXED_INFO);
+
+	// Make an initial call to GetAdaptersInfo to get
+	// the necessary size into the ulOutBufLen variable
+	if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW) {
+		FREE(pFixedInfo);
+		pFixedInfo = (FIXED_INFO *)MALLOC(ulOutBufLen);
+		if (pFixedInfo == NULL) {
+			printf("Error allocating memory needed to call GetNetworkParams\n");
+			return dnsServers;
+		}
+	}
+
+	if (dwRetVal = GetNetworkParams(pFixedInfo, &ulOutBufLen) == NO_ERROR) {
+
+		printf("Host Name: %s\n", pFixedInfo->HostName);
+		
+		printf("DNS Servers:\n");
+		dnsServers.push_back(pFixedInfo->DnsServerList.IpAddress.String);
+		printf("\t%s\n", pFixedInfo->DnsServerList.IpAddress.String);
+
+		pIPAddr = pFixedInfo->DnsServerList.Next;
+		while (pIPAddr != NULL) {
+			printf("\t%s\n", pIPAddr->IpAddress.String);
+			dnsServers.push_back(pIPAddr->IpAddress.String);
+			pIPAddr = pIPAddr->Next;
+		}
+	}
+	else {
+		printf("GetNetworkParams failed with error: %d\n", dwRetVal);
+		return dnsServers;
+	}
+
+
+	if (pFixedInfo != NULL)
+		FREE(pFixedInfo);
+
+
+	return dnsServers;
+}
 
 void InitPJSUAEndpoint(std::string logfile) {
 	/* Create endpoint instance! */
@@ -302,6 +368,22 @@ void InitPJSUAEndpoint(std::string logfile) {
 		if (status != PJ_SUCCESS) {
 			CROW_LOG_INFO << "pjsua.transportCreate returned status : "  << status ;
 		}
+
+		// Configure the DNS resolvers to also handle SRV records
+		pjsip_endpoint *endpt = pjsua_get_pjsip_endpt();
+		std::vector<std::string> dnsServers = GetLocalDNSServers();
+		pj_dns_resolver* resolver;
+		pj_logerror(pjsip_endpt_create_resolver(endpt, &resolver),"pjsip_endpt_create_resolver");
+		
+		struct pj_str_t servers[4];
+		for (int i = 0; i < dnsServers.size() ; ++i) {
+			pj_cstr(&servers[i], dnsServers.at(i).c_str());
+		}
+
+		pj_dns_resolver_set_ns(resolver, dnsServers.size(), servers, NULL);
+		pjsip_endpt_set_resolver(endpt, resolver);
+		CROW_LOG_INFO << "PJSUA2 Set DNS Resolvers Done... : " << dnsServers.size();
+
 	}
 	catch (Error & err) {
 		CROW_LOG_ERROR << "Exception: " << err.info();
@@ -319,6 +401,7 @@ void InitPJSUAEndpoint(std::string logfile) {
 	}
 
 }
+
 
 void ExitApplication() {
 #ifdef _DEBUG
