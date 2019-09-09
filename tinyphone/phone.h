@@ -153,10 +153,11 @@ namespace tp {
 			}
 		}
 
-		void Logout(SIPAccount* acc) {
+		void Logout(SIPAccount* acc) throw(pj::Error) {
 			auto it = accounts.begin();
 			while (it != accounts.end()) {
 				if (*it == acc) {
+					(*it)->UnRegister();
 					delete (*it);
 					it = accounts.erase(it);
 					break;
@@ -164,9 +165,10 @@ namespace tp {
 			}
 		}
 
-		void Logout() {
+		void Logout() throw(pj::Error) {
 			auto it = accounts.begin();
 			while (it != accounts.end()) {
+				(*it)->UnRegister();
 				delete (*it);
 				it = accounts.erase(it);
 			}
