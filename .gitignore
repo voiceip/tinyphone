@@ -27,7 +27,6 @@ x86/
 bld/
 [Bb]in/
 [Oo]bj/
-build/
 *.exe
 
 # Roslyn cache directories
@@ -262,3 +261,5 @@ GitHubVS.sln.DotSettings
 
 *.dll
 lib/datadog-cpp
+
+logs/
