@@ -16,6 +16,10 @@ SHELL ["cmd", "/S", "/C"]
 COPY Install.cmd C:\TEMP\
 ADD https://aka.ms/vscollect.exe C:\TEMP\collect.exe
 
+# Download and install Build Tools 14.0
+ADD https://download.microsoft.com/download/E/E/D/EEDF18A8-4AED-4CE0-BEBE-70A83094FC5A/BuildTools_Full.exe C:\TEMP\msbuild14.exe
+RUN start /wait C:\TEMP\msbuild14.exe /q /full /log C:\TEMP\msbuild14.log
+
 # Download channel for fixed install.
 ARG CHANNEL_URL=https://aka.ms/vs/15/release/channel
 ADD ${CHANNEL_URL} C:\TEMP\VisualStudio.chman
