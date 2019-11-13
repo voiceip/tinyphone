@@ -1,16 +1,29 @@
 # escape=`
 
 FROM dotnet-vs15:latest
+MAINTAINER Kinshuk B (hi@kinsh.uk)
 
 # Reset the shell.
 SHELL ["cmd", "/S", "/C"]
 
-
 RUN mkdir C:\Build\
+WORKDIR C:\Build
 
 # Set up environment to collect install errors.
 COPY release.ps1 C:\Build\
 
+
+# Instal ssh
+# ADD https://github.com/PowerShell/Win32-OpenSSH/releases/download/v8.0.0.0p1-Beta/OpenSSH-Win64.zip OpenSSH-Win64.zip 
+# RUN unzip OpenSSH-Win64.zip 
+# RUN powershell.exe -ExecutionPolicy Bypass -File OpenSSH-Win64\install-sshd.ps1
+# RUN powershell.exe net start sshd
+# RUN powershell.exe Set-Service sshd -StartupType Automatic
+
+
+EXPOSE 22
+
 ADD VsDevCmdPowerShell.bat C:\Build\
 ENTRYPOINT C:\Build\VsDevCmdPowerShell.bat
 
+# CMD ["sshd", "-D"]

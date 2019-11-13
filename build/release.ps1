@@ -1,6 +1,8 @@
 # Build Script...
+$ErrorActionPreference="Stop"
 
-Write-Host 'Hello, World!'
+
+Write-Host 'Building Tinyphone!'
 scoop install unzip make
  
 
@@ -8,7 +10,8 @@ cd C:\Code
 
 git config --global url.https://github.com/.insteadOf git@github.com:
 git clone --recurse-submodules -j8 https://github.com/voiceip/tinyphone.git
-#cd C:\Code\tinyphone\
+cd C:\Code\tinyphone\
+git checkout docker
 
 subst E: C:\Code\tinyphone
 
@@ -58,5 +61,6 @@ cd E:\tinyphone
 #msbuild /m tinyphone.sln -target:tinyphone /p:Configuration=Debug /p:Platform=x86
 #msbuild /m tinyphone.sln -target:tinyphone:Rebuild /p:Configuration=Debug /p:Platform=x86
 msbuild /m tinyphone.sln /p:Configuration=Debug /p:Platform=x86
+
  
 
