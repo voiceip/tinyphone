@@ -1,0 +1,16 @@
+# escape=`
+
+FROM dotnet-vs15:latest
+
+# Reset the shell.
+SHELL ["cmd", "/S", "/C"]
+
+
+RUN mkdir C:\Build\
+
+# Set up environment to collect install errors.
+COPY release.ps1 C:\Build\
+
+ADD VsDevCmdPowerShell.bat C:\Build\
+ENTRYPOINT C:\Build\VsDevCmdPowerShell.bat
+
