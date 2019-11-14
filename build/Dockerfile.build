@@ -1,6 +1,6 @@
 # escape=`
 
-FROM dotnet-vs15:latest
+FROM dotnet3.5-vs17:latest
 MAINTAINER Kinshuk B (hi@kinsh.uk)
 
 # Reset the shell.

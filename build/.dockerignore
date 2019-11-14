@@ -12,5 +12,6 @@ microsip/
 Debug/
 Release/
 *.exe
+*.msi
 
 logs/

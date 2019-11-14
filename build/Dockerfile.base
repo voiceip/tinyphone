@@ -1,15 +1,9 @@
 # escape=`
 
-
-# FROM mcr.microsoft.com/dotnet/framework/runtime:3.5-windowsservercore-ltsc2016
-# FROM microsoft/windowsservercore:ltsc2016
 FROM microsoft/dotnet-framework:3.5-windowsservercore-ltsc2016
 MAINTAINER Kinshuk B (hi@kinsh.uk)
 
-# Install VS components
-
 RUN mkdir C:\BuildTools
-WORKDIR C:\BuildTools
 
 # Reset the shell.
 SHELL ["cmd", "/S", "/C"]
@@ -59,6 +53,9 @@ WORKDIR "Program Files"
 RUN rd /S /Q WindowsPowerShell\Modules\PSReadLine
 
 #subst E: C:\Code\tinyphone
+
+WORKDIR C:\BuildTools
+
 
 ADD VsDevCmdPowerShell.bat C:\BuildTools\
 ENTRYPOINT C:\BuildTools\VsDevCmdPowerShell.bat
