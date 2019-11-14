@@ -12,6 +12,9 @@ git clone --recurse-submodules -j8 https://github.com/voiceip/tinyphone.git
 cd C:\Code\tinyphone\
 git checkout docker
 
+git apply C:\Build\fk.patch
+
+
 cmd /c subst E: C:\Code\tinyphone
 
 
@@ -62,4 +65,4 @@ cd E:\tinyphone
 msbuild /m tinyphone.sln /p:Configuration=$BuildMode /p:Platform=x86
 
 
-
+#git diff --exit-code stampver.inf
