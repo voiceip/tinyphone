@@ -8,5 +8,5 @@ docker build  -f Dockerfile.build -m 2G -t tinyphone  .
 ## Run Docker
 
 ```
-docker run -m 2G -it tinyphone:latest  "C:\Build\release.ps1"
+./release.sh
 ```
