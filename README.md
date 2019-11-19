@@ -10,7 +10,7 @@ Checkout the repo and follow the building process to compile your own, or just d
 You must have boost libraries installed on your system. Incase you don't have you can either download the [sources](https://www.boost.org/users/download/) and build it, or install a precompiled binaries from [here](https://sourceforge.net/projects/boost/files/boost-binaries/).
 
 
-### Compiling
+### Manual Compiling
 
 ```bash
 git checkout https://github.com/voiceip/tinyphone.git
