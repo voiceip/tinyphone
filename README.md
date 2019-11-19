@@ -17,7 +17,7 @@ git checkout https://github.com/voiceip/tinyphone.git
 cd tinyphone
 git submodule update --init --recursive
 #open lib/pjproject/pjproject-vs14.sln in visual studio 2015 and compile it
-#open tinyphone/tinyphone.sln in visual studio 2015 and compile it
+#open tinyphone/tinyphone.sln in visual studio 2015 and compile it (you will need to compile the dependencies in lib/* folder)
 run tinyphone/Debug/tinyphone.exe
 ```
 
