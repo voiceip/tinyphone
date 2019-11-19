@@ -24,7 +24,7 @@ run tinyphone/Debug/tinyphone.exe
 
 ## APIs 
 
-The softphone exposes the following resources.
+The softphone exposes the following resources on port `6060`.
 
 | Resource                    | Method | Description                       |
 |:----------------------------|:-------|:----------------------------------|
