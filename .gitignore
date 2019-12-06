@@ -262,3 +262,5 @@ GitHubVS.sln.DotSettings
 
 *.dll
 lib/datadog-cpp
+
+logs/
