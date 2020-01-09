@@ -21,6 +21,12 @@ namespace tp {
 		std::string error;
 	};
 
+	/***
+	* http_get(std::string url)
+	* http_get using curl
+	* supports mannual windows proxy if configured
+	*
+	**/
 	tp::HttpResponse http_get(std::string url) throw (std::exception);
 
 	tp::HttpResponse http_post(std::string url, std::string body) throw (std::exception);

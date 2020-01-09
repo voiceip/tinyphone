@@ -3,6 +3,8 @@
 #include <curl/curl.h>
 #include <boost/asio.hpp>
 #include <fstream>
+#include <winhttp.h>
+#include "utils.h"
 
 namespace tp {
 
@@ -56,10 +58,56 @@ namespace tp {
 		return tCount;
 	}
 
+
+	std::string getProxy(std::string url){
+
+		CURLUcode rc;
+		std::string hostname;
+		CURLU *h = curl_url();
+        rc = curl_url_set(h, CURLUPART_URL, url.c_str(), 0);
+		if(!rc) {
+           /* extract host name from the parsed URL */ 
+			char *host;
+  			rc = curl_url_get(h, CURLUPART_HOST, &host, 0);
+			if(!rc) {
+    			printf("Host name: %s\n", host);
+				hostname = std::string(host);
+				curl_free(host);
+  			}
+			
+        }
+		curl_url_cleanup(h);
+
+		if (hostname == "") {
+			return ""; //fast abort if hostname extraction failed
+		}
+
+		//TODO: implement ProxyBypass
+		if (hostname == "localhost" || hostname == "127.0.0.1" || hostname == "::1") {
+			return "";
+		}
+		
+		// #ifdef WIN32
+		WINHTTP_CURRENT_USER_IE_PROXY_CONFIG ieProxyConfig;
+		if(WinHttpGetIEProxyConfigForCurrentUser(&ieProxyConfig)) {
+			if(!ieProxyConfig.fAutoDetect) {
+				return tp::wstrToCstr(ieProxyConfig.lpszProxy);
+			}
+			else {
+				/* TODO Handle the Proxy config Auto Detection case */
+				// not supported yet
+			}
+			GlobalFree(ieProxyConfig.lpszAutoConfigUrl );
+			GlobalFree(ieProxyConfig.lpszProxy );
+			GlobalFree(ieProxyConfig.lpszProxyBypass );
+		}
+		//#endif
+		return "";
+	}
+
 	tp::HttpResponse http_post(std::string url, std::string body) throw (std::exception) {
 		CURL *curl;
 		tp::HttpResponse response;
-
 
 		curl = curl_easy_init();
 		if (curl) {
@@ -118,6 +166,12 @@ namespace tp {
 			request_headers = curl_slist_append(request_headers, "Accept: application/json");
 			request_headers = curl_slist_append(request_headers, "Content-Type: application/json");
 
+			std::string proxy = getProxy(url);
+			if (proxy != "") {
+				std::cout << "Using Proxy " << proxy << std::endl;
+				curl_easy_setopt(curl, CURLOPT_PROXY, proxy.c_str());
+			}
+
 			curl_easy_setopt(curl, CURLOPT_HTTPHEADER, request_headers);
 			
 			auto res = curl_easy_perform(curl);
@@ -154,6 +208,12 @@ namespace tp {
 
 			curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, CurlHeadersCallback);
 			curl_easy_setopt(curl, CURLOPT_WRITEHEADER, &response.headers);
+
+			std::string proxy = getProxy(url);
+			if (proxy != ""){
+				std::cout << "Using Proxy " << proxy << std::endl;
+				curl_easy_setopt(curl, CURLOPT_PROXY,proxy.c_str());
+			}
 
 			auto res = curl_easy_perform(curl);
 			if (res != CURLE_OK) {

@@ -130,6 +130,7 @@ namespace tp {
 
 	char* getMACAddress();
 
+	std::string wstrToCstr( LPWSTR wStr );
 }
 #endif
  

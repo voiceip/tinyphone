@@ -11,6 +11,7 @@
 #include <mmsystem.h>
 #include <future>
 #include <strsafe.h>
+#include <atlstr.h>
 using namespace std;
 
 #pragma warning( disable : 4995 )
@@ -329,6 +330,11 @@ namespace tp {
 	{
 		std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
 		return in.tellg();
+	}
+
+	std::string wstrToCstr( LPWSTR wStr )
+	{
+		return CW2A (wStr);
 	}
 
 	char* getMACAddress() {
