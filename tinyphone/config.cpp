@@ -15,15 +15,25 @@ namespace tp {
 		tp::HttpResponse remoteConfig = http_get(REMOTE_CONFIG_URL);
 		std::string jsonConfig;
 		std::string message;
+		std::string contentType;
 
 		//for (auto i = remoteConfig.headers.begin(); i != remoteConfig.headers.end(); ++i)
 		//	std::cout << i->first << ":" << i->second << ' ' << std::endl;
 
-		auto contentType = std::find_if(remoteConfig.headers.begin(), remoteConfig.headers.end(), 
+		auto contentTypeIt = std::find_if(remoteConfig.headers.rbegin(), remoteConfig.headers.rend(),
 			[](const std::pair<std::string, std::string>& element) { return element.first == "Content-Type"; });
+		
+		if (contentTypeIt != remoteConfig.headers.rend()){
+			contentType = contentTypeIt->second;
+		}
 
-		if (remoteConfig.code / 100 != 2 || (contentType != remoteConfig.headers.end() && contentType->second != "application/json" )) {
+		if (remoteConfig.code / 100 != 2 || contentType != "application/json" ) {
 			//Try Secondary Location
+			message = "ERROR: Failed to fetch Remote Config from Primary!";
+			if (remoteConfig.error != "")
+				message += "\nERROR:" + remoteConfig.error;
+				
+			std::cout << "Config Load From Primary Failed :  Response Code " << remoteConfig.code << ", Content-Type: " <<  contentType << std::endl;
 			std::string productVersion;
 			#ifdef _DEBUG
 			productVersion = "HEAD";
@@ -38,7 +48,7 @@ namespace tp {
 		}
 
 		if (remoteConfig.code / 100 != 2) {
-			message = "Failed to fetch Remote Config!";
+			message += "\nERROR: Failed to fetch Remote Config from Secondary!";
 			if (remoteConfig.error != "")
 				message += "\nERROR:" + remoteConfig.error;
 			if (remoteConfig.code >= -1) {
