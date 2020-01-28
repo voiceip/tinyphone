@@ -8,12 +8,12 @@
 #include <thread>
 #include <future>
 #include <chrono>
-#include <boost/foreach.hpp>
 #include "enum.h"
 #include "events.h"
 #include "call.h"
 #include "utils.h"
 #include "config.h"
+#include <boost/foreach.hpp>
 
 
 using namespace std;
