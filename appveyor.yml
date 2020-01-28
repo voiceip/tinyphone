@@ -101,16 +101,3 @@ notifications:
   on_build_success: true
   on_build_failure: true
   on_build_status_changed: true
-
-deploy:
-- provider: BinTray
-  username: kingster
-  api_key:
-    secure: e+4Fis+pU9qpYJMNb5bQ9Aoc+u/rLeqHusNRLFQhKeCnBM3oKC+pBaimkEI38ZUv
-  subject: voiceip
-  repo: windows
-  package: tinyphone
-  version: version
-  publish: false
-  override: true
-  explode: false
