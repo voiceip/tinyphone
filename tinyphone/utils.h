@@ -3,6 +3,11 @@
 #ifndef UTILS_HEADER_FILE_H
 #define UTILS_HEADER_FILE_H
 
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#define vsnprintf _vsnprintf
+#endif
+
 #include <pj/pool.h>
 #include <pj/string.h>
 #include <string.h>
