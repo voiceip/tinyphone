@@ -1,25 +1,15 @@
-# tinyphone
+# Tinyphone
 Minimalist Softphone based on PJSIP with API Control
+
+[![AppVeyor](https://img.shields.io/appveyor/ci/kingster/tinyphone)](https://ci.appveyor.com/project/kingster/tinyphone/) 
 
 ## Getting Started
 
-Checkout the repo and follow the building process to compile your own, or just download the latest version from the releases page.
+Checkout the repo and follow the building process to compile your own, or just download the latest version from the downloads section.
 
-### Pre Requsite
+## Downloads
 
-You must have boost libraries installed on your system. Incase you don't have you can either download the [sources](https://www.boost.org/users/download/) and build it, or install a precompiled binaries from [here](https://sourceforge.net/projects/boost/files/boost-binaries/).
-
-
-### Manual Compiling
-
-```bash
-git checkout https://github.com/voiceip/tinyphone.git
-cd tinyphone
-git submodule update --init --recursive
-#open lib/pjproject/pjproject-vs14.sln in visual studio 2015 and compile it
-#open tinyphone/tinyphone.sln in visual studio 2015 and compile it (you will need to compile the dependencies in lib/* folder)
-run tinyphone/Debug/tinyphone.exe
-```
+You can download either the msi installer or executable file from [here](https://ci.appveyor.com/project/kingster/tinyphone/build/artifacts)
 
 
 ## APIs 
@@ -61,3 +51,20 @@ The softphone exposes the following resources on port `6060`.
 ## Issues & Contribution
 
 Found a issue and have a solution? Go ahead and create a pull request :) Incase you don't have a immediate solution but have an replicable issue please create an Issue with the details so that we can have a look at it.
+
+
+### Pre Requsite
+
+You must have boost libraries installed on your system. Incase you don't have you can either download the [sources](https://www.boost.org/users/download/) and build it, or install a precompiled binaries from [here](https://sourceforge.net/projects/boost/files/boost-binaries/).
+
+
+### Manual Compiling
+
+```bash
+git checkout https://github.com/voiceip/tinyphone.git
+cd tinyphone
+git submodule update --init --recursive
+#open lib/pjproject/pjproject-vs14.sln in visual studio 2015 and compile it
+#open tinyphone/tinyphone.sln in visual studio 2015 and compile it (you will need to compile the dependencies in lib/* folder)
+run tinyphone/Debug/tinyphone.exe
+```
