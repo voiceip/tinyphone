@@ -1,0 +1,100 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+clone_depth: 5
+init:
+- ps: >-
+    $ErrorActionPreference = "Stop"
+
+    git config --global url.https://github.com/.insteadOf git@github.com:
+
+install:
+- appveyor DownloadFile https://dl.bintray.com/boostorg/release/1.68.0/binaries/boost_1_68_0-msvc-14.0-32.exe
+- call boost_1_68_0-msvc-14.0-32.exe /SILENT
+- ps : |
+    ls "C:\local\boost_1_68_0"
+
+    # Install Scoop
+    iwr -useb get.scoop.sh | iex
+
+    # Install Git & other tools
+    powershell.exe scoop install git wget cmake openssh unzip make
+
+configuration: Release
+build_script:
+- pwsh: |
+    # $ErrorActionPreference="Stop"
+    $BuildMode="Release"
+    set-psdebug -trace 0
+
+    Write-Host "`nUpdating Submodules......"
+    git submodule -q update --init
+
+    cmd /c subst E: C:\projects\tinyphone
+
+    cd E:\lib\curl\
+    ls
+    .\buildconf.bat
+    cd E:\lib\curl\winbuild
+
+    ls
+
+    pushd "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools"
+    cmd /c "VsDevCmd.bat&set" |
+    foreach {
+      if ($_ -match "=") {
+        $v = $_.split("="); set-item -force -path "ENV:\$($v[0])"  -value "$($v[1])"
+      }
+    }
+    popd
+    Write-Host "`nVisual Studio 2017 Command Prompt variables set." -ForegroundColor Yellow
+
+    where.exe msbuild.exe
+
+    nmake /f Makefile.vc mode=dll VC=15 DEBUG=no
+
+    cd E:\lib\curl\builds
+
+    ls 
+
+    cmd /c MKLINK /D E:\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl E:\lib\curl\builds\libcurl-vc15-x86-release-dll-ipv6-sspi-winssl
+    ls E:\lib\curl\builds
+    cmd /c .\libcurl-vc15-x86-release-dll-ipv6-sspi-winssl\bin\curl.exe https://wttr.in/bangalore
+
+    #G729
+    cd E:\lib\bcg729\build\
+    cmake ..
+    msbuild /m bcg729.sln /p:Configuration=$BuildMode /p:Platform=Win32
+
+    cd E:\lib\cryptopp
+    msbuild /m cryptlib.vcxproj /p:Configuration=$BuildMode /p:Platform=Win32 /p:PlatformToolset=v140_xp
+
+    $wc = New-Object net.webclient; $wc.Downloadfile("https://download.steinberg.net/sdk_downloads/asiosdk_2.3.3_2019-06-14.zip", "E:\lib\portaudio\src\hostapi\asio\asiosdk_2.3.3_2019-06-14.zip")
+    cd E:\lib\portaudio\src\hostapi\asio
+    unzip asiosdk_2.3.3_2019-06-14.zip
+    mv asiosdk_2.3.3_2019-06-14 ASIOSDK
+    cd E:\lib\portaudio\build\msvc
+    msbuild /m portaudio.sln /p:Configuration=$BuildMode /p:Platform=Win32
+
+    cd E:\lib\pjproject
+    msbuild /m pjproject-vs14.sln -target:libpjproject:Rebuild /p:Configuration=$BuildMode-Static /p:Platform=Win32
+
+    cd E:\lib\statsd-cpp
+    cmake .
+    msbuild /m statsd-cpp.vcxproj /p:Configuration=$BuildMode /p:Platform=Win32
+
+    cd E:\tinyphone
+
+    msbuild /m tinyphone.sln /p:Configuration=$BuildMode /p:Platform=x86
+
+    Write-Host "`nBuild Completed." -ForegroundColor Yellow
+
+artifacts:
+
+  # pushing a single file
+  - path: tinyphone\Release\tinyphone.exe
+  - path: tinyphone-installer\bin\Release\tinyphone_installer.msi
+  - path: lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\bin\libcurl.dll
+  - path: lib\portaudio\build\msvc\Win32\Release\portaudio_x86.dll
+
+cache:
+  - C:\local\boost_1_68_0
