@@ -52,6 +52,7 @@ void TinyPhoneHttpServer::Start() {
 
 	phone.ConfigureAudioDevices();
 	phone.InitMetricsClient();
+	phone.RestoreAccounts();
 	
 	phone.CreateEventStream(&updates);
 
@@ -643,6 +644,7 @@ void TinyPhoneHttpServer::Start() {
 
 	pj_thread_auto_register();
 	phone.HangupAllCalls();
+	phone.Logout();
 	endpoint->libDestroy();
 
 	CROW_LOG_INFO << "Server has been shutdown... Will Exit now....";

@@ -19,14 +19,6 @@
 
 namespace tp {
 
-	struct AccountConfig {
-		string username;
-		string domain;
-		string password;
-		string proxy;
-	};
-
-	void from_json(const nlohmann::json& j, AccountConfig& p);
 
 	class TinyPhone
 	{
@@ -34,6 +26,8 @@ namespace tp {
 		map_string_acc accounts;
 		pj::Endpoint* endpoint;
 		EventStream* eventStream;
+
+		std::string tpUserConfigFile;
 
 	private:
 	    std::recursive_mutex add_acc_mutex;
@@ -48,6 +42,10 @@ namespace tp {
 
 		TinyPhone(pj::Endpoint* ep) {
 			endpoint = ep;
+
+			boost::filesystem::path tiny_dir = GetLogDir();
+			auto logfile = tiny_dir.append("user.conf");
+			tpUserConfigFile = logfile.string();
 		}
 
 		~TinyPhone() {
@@ -80,6 +78,10 @@ namespace tp {
 		std::vector<SIPAccount *> Accounts();
 
 		bool HasAccounts() ;
+
+		bool RestoreAccounts();
+
+		bool SaveAccounts();
 
 		SIPAccount* PrimaryAccount();
 

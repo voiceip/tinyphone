@@ -143,6 +143,49 @@ namespace tp {
     extern appConfig ApplicationConfig;
 
     void InitConfig();
+
+
+	struct AccountConfig {
+		std::string username;
+		std::string domain;
+		std::string password;
+		std::string proxy;
+	};
+
+	static void from_json(const nlohmann::json& j, AccountConfig& p) {
+		j.at("username").get_to(p.username);
+		j.at("domain").get_to(p.domain);
+		j.at("password").get_to(p.password);
+
+		if (j.find("proxy") != j.end()) {
+			j.at("proxy").get_to(p.proxy);
+		}
+	}
+
+	static void to_json(nlohmann::json& j, const AccountConfig& p) {
+		j = nlohmann::json{
+			{"username", p.username },
+			{"domain", p.domain },
+			{"password", p.password },
+		};
+		if (!p.proxy.empty()) {
+			j["proxy"] = p.proxy;
+		}
+	}
+
+	struct tpUserConfig {
+		std::vector<AccountConfig> accounts;
+	};
+
+	static void from_json(const nlohmann::json& j, tpUserConfig& p) {
+		j.at("accounts").get_to(p.accounts);
+	}
+
+	static void to_json(nlohmann::json& j, const tpUserConfig& p) {
+		j = nlohmann::json{
+			{"accounts", p.accounts },
+		};
+	}
 }
 
 

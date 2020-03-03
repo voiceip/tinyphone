@@ -28,18 +28,22 @@ namespace tp {
 		std::string account_name;
 		std::promise<int> create_result_promise;
 		int create_result_promise_fullfilled = 0;
+
 		tp::TinyPhone* phone;
+		
 	public:
 
+		AccountConfig accConfig;
 		EventStream* eventStream;
 		std::string domain;
 		std::vector<SIPCall *> calls;
 
-		SIPAccount(tp::TinyPhone* parent, std::string name, EventStream* es)
+		SIPAccount(tp::TinyPhone* parent, std::string name, EventStream* es, AccountConfig cfg)
 		{
 			account_name = name;
 			eventStream = es;
 			phone = parent;
+			accConfig = cfg;
 		}
 
 		~SIPAccount()
