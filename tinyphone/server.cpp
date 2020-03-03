@@ -172,13 +172,23 @@ void TinyPhoneHttpServer::Start() {
 			
 			auto existing_account = phone.AccountByName(account_name);
 			if (existing_account != nullptr) {
-				phone.EnableAccount(existing_account);
 				tp::MetricsClient.increment("api.login.exists");
-				return tp::response(208, {
-					{ "message", "Account already exists" },
-					{ "account_name", account_name },
-					{ "id", existing_account->getId() },
-				});
+				try {
+					phone.EnableAccount(existing_account);
+					return tp::response(208, {
+						{ "message", "Account already exists" },
+						{ "account_name", account_name },
+						{ "id", existing_account->getId() },
+						{ "result", 202 }
+					});
+				} catch(...) {
+					return tp::response(408, {
+						{ "message", "Account already exists, but login progress, please try again in sometime" },
+						{ "account_name", account_name },
+						{ "id", existing_account->getId() },
+						{ "result", 202 }
+					});
+				}
 			}
 			else if (phone.Accounts().size() >= ApplicationConfig.maxAccounts) {
 				tp::MetricsClient.increment("api.login.error.max_account");
