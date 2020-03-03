@@ -48,6 +48,8 @@ void TinyPhoneHttpServer::Start() {
 	std::cout << "Starting TinyPhone" << std::endl;
 
 	TinyPhone phone(endpoint);
+	tinyPhone = &phone;
+
 	phone.SetCodecs();
 
 	phone.ConfigureAudioDevices();
@@ -640,15 +642,10 @@ void TinyPhoneHttpServer::Start() {
 			.run();
 	}
 
-	CROW_LOG_INFO << "Terminating current running call(s) if any";
-
-	pj_thread_auto_register();
-	phone.HangupAllCalls();
-	phone.Logout();
-	endpoint->libDestroy();
+	Stop();
 
 	CROW_LOG_INFO << "Server has been shutdown... Will Exit now....";
-
+	
 	updates.close();
 
 	if (tp::ApplicationConfig.enableWSEvents) {
@@ -656,5 +653,17 @@ void TinyPhoneHttpServer::Start() {
 	}
 
 	CROW_LOG_INFO << "Shutdown Complete..";
+
+}
+
+void TinyPhoneHttpServer::Stop(){
+
+	CROW_LOG_INFO << "Terminating current running call(s) if any";
+
+	pj_thread_auto_register();
+	tinyPhone->HangupAllCalls();
+	tinyPhone->Logout();
+
+	endpoint->libDestroy();
 
 }

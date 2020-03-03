@@ -48,6 +48,7 @@ namespace tp {
 	string sipLogFile;
 	string httpLogFile;
 	tm* launchDate;
+	TinyPhoneHttpServer* tpHttpServer;
 }
 
 /*procedures  */
@@ -96,6 +97,8 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 
 	InitPJSUAEndpoint(tp::sipLogFile);
 	TinyPhoneHttpServer server(&ep, tp::httpLogFile);
+	tp::tpHttpServer = &server;
+	
 
 	CROW_LOG_INFO << "System Mac Address: " << getMACAddress();
 
@@ -409,4 +412,5 @@ void ExitApplication() {
 #endif
 	notifyIconData.uFlags = 0;
 	Shell_NotifyIcon(NIM_DELETE, &notifyIconData);
+	tp::tpHttpServer->Stop();
 }
