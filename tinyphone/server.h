@@ -74,6 +74,7 @@ public:
 	std::string logfile;
 private:
 	tp::TinyPhone* tinyPhone;
+	std::atomic<bool> running;
 
 public:
 	TinyPhoneHttpServer(pj::Endpoint* ep, std::string log_file) {

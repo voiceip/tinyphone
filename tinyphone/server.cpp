@@ -636,6 +636,7 @@ void TinyPhoneHttpServer::Start() {
 		tp::DisplayError("Failed to Bind Port!\n\nPlease ensure port " + std::to_string(http_port) + " is not used by any other application.", OPS::SYNC);
 	}
 	else {
+		running = true;
 		app.bindaddr("0.0.0.0")
 			.port(http_port)
 			.multithreaded()
@@ -660,10 +661,15 @@ void TinyPhoneHttpServer::Stop(){
 
 	CROW_LOG_INFO << "Terminating current running call(s) if any";
 
-	pj_thread_auto_register();
-	tinyPhone->HangupAllCalls();
-	tinyPhone->Logout();
+	if (running.exchange(false)) {
+		pj_thread_auto_register();
+		tinyPhone->HangupAllCalls();
+		tinyPhone->Logout();
 
-	endpoint->libDestroy();
+		endpoint->libDestroy();
+	}
+	else {
+		CROW_LOG_INFO << "TinyPhoneHttpServer already shutdown";
+	}
 
 }
