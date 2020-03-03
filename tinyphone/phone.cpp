@@ -102,10 +102,17 @@ namespace tp {
 		SaveAccounts();
 	}
 
-	void TinyPhone::Logout() throw(pj::Error) {
+	int TinyPhone::Logout() throw(pj::Error) {
 		auto it = accounts.begin();
+		int loggedOutAccounts(0);
 		while (it != accounts.end()) {
 			SIPAccount* acc = it->second;
+			auto callCount = acc->calls.size();
+			if (callCount > 0 ){
+				PJ_LOG(1, (__FILENAME__, "Skipping UnRegister for %s as calls active %d", acc->Name().c_str(), callCount));
+				it++;
+				continue;
+			}
 			try {
 				acc->UnRegister();
 			}
@@ -113,9 +120,11 @@ namespace tp {
 				PJ_LOG(1, (__FILENAME__, "Logout UnRegister Error %s", err.reason.c_str()));
 			}
 			delete (acc);
+			loggedOutAccounts++;
 			it = accounts.erase(it);
 		} 
 		SaveAccounts();
+		return loggedOutAccounts;
 	}
 
 	void TinyPhone::EnableAccount(SIPAccount* account) throw (std::exception) {

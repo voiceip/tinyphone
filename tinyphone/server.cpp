@@ -311,13 +311,23 @@ void TinyPhoneHttpServer::Start() {
 			pj_thread_auto_register();
 			tp::SIPAccount* acc = phone.AccountByName(account_name);
 			if (acc != nullptr) {
-				phone.Logout(acc);
-				json response = {
-					{ "message",  "Logged Out" },
-					{ "account_name", account_name },
-					{ "result", 200 }
-				};
-				return tp::response(200, response);
+				if (acc->calls.size() == 0){
+					phone.Logout(acc);
+					json response = {
+						{ "message",  "Logged Out" },
+						{ "account_name", account_name },
+						{ "result", 200 }
+					};
+					return tp::response(200, response);
+				} else {
+					json response = {
+						{ "message",  "Logged Out Failed as Calls Active" },
+						{ "account_name", account_name },
+						{ "call_count", acc->calls.size() },
+						{ "result", 400 }
+					};
+					return tp::response(400, response);
+				}
 			}
 			else {
 				return tp::response(400, {
@@ -393,6 +403,7 @@ void TinyPhoneHttpServer::Start() {
 					tp::ParseSIPURI(ci.remoteUri, &uri);
 					json callinfo = {
 						{ "id", ci.id },
+						{ "account", call->getAccount()->Name() },
 						{ "sid", ci.callIdString },
 						{ "party", ci.remoteUri },
 						{ "callerId", uri.user },
@@ -523,15 +534,25 @@ void TinyPhoneHttpServer::Start() {
 				{ "accounts", json::array() },
 			};
 			pj_thread_auto_register();
-			BOOST_FOREACH(tp::SIPAccount* account, phone.Accounts()) {
+			auto accounts = phone.Accounts();
+			BOOST_FOREACH(tp::SIPAccount* account, accounts) {
 				json account_data = {
 					{ "id" , account->getId() },
 					{ "name" , account->Name() },
 				};
 				response["accounts"].push_back(account_data);
 			}
-			phone.Logout();
-			return tp::response(200, response);
+			auto loggedOutAccounts = phone.Logout();
+			auto failedCount = accounts.size() - loggedOutAccounts;
+			if (failedCount > 0 ){
+				response["message"] = "Failed logging out all accounts";
+				response["failed_count"] = failedCount;
+				response["result"] = 400;
+				return tp::response(400, response);
+			} else {
+				return tp::response(200, response);
+			}
+			
 		}
 		catch (...) {
 			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);

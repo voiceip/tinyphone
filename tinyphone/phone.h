@@ -89,7 +89,7 @@ namespace tp {
 
 		void Logout(SIPAccount* acc) throw(pj::Error);
 
-		void Logout() throw(pj::Error) ;
+		int Logout() throw(pj::Error) ;
 
 		void EnableAccount(SIPAccount* account) throw (std::exception) ;
 
