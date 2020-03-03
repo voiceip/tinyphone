@@ -52,7 +52,7 @@ namespace tp {
 			return true;
 		}
 		catch (Error& err) {
-			PJ_LOG(1, (__FILENAME__, "TestAudioDevice Error %s", err.reason));
+			PJ_LOG(1, (__FILENAME__, "TestAudioDevice Error %s", err.reason.c_str()));
 			return false;
 		}
 	}
@@ -242,11 +242,20 @@ namespace tp {
 		tp::tpUserConfig uc = j.get<tpUserConfig>();
 
 		PJ_LOG(3, (__FILENAME__, "Restoring User Accounts %d", uc.accounts.size()));
-		//TODO:
-		BOOST_FOREACH(AccountConfig acfg,uc.accounts) {
-			AddAccount(acfg);
+		try
+		{
+			BOOST_FOREACH(AccountConfig acfg,uc.accounts) {
+				AddAccount(acfg);
+			}
 		}
-
+		catch(const std::domain_error e)
+		{
+			PJ_LOG(3, (__FILENAME__, "Restoring User Accounts Error %s", e.what()));
+			tp::MetricsClient.increment("api.login.error.device_error");
+			if (ApplicationConfig.deviceErrorAlert) {
+				tp::DisplayError(MSG_CONTACT_IT_SUPPORT, tp::OPS::ASYNC);
+			}
+		}
 		return true;
 	}
 
