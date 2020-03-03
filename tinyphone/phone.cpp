@@ -15,6 +15,170 @@ namespace tp {
 		}
 	}
 
+
+	void TinyPhone::SetCodecs() {
+		pjsua_codec_info codec[32];
+		ZeroMemory(codec, sizeof(codec));
+		unsigned uCount = 32;
+		if (pjsua_enum_codecs(codec, &uCount) == PJ_SUCCESS) {
+			printf("List of supported codecs:\n");
+			for (unsigned i = 0; i<uCount; ++i) {
+				printf("  %d\t%.*s\n", codec[i].priority,
+					(int)codec[i].codec_id.slen, codec[i].codec_id.ptr);
+			}
+		}
+
+		const pj_str_t ID_ALL = { "*", 1 };
+		pjsua_codec_set_priority(&ID_ALL, PJMEDIA_CODEC_PRIO_DISABLED);
+		int priority = 0;
+		BOOST_FOREACH(std::string codec, ApplicationConfig.audioCodecs) {
+			EnableCodec(codec, PJMEDIA_CODEC_PRIO_NORMAL);
+		}
+	}
+
+	void TinyPhone::EnableCodec(std::string codec_name, pj_uint8_t priority) {
+		auto codec = pj_str(codec_name);
+		auto status = pjsua_codec_set_priority(&codec, priority);
+		if (status == PJ_SUCCESS)
+			PJ_LOG(3, (__FILENAME__, "%s activated, priority %d", codec.ptr, priority));
+		else
+			PJ_LOG(3, (__FILENAME__, "Failed activating %s, err=%d", codec.ptr, status));
+		free(codec.ptr);
+	}
+
+	bool TinyPhone::TestAudioDevice() {
+		try {
+			AudDevManager& audio_manager = Endpoint::instance().audDevManager();
+			audio_manager.refreshDevs();
+			AudioMedia& cap_med = audio_manager.getCaptureDevMedia();
+			AudioMedia& play_med = audio_manager.getPlaybackDevMedia();
+			cap_med.startTransmit(play_med);
+			pj_thread_sleep(50);
+			cap_med.stopTransmit(play_med);
+			return true;
+		}
+		catch (Error& err) {
+			PJ_LOG(1, (__FILENAME__, "TestAudioDevice Error %s", err.reason));
+			return false;
+		}
+	}
+
+		
+
+	std::vector<SIPAccount *> TinyPhone::Accounts() {
+		return accounts;
+	}
+
+	bool TinyPhone::HasAccounts() {
+		return accounts.size() > 0;
+	}
+
+	SIPAccount* TinyPhone::PrimaryAccount() {
+		if (!HasAccounts())
+			return nullptr;
+		else {
+			BOOST_FOREACH(SIPAccount* acc, accounts) {
+				if (acc->getInfo().regStatus == pjsip_status_code::PJSIP_SC_OK)
+					return acc;
+			}
+			return nullptr;
+		}
+	}
+
+	SIPAccount* TinyPhone::AccountByName(string name) {
+		if (!HasAccounts())
+			return nullptr;
+		else {
+			SIPAccount* account = nullptr;
+			BOOST_FOREACH(SIPAccount* acc, accounts) {
+				if (acc->Name() == name) {
+					account = acc;
+					break;
+				}
+			}
+			return account;
+		}
+	}
+
+	void TinyPhone::Logout(SIPAccount* acc) throw(pj::Error) {
+		auto it = accounts.begin();
+		while (it != accounts.end()) {
+			if (*it == acc) {
+				(*it)->UnRegister();
+				delete (*it);
+				it = accounts.erase(it);
+				break;
+			}
+		}
+	}
+
+	void TinyPhone::Logout() throw(pj::Error) {
+		auto it = accounts.begin();
+		while (it != accounts.end()) {
+			(*it)->UnRegister();
+			delete (*it);
+			it = accounts.erase(it);
+		}
+	}
+
+	void TinyPhone::EnableAccount(SIPAccount* account) throw (std::exception) {
+		if (ApplicationConfig.testAudioDevice && !TestAudioDevice()) {
+			throw std::domain_error(MSG_DEVICE_ERROR);
+		}
+		account->reRegister();
+	}
+
+	
+	SIPCall* TinyPhone::MakeCall(string uri) throw(pj::Error) {
+		SIPAccount* account = PrimaryAccount();
+		return MakeCall(uri, account);
+	}
+
+	SIPCall* TinyPhone::MakeCall(string uri, SIPAccount* account) throw(pj::Error) {
+		addTransportSuffix(uri);
+		SIPCall *call = new SIPCall(*account);
+		CallOpParam prm(true);
+		prm.opt.audioCount = 1;
+		prm.opt.videoCount = 0;
+		call->makeCall(uri, prm);
+		account->calls.push_back(call);
+		account->onCallEstablished(call);
+		return call;
+	}
+
+	std::vector<SIPCall*>TinyPhone::Calls() {
+		std::vector<SIPCall *> calls;
+		BOOST_FOREACH(SIPAccount* acc, accounts) {
+			auto account_calls = acc->calls;
+			calls.insert(std::end(calls), std::begin(account_calls), std::end(account_calls));
+		}
+		return calls;
+	}
+
+	SIPCall* TinyPhone::CallById(int call_id) {
+		BOOST_FOREACH(SIPCall* c, Calls()) {
+			if (c->getId() == call_id)
+				return c;
+		}
+		return nullptr;
+	}
+
+	void TinyPhone::HoldOtherCalls(SIPCall* call) {
+		auto all_calls = Calls();
+		all_calls.erase(std::remove(all_calls.begin(), all_calls.end(), call), all_calls.end());
+		BOOST_FOREACH(SIPCall* c, all_calls) {
+			c->HoldCall();
+		}
+	}
+
+	void TinyPhone::Hangup(SIPCall* call) {
+		call->Hangup();
+	}
+
+	void TinyPhone::HangupAllCalls() {
+		endpoint->hangupAllCalls();
+	}
+
 	void TinyPhone::ConfigureAudioDevices(){
 		AudDevManager& audio_manager = Endpoint::instance().audDevManager();
 		audio_manager.refreshDevs();
