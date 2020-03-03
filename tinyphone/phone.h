@@ -13,6 +13,7 @@
 #include "config.h"
 #include "json.h"
 
+#include <map> 
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -29,7 +30,8 @@ namespace tp {
 
 	class TinyPhone
 	{
-		std::vector<SIPAccount*> accounts;
+		typedef std::map<string, SIPAccount*> map_string_acc;
+		map_string_acc accounts;
 		pj::Endpoint* endpoint;
 		EventStream* eventStream;
 
@@ -50,7 +52,6 @@ namespace tp {
 
 		~TinyPhone() {
 			pj_thread_auto_register();
-			PJ_LOG(3, (__FILENAME__, "Shutting Down TinyPhone"));
 			std::cout << "Shutting Down TinyPhone" << std::endl;
 			if (endpoint->libGetState() == PJSUA_STATE_RUNNING) {
 				HangupAllCalls();

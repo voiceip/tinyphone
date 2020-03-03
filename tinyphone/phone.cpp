@@ -66,7 +66,11 @@ namespace tp {
 		
 
 	std::vector<SIPAccount *> TinyPhone::Accounts() {
-		return accounts;
+		std::vector<SIPAccount *> acc_vector;
+		BOOST_FOREACH(map_string_acc::value_type &pair, accounts ){
+			acc_vector.push_back(pair.second);
+		}
+		return acc_vector;
 	}
 
 	bool TinyPhone::HasAccounts() {
@@ -77,48 +81,47 @@ namespace tp {
 		if (!HasAccounts())
 			return nullptr;
 		else {
-			BOOST_FOREACH(SIPAccount* acc, accounts) {
-				if (acc->getInfo().regStatus == pjsip_status_code::PJSIP_SC_OK)
-					return acc;
+			BOOST_FOREACH(map_string_acc::value_type &pair, accounts ){
+				if (pair.second->getInfo().regStatus == pjsip_status_code::PJSIP_SC_OK)
+					return pair.second;
 			}
 			return nullptr;
 		}
 	}
 
 	SIPAccount* TinyPhone::AccountByName(string name) {
-		if (!HasAccounts())
+		auto it = accounts.find(name);
+		if ( it != accounts.end()){
+			return it->second;
+		} else {
 			return nullptr;
-		else {
-			SIPAccount* account = nullptr;
-			BOOST_FOREACH(SIPAccount* acc, accounts) {
-				if (acc->Name() == name) {
-					account = acc;
-					break;
-				}
-			}
-			return account;
 		}
 	}
 
 	void TinyPhone::Logout(SIPAccount* acc) throw(pj::Error) {
-		auto it = accounts.begin();
-		while (it != accounts.end()) {
-			if (*it == acc) {
-				(*it)->UnRegister();
-				delete (*it);
-				it = accounts.erase(it);
-				break;
-			}
+		accounts.erase(acc->Name());
+		try {
+			acc->UnRegister();
 		}
+		catch (Error& err) {
+			PJ_LOG(1, (__FILENAME__, "Logout Account UnRegister Error %s", err.reason.c_str()));
+		}
+		delete (acc);
 	}
 
 	void TinyPhone::Logout() throw(pj::Error) {
 		auto it = accounts.begin();
 		while (it != accounts.end()) {
-			(*it)->UnRegister();
-			delete (*it);
+			SIPAccount* acc = it->second;
+			try {
+				acc->UnRegister();
+			}
+			catch (Error& err) {
+				PJ_LOG(1, (__FILENAME__, "Logout UnRegister Error %s", err.reason.c_str()));
+			}
+			delete (acc);
 			it = accounts.erase(it);
-		}
+		} 
 	}
 
 	void TinyPhone::EnableAccount(SIPAccount* account) throw (std::exception) {
@@ -148,8 +151,8 @@ namespace tp {
 
 	std::vector<SIPCall*>TinyPhone::Calls() {
 		std::vector<SIPCall *> calls;
-		BOOST_FOREACH(SIPAccount* acc, accounts) {
-			auto account_calls = acc->calls;
+		BOOST_FOREACH(map_string_acc::value_type &pair, accounts) {
+			auto account_calls = (pair.second)->calls;
 			calls.insert(std::end(calls), std::begin(account_calls), std::end(account_calls));
 		}
 		return calls;
@@ -258,7 +261,7 @@ namespace tp {
 				acc->domain = config.domain;
 				auto res = acc->Create(acc_cfg);
 
-				accounts.push_back(acc);
+				accounts.insert(std::pair<string, SIPAccount*>(account_name, acc));
 				return res;
 			}
 		}
