@@ -680,16 +680,17 @@ void TinyPhoneHttpServer::Start() {
 
 void TinyPhoneHttpServer::Stop(){
 
-	CROW_LOG_INFO << "Terminating current running call(s) if any";
+	CROW_LOG_INFO << "TinyPhoneHttpServer::Stop.....";
 
 	if (running.exchange(false)) {
+		CROW_LOG_INFO << "Terminating current running call(s) if any...";
+
 		pj_thread_auto_register();
 		tinyPhone->HangupAllCalls();
 		tinyPhone->Logout();
 
 		endpoint->libDestroy();
-	}
-	else {
+	} else {
 		CROW_LOG_INFO << "TinyPhoneHttpServer already shutdown";
 	}
 
