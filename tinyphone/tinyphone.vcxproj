@@ -177,6 +177,7 @@
     <ClInclude Include="channel.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="consts.h" />
+    <ClInclude Include="crypt.h" />
     <ClInclude Include="enum.h" />
     <ClInclude Include="events.h" />
     <ClInclude Include="guicon.h" />

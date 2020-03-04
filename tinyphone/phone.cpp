@@ -268,11 +268,17 @@ namespace tp {
 		BOOST_FOREACH(SIPAccount* acc, Accounts()){
 			uc.accounts.push_back(acc->accConfig);
 		}
-		json j = uc;
-		std::ofstream o(userConfigFile);
-		o << std::setw(4) << j << std::endl;
-		o.close();
-		return true;
+		try
+		{
+			json j = uc;
+			std::ofstream o(userConfigFile);
+			o << std::setw(4) << j << std::endl;
+			o.close();
+			return true;
+		} catch(const std::exception& e) {
+			PJ_LOG(1, (__FILENAME__, "SaveAccounts:: Error %s", e.what()));
+			return false;
+		}
 	}
 
 	std::future<int> TinyPhone::AddAccount(AccountConfig& config) throw (std::exception) {
