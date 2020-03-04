@@ -234,27 +234,32 @@ namespace tp {
 		ucfg.open(tpUserConfigFile);
 
 		if (!ucfg) {
+			PJ_LOG(3, (__FILENAME__, "UserAccount ConfigFile Not Found, Nothing to Restore %s",tpUserConfigFile.c_str()));
 			return false;
 		}
 
 		json j;
-		ucfg >> j;
-		tp::tpUserConfig uc = j.get<tpUserConfig>();
+		try{
+			ucfg >> j;
+			tp::tpUserConfig uc = j.get<tpUserConfig>();
 
-		PJ_LOG(3, (__FILENAME__, "Restoring User Accounts %d", uc.accounts.size()));
-		try
-		{
-			BOOST_FOREACH(AccountConfig acfg,uc.accounts) {
-				AddAccount(acfg);
+			PJ_LOG(3, (__FILENAME__, "Restoring User Accounts %d", uc.accounts.size()));
+			try
+			{
+				BOOST_FOREACH(AccountConfig acfg,uc.accounts) {
+					AddAccount(acfg);
+				}
 			}
-		}
-		catch(const std::domain_error e)
-		{
-			PJ_LOG(3, (__FILENAME__, "Restoring User Accounts Error %s", e.what()));
-			tp::MetricsClient.increment("api.login.error.device_error");
-			if (ApplicationConfig.deviceErrorAlert) {
-				tp::DisplayError(MSG_CONTACT_IT_SUPPORT, tp::OPS::ASYNC);
+			catch(const std::domain_error e)
+			{
+				PJ_LOG(3, (__FILENAME__, "Restoring User Accounts Error %s", e.what()));
+				tp::MetricsClient.increment("api.login.error.device_error");
+				if (ApplicationConfig.deviceErrorAlert) {
+					tp::DisplayError(MSG_CONTACT_IT_SUPPORT, tp::OPS::ASYNC);
+				}
 			}
+		} catch(...) {
+			PJ_LOG(3, (__FILENAME__, "Restoring User Failed due to Error"));
 		}
 		return true;
 	}
