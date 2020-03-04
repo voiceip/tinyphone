@@ -91,7 +91,6 @@ namespace tp {
 	}
 
 	void TinyPhone::Logout(SIPAccount* acc) throw(pj::Error) {
-		accounts.erase(acc->Name());
 		try {
 			acc->UnRegister();
 		}
@@ -99,6 +98,7 @@ namespace tp {
 			PJ_LOG(1, (__FILENAME__, "Logout Account UnRegister Error %s", err.reason.c_str()));
 		}
 		delete (acc);
+		accounts.erase(acc->Name());
 		SaveAccounts();
 	}
 
@@ -228,19 +228,17 @@ namespace tp {
 	}
 
 	bool TinyPhone::RestoreAccounts(){
-		tp::MetricsClient.increment("restore");
-		//read from file and 
-		std::ifstream ucfg;
-		ucfg.open(tpUserConfigFile);
+		std::ifstream ucfg(userConfigFile);
 
-		if (!ucfg) {
-			PJ_LOG(3, (__FILENAME__, "UserAccount ConfigFile Not Found, Nothing to Restore %s",tpUserConfigFile.c_str()));
+		if (!ucfg.is_open()) {
+			PJ_LOG(3, (__FILENAME__, "UserAccount ConfigFile Not Found, Nothing to Restore %s",userConfigFile.c_str()));
 			return false;
 		}
 
 		json j;
 		try{
 			ucfg >> j;
+			ucfg.close();
 			tp::tpUserConfig uc = j.get<tpUserConfig>();
 
 			PJ_LOG(3, (__FILENAME__, "Restoring User Accounts %d", uc.accounts.size()));
@@ -260,19 +258,20 @@ namespace tp {
 			}
 		} catch(...) {
 			PJ_LOG(3, (__FILENAME__, "Restoring User Failed due to Error"));
+			return false;
 		}
 		return true;
 	}
 
 	bool TinyPhone::SaveAccounts(){
-		tp::MetricsClient.increment("save");
 		tp::tpUserConfig uc;
 		BOOST_FOREACH(SIPAccount* acc, Accounts()){
 			uc.accounts.push_back(acc->accConfig);
 		}
 		json j = uc;
-		std::ofstream o(tpUserConfigFile);
+		std::ofstream o(userConfigFile);
 		o << std::setw(4) << j << std::endl;
+		o.close();
 		return true;
 	}
 

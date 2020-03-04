@@ -27,7 +27,7 @@ namespace tp {
 		pj::Endpoint* endpoint;
 		EventStream* eventStream;
 
-		std::string tpUserConfigFile;
+		std::string userConfigFile;
 
 	private:
 	    std::recursive_mutex add_acc_mutex;
@@ -45,7 +45,7 @@ namespace tp {
 
 			boost::filesystem::path tiny_dir = GetLogDir();
 			auto logfile = tiny_dir.append("user.conf");
-			tpUserConfigFile = logfile.string();
+			userConfigFile = logfile.string();
 		}
 
 		~TinyPhone() {
