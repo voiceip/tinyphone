@@ -10,6 +10,7 @@
 #include <chrono>	
 #include "metrics.h"
 #include "log.h"
+#include "phone.h"
 
 class TinyPhoneHTTPLogHandler : public crow::ILogHandler {
 private:
@@ -71,6 +72,10 @@ class TinyPhoneHttpServer {
 public:
 	pj::Endpoint* endpoint;
 	std::string logfile;
+private:
+	tp::TinyPhone* tinyPhone;
+	std::atomic<bool> running;
+
 public:
 	TinyPhoneHttpServer(pj::Endpoint* ep, std::string log_file) {
 		endpoint = ep;
@@ -83,6 +88,8 @@ public:
 
 	
 	void Start();
+
+	void Stop();
 };
 
 #endif

@@ -2,19 +2,13 @@
 #include "phone.h"
 #include "metrics.h"
 #include "utils.h"
+#include "json.h"
+#include "config.h"
+#include <iomanip>
+
+using json = nlohmann::json;
 
 namespace tp {
-
-	void from_json(const nlohmann::json& j, AccountConfig& p) {
-		j.at("username").get_to(p.username);
-		j.at("domain").get_to(p.domain);
-		j.at("password").get_to(p.password);
-
-		if (j.find("proxy") != j.end()) {
-			j.at("proxy").get_to(p.proxy);
-		}
-	}
-
 
 	void TinyPhone::SetCodecs() {
 		pjsua_codec_info codec[32];
@@ -58,12 +52,10 @@ namespace tp {
 			return true;
 		}
 		catch (Error& err) {
-			PJ_LOG(1, (__FILENAME__, "TestAudioDevice Error %s", err.reason));
+			PJ_LOG(1, (__FILENAME__, "TestAudioDevice Error %s", err.reason.c_str()));
 			return false;
 		}
 	}
-
-		
 
 	std::vector<SIPAccount *> TinyPhone::Accounts() {
 		std::vector<SIPAccount *> acc_vector;
@@ -99,7 +91,6 @@ namespace tp {
 	}
 
 	void TinyPhone::Logout(SIPAccount* acc) throw(pj::Error) {
-		accounts.erase(acc->Name());
 		try {
 			acc->UnRegister();
 		}
@@ -107,12 +98,21 @@ namespace tp {
 			PJ_LOG(1, (__FILENAME__, "Logout Account UnRegister Error %s", err.reason.c_str()));
 		}
 		delete (acc);
+		accounts.erase(acc->Name());
+		SaveAccounts();
 	}
 
-	void TinyPhone::Logout() throw(pj::Error) {
+	int TinyPhone::Logout() throw(pj::Error) {
 		auto it = accounts.begin();
+		int loggedOutAccounts(0);
 		while (it != accounts.end()) {
 			SIPAccount* acc = it->second;
+			auto callCount = acc->calls.size();
+			if (callCount > 0 ){
+				PJ_LOG(1, (__FILENAME__, "Skipping UnRegister for %s as calls active %d", acc->Name().c_str(), callCount));
+				it++;
+				continue;
+			}
 			try {
 				acc->UnRegister();
 			}
@@ -120,8 +120,11 @@ namespace tp {
 				PJ_LOG(1, (__FILENAME__, "Logout UnRegister Error %s", err.reason.c_str()));
 			}
 			delete (acc);
+			loggedOutAccounts++;
 			it = accounts.erase(it);
 		} 
+		SaveAccounts();
+		return loggedOutAccounts;
 	}
 
 	void TinyPhone::EnableAccount(SIPAccount* account) throw (std::exception) {
@@ -224,6 +227,54 @@ namespace tp {
 		ConfigureAudioDevices();
 	}
 
+	bool TinyPhone::RestoreAccounts(){
+		std::ifstream ucfg(userConfigFile);
+
+		if (!ucfg.is_open()) {
+			PJ_LOG(3, (__FILENAME__, "UserAccount ConfigFile Not Found, Nothing to Restore %s",userConfigFile.c_str()));
+			return false;
+		}
+
+		json j;
+		try{
+			ucfg >> j;
+			ucfg.close();
+			tp::tpUserConfig uc = j.get<tpUserConfig>();
+
+			PJ_LOG(3, (__FILENAME__, "Restoring User Accounts %d", uc.accounts.size()));
+			try
+			{
+				BOOST_FOREACH(AccountConfig acfg,uc.accounts) {
+					AddAccount(acfg);
+				}
+			}
+			catch(const std::domain_error e)
+			{
+				PJ_LOG(3, (__FILENAME__, "Restoring User Accounts Error %s", e.what()));
+				tp::MetricsClient.increment("api.login.error.device_error");
+				if (ApplicationConfig.deviceErrorAlert) {
+					tp::DisplayError(MSG_CONTACT_IT_SUPPORT, tp::OPS::ASYNC);
+				}
+			}
+		} catch(...) {
+			PJ_LOG(3, (__FILENAME__, "Restoring User Failed due to Error"));
+			return false;
+		}
+		return true;
+	}
+
+	bool TinyPhone::SaveAccounts(){
+		tp::tpUserConfig uc;
+		BOOST_FOREACH(SIPAccount* acc, Accounts()){
+			uc.accounts.push_back(acc->accConfig);
+		}
+		json j = uc;
+		std::ofstream o(userConfigFile);
+		o << std::setw(4) << j << std::endl;
+		o.close();
+		return true;
+	}
+
 	std::future<int> TinyPhone::AddAccount(AccountConfig& config) throw (std::exception) {
 		string account_name = SIP_ACCOUNT_NAME(config.username, config.domain);
 		tp::MetricsClient.increment("login");
@@ -257,11 +308,13 @@ namespace tp {
 				acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
 				acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
 
-				SIPAccount *acc(new SIPAccount(this, account_name, eventStream));
+				SIPAccount *acc(new SIPAccount(this, account_name, eventStream, config));
 				acc->domain = config.domain;
 				auto res = acc->Create(acc_cfg);
 
 				accounts.insert(std::pair<string, SIPAccount*>(account_name, acc));
+
+				SaveAccounts();
 				return res;
 			}
 		}
