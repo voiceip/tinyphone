@@ -13,21 +13,20 @@ namespace tp {
 	appConfig ApplicationConfig;
 	EncryptDecrypt crypt("OPKUhsJCvkuxfAcLLf8Dhn079QYw79l9", "0123456789123456");
 
-
 	void from_json(const nlohmann::json& j, AccountConfig& p) {
 		std::string encPass;
 
 		j.at("username").get_to(p.username);
 		j.at("domain").get_to(p.domain);
 		
-		if (j.find("password") != j.end()) {
-			j.at("password").get_to(p.password);
-		}
-
 		if (j.find("enc_password") != j.end()) {
 			j.at("enc_password").get_to(encPass);
 			p.password = crypt.Decrypt(encPass);
 			std::cout << "Decrypted Password: " << p.password << std::endl;
+		}
+
+		if (j.find("password") != j.end()) {
+			j.at("password").get_to(p.password);
 		}
 
 		if (j.find("proxy") != j.end()) {
