@@ -15,6 +15,7 @@ using namespace std;
 
 #pragma warning( disable : 4995 )
 
+#define APP
 void print_thread_name()
 {
 	thread::id this_id = this_thread::get_id();
@@ -273,7 +274,20 @@ namespace tp {
 			boost::filesystem::create_directory(tiny_dir);
 		return tiny_dir;
 	}
-
+	
+	boost::filesystem::path GetAppDir(){
+		LPWSTR path = NULL;
+		HRESULT hr = SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &path);
+		if (!SUCCEEDED(hr)) {
+			throw std::runtime_error("GetAPPDIr Errored");
+		}
+		boost::filesystem::path appDir(win32_utf16_to_utf8(path));
+		boost::filesystem::path tiny_dir = appDir.append("tinyphone");
+		LocalFree(path);
+		if (!boost::filesystem::exists(tiny_dir))
+			boost::filesystem::create_directory(tiny_dir);
+		return tiny_dir;
+	}
 
 	tm* now() {
 		time_t rawtime;
@@ -374,5 +388,24 @@ namespace tp {
 		}
 		free(AdapterInfo);
 		return mac_addr; // caller must free.
+	}
+
+
+	std::string win32_utf16_to_utf8(const wchar_t* wstr) {
+		std::string res;
+		// If the 6th parameter is 0 then WideCharToMultiByte returns the number of bytes needed to store the result.
+		int actualSize = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, nullptr, 0, nullptr, nullptr);
+		if (actualSize > 0) {
+			//If the converted UTF-8 string could not be in the initial buffer. Allocate one that can hold it.
+			std::vector<char> buffer(actualSize);
+			actualSize = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, &buffer[0], static_cast<int>(buffer.size()), nullptr, nullptr);
+			res = buffer.data();
+		}
+		if (actualSize == 0) {
+			// WideCharToMultiByte return 0 for errors.
+			const std::string errorMsg = "UTF16 to UTF8 failed with error code: " + GetLastError();
+			throw std::runtime_error(errorMsg.c_str());
+		}
+		return res;
 	}
 }

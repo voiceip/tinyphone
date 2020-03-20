@@ -8,6 +8,8 @@
 #include <boost/iostreams/concepts.hpp> 
 #include <boost/iostreams/stream_buffer.hpp>
 
+#pragma warning( disable : 4244 )
+
 namespace tp {
 	extern std::string sipLogFile;
 	extern std::string httpLogFile;

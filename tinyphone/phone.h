@@ -43,9 +43,10 @@ namespace tp {
 		TinyPhone(pj::Endpoint* ep) {
 			endpoint = ep;
 
-			boost::filesystem::path tiny_dir = GetLogDir();
+			boost::filesystem::path tiny_dir = GetAppDir();
 			auto logfile = tiny_dir.append("user.conf");
 			userConfigFile = logfile.string();
+			std::cout << "TinyPhone userConfigFile: " << userConfigFile << std::endl;
 		}
 
 		~TinyPhone() {

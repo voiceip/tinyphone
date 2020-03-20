@@ -379,7 +379,7 @@ void InitPJSUAEndpoint(std::string logfile) {
 		pj_logerror(pjsip_endpt_create_resolver(endpt, &resolver),"pjsip_endpt_create_resolver");
 		
 		struct pj_str_t servers[4];
-		for (int i = 0; i < dnsServers.size() ; ++i) {
+		for (unsigned int i = 0; i < dnsServers.size() ; ++i) {
 			pj_cstr(&servers[i], dnsServers.at(i).c_str());
 		}
 

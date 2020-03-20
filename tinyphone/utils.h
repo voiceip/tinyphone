@@ -123,6 +123,8 @@ namespace tp {
 
 	boost::filesystem::path GetLogDir();
 
+	boost::filesystem::path GetAppDir();
+
 	std::string file_get_contents(std::string  const& path) throw (std::exception);
 
 	std::vector<char> file_all_bytes(std::string filename);
@@ -134,6 +136,8 @@ namespace tp {
 	tm* now();
 
 	char* getMACAddress();
+
+	std::string win32_utf16_to_utf8(const wchar_t* wstr);
 
 }
 #endif
