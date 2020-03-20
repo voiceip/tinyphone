@@ -3,6 +3,7 @@
 #include "net.h"
 #include "utils.h"
 #include <boost/format.hpp> 
+#include "crypt.h"
 
 #define ALLOW_OFFLINE_CONFIG true
 #define LOCAL_CONFIG_FILE "config.json"
@@ -10,8 +11,45 @@
 namespace tp {
 
 	appConfig ApplicationConfig;
+	EncryptDecrypt crypt("OPKUhsJCvkuxfAcLLf8Dhn079QYw79l9", "0123456789123456");
+
+	void from_json(const nlohmann::json& j, AccountConfig& p) {
+		std::string encPass;
+
+		j.at("username").get_to(p.username);
+		j.at("domain").get_to(p.domain);
+		
+		if (j.find("enc_password") != j.end()) {
+			j.at("enc_password").get_to(encPass);
+			p.password = crypt.Decrypt(encPass);
+			std::cout << "Decrypted Password: " << p.password << std::endl;
+		}
+
+		if (j.find("password") != j.end()) {
+			j.at("password").get_to(p.password);
+		}
+
+		if (j.find("proxy") != j.end()) {
+			j.at("proxy").get_to(p.proxy);
+		}
+	}
+
+	void to_json(nlohmann::json& j, const AccountConfig& p) {
+		std::string encPass = crypt.Encrypt(p.password);
+
+		j = nlohmann::json{
+			{"username", p.username },
+			{"domain", p.domain },
+			{"enc_password", encPass },
+		};
+
+		if (!p.proxy.empty()) {
+			j["proxy"] = p.proxy;
+		}
+	}
 
 	void InitConfig() {
+
 		tp::HttpResponse remoteConfig = http_get(REMOTE_CONFIG_URL);
 		std::string jsonConfig;
 		std::string message;
@@ -93,6 +131,6 @@ namespace tp {
 			exit(1);
 		}
 		SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE);
-
+		
 	}
 }

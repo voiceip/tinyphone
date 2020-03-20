@@ -144,7 +144,6 @@ namespace tp {
 
     void InitConfig();
 
-
 	struct AccountConfig {
 		std::string username;
 		std::string domain;
@@ -152,26 +151,9 @@ namespace tp {
 		std::string proxy;
 	};
 
-	static void from_json(const nlohmann::json& j, AccountConfig& p) {
-		j.at("username").get_to(p.username);
-		j.at("domain").get_to(p.domain);
-		j.at("password").get_to(p.password);
+	void from_json(const nlohmann::json& j, AccountConfig& p);
 
-		if (j.find("proxy") != j.end()) {
-			j.at("proxy").get_to(p.proxy);
-		}
-	}
-
-	static void to_json(nlohmann::json& j, const AccountConfig& p) {
-		j = nlohmann::json{
-			{"username", p.username },
-			{"domain", p.domain },
-			{"password", p.password },
-		};
-		if (!p.proxy.empty()) {
-			j["proxy"] = p.proxy;
-		}
-	}
+	void to_json(nlohmann::json& j, const AccountConfig& p);
 
 	struct tpUserConfig {
 		std::vector<AccountConfig> accounts;
