@@ -65,7 +65,7 @@ namespace tp {
 			contentType = contentTypeIt->second;
 		}
 
-		if (remoteConfig.code / 100 != 2 || contentType != "application/json" ) {
+		if (remoteConfig.code / 100 != 2 || contentType.rfind("application/json", 0) != 0 ) {
 			//Try Secondary Location
 			message = "ERROR: Failed to fetch Remote Config from Primary!";
 			if (remoteConfig.error != "")
