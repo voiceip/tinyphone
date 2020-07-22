@@ -6,11 +6,9 @@ init:
     $ErrorActionPreference = "Stop"
 
     git config --global url.https://github.com/.insteadOf git@github.com:
-- provider: Environment
-  name: production
-  on:
-    branch: master # only this will work
-    APPVEYOR_REPO_TAG: true # condition will never be evaluated
+branches:
+  only:
+    - master
 install:
 - appveyor DownloadFile https://dl.bintray.com/boostorg/release/1.68.0/binaries/boost_1_68_0-msvc-14.0-32.exe
 - call boost_1_68_0-msvc-14.0-32.exe /SILENT
