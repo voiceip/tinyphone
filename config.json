@@ -26,7 +26,6 @@
 	"enableWSEvents" : false,
 	"enableMetrics" : true,
 	"metricsProto" : "UDP",
-	"metricsServerHostname" : "10.47.192.13",
 	"metricsServerHosts" : ["10.32.194.187", "10.32.110.41", "10.47.192.13"],
 	"metricsServerPort" : 8125,
 	"autoDeviceRefresh" :  true
