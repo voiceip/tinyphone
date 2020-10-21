@@ -91,8 +91,8 @@ build_script:
 
     cd E:\tinyphone
 
-    sed -i 's/stampver.inf.*\$/stampver.inf $/g' /Volumes/Workspace/code/voice/tinyphone/tinyphone/tinyphone.vcxproj
-    cat /Volumes/Workspace/code/voice/tinyphone/tinyphone/tinyphone.vcxproj
+    sed -i 's/stampver.inf.*\$/stampver.inf $/g' tinyphone/tinyphone.vcxproj
+    cat tinyphone/tinyphone.vcxproj
 
     msbuild /m tinyphone.sln /p:Configuration=$BuildMode /p:Platform=x86
     if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
