@@ -9,16 +9,16 @@ Checkout the repo and follow the building process to compile your own, or just d
 
 ## Downloads
 
-You can download either the msi installer or executable file from [here](https://ci.appveyor.com/project/kingster/tinyphone/build/artifacts)
+You can download the latest msi installer or executable file from [here](https://ci.appveyor.com/project/kingster/tinyphone/build/artifacts) or from the [releases section](https://github.com/voiceip/tinyphone/releases).
 
 
 ## APIs 
 
-The softphone exposes the following resources on port `6060`.
+The softphone exposes the following resources on port `6060`. 
 
 | Resource                    | Method | Description                       |
 |:----------------------------|:-------|:----------------------------------|
-| `/`      | GET | Returns `hello world` |
+| `/`      | GET | Returns `hi` and the app `version` |
 | `/login`| POST | Account login with the provided details `AccountConfig` | 
 | `/logout`| POST | Logout of all accounts |
 | `/accounts`| GET | Returns list of registed accounts |
@@ -32,10 +32,12 @@ The softphone exposes the following resources on port `6060`.
 | `/hangup_all`| POST | Hangup all calls | 
 | `/exit`| POST | Exit the application | 
 
+You can view the postman collection of the APIs [here](https://documenter.getpostman.com/view/111463/TVYC9zbp)
 
-## Request Payloads
 
-### Account Config
+### Request Payloads
+
+#### Account Config
 ```json
 {
   "username": "string" ,
