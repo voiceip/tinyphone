@@ -422,6 +422,31 @@ void TinyPhoneHttpServer::Start() {
 		}
 	});
 
+
+	CROW_ROUTE(app, "/calls/<int>/answer")
+		.methods("POST"_method)
+		([&phone](int call_id) {
+		pj_thread_auto_register();
+
+		SIPCall* call = phone.CallById(call_id);
+		if (call == nullptr) {
+			return tp::response(400, {
+				{ "message", "Call Not Found" },
+				{"call_id" , call_id}
+				});
+		}
+		else {
+			CallOpParam prm;
+			prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
+			call->answer(prm);
+			json response = {
+				{ "message",  "Answer Triggered" },
+				{ "call_id" , call_id }
+			};
+			return tp::response(200, response);
+		}
+	});
+
 	CROW_ROUTE(app, "/calls/<int>/hold")
 		.methods("PUT"_method, "DELETE"_method)
 		([&phone](const crow::request& req, int call_id) {
