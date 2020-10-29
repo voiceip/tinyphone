@@ -63,9 +63,10 @@ You must have boost libraries installed on your system. Incase you don't have yo
 ### Manual Compiling
 
 ```bash
-git checkout https://github.com/voiceip/tinyphone.git
+git clone https://github.com/voiceip/tinyphone.git
 cd tinyphone
 git submodule update --init --recursive
+#build dependencies follow appveyor.yml#build-step
 #open lib/pjproject/pjproject-vs14.sln in visual studio 2015 and compile it
 #open tinyphone/tinyphone.sln in visual studio 2015 and compile it (you will need to compile the dependencies in lib/* folder)
 run tinyphone/Debug/tinyphone.exe
