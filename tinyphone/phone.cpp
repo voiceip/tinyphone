@@ -15,10 +15,8 @@ namespace tp {
 		ZeroMemory(codec, sizeof(codec));
 		unsigned uCount = 32;
 		if (pjsua_enum_codecs(codec, &uCount) == PJ_SUCCESS) {
-			printf("List of supported codecs:\n");
 			for (unsigned i = 0; i<uCount; ++i) {
-				printf("  %d\t%.*s\n", codec[i].priority,
-					(int)codec[i].codec_id.slen, codec[i].codec_id.ptr);
+				PJ_LOG(3, (__FILENAME__, "supported codec  %d\t%.*s", codec[i].priority, (int)codec[i].codec_id.slen, codec[i].codec_id.ptr));
 			}
 		}
 
