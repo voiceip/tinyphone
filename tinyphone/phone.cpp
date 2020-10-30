@@ -89,15 +89,17 @@ namespace tp {
 	}
 
 	void TinyPhone::Logout(SIPAccount* acc) throw(pj::Error) {
-		try {
-			acc->UnRegister();
+		synchronized(add_acc_mutex) {
+			try {
+				acc->UnRegister();
+			}
+			catch (Error& err) {
+				PJ_LOG(1, (__FILENAME__, "Logout Account UnRegister Error %s", err.reason.c_str()));
+			}
+			accounts.erase(acc->Name());
+			delete (acc);
+			SaveAccounts();
 		}
-		catch (Error& err) {
-			PJ_LOG(1, (__FILENAME__, "Logout Account UnRegister Error %s", err.reason.c_str()));
-		}
-		delete (acc);
-		accounts.erase(acc->Name());
-		SaveAccounts();
 	}
 
 	int TinyPhone::Logout() throw(pj::Error) {
