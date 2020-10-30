@@ -346,15 +346,31 @@ void TinyPhoneHttpServer::Start() {
 		.methods("POST"_method)
 		([&phone](const crow::request& req) {
 
-		std::string dial_uri = req.body;
-
 		pj_thread_auto_register();
 
-		tp::SIPAccount* account = phone.PrimaryAccount();
-		if (account == nullptr) {
+		if (phone.PrimaryAccount() == nullptr) {
 			return tp::response(400, {
 				{ "message", "No Account Registed/Active Yet" },
 			});
+		}
+
+		tp::SIPAccount* account = nullptr;
+		std::string dial_uri, account_name;
+		try {
+			//check if body is json.
+			json j = json::parse(req.body);
+			j.at("uri").get_to(dial_uri);
+			if (j.find("account") != j.end()) {
+				j.at("account").get_to(account_name);
+				account = phone.AccountByName(account_name);
+			}
+		} catch (...) {
+			//else falback to old behavior.
+			dial_uri = req.body;
+		}
+
+		if (account == nullptr) { 
+			account = phone.PrimaryAccount(); //use default account if account_name was not specified
 		}
 
 		if (account->calls.size() >= ApplicationConfig.maxCalls) {
@@ -366,7 +382,7 @@ void TinyPhoneHttpServer::Start() {
 		auto sip_uri = tp::GetSIPURI(dial_uri, account->domain);
 		auto sip_dial_uri = (char *)sip_uri.c_str();
 
-		CROW_LOG_INFO << "Dial Request to " << sip_dial_uri;
+		CROW_LOG_INFO << "Dial Request to " << sip_dial_uri << "via" << account->Name();
 		try {
 			SIPCall *call = phone.MakeCall(sip_dial_uri, account);
 			string account_name = call->getAccount()->Name();
