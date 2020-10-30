@@ -18,40 +18,131 @@ You can download the latest msi installer from [here](https://ci.appveyor.com/pr
 
 The softphone exposes the following resources on port `6060`. 
 
-| Resource                    | Method | Description                       |
-|:----------------------------|:-------|:----------------------------------|
-| `/`      | GET | Returns `hi` and the app `version` |
-| `/events`      | WS | WebSocket endpoint for realtime events |
-| `/login`| POST | Account login with the provided details `AccountConfig` | 
-| `/logout`| POST | Logout of all accounts |
-| `/accounts`| GET | Returns list of registed accounts |
-| `/accounts/{account_name}/logout`| GET | Logout of account with provided `account_name` |
-| `/dial`| POST | Dial a call with provided `sip-uri` | 
-| `/calls`| GET | Returns list of active calls |
-| `/calls/{call_id}/answer`| POST | answer call with specified `call_id` | 
-| `/calls/{call_id}/dtmf/{digits}`| POST | Send dtmf digits `digits` to call with specified `call_id` | 
-| `/calls/{call_id}/hold`| PUT | Hold call with specified `call_id` | 
-| `/calls/{call_id}/hold`| DELETE | UnHold call with specified `call_id` | 
-| `/calls/{call_id}/hangup`| POST | hangup call with specified `call_id` | 
-| `/hangup_all`| POST | Hangup all calls | 
-| `/exit`| POST | Exit the application | 
-
-You can view the postman collection of the APIs [here](https://documenter.getpostman.com/view/111463/TVYC9zbp)
 
 
-### Request Payloads
-
-#### Account Config
-```json
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Method</th>
+<th>Payload</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/</code></td>
+<td>GET</td>
+<td></td>
+<td>Returns <code>hi</code> and the app <code>version</code></td>
+</tr>
+<tr>
+<td><code>/events</code></td>
+<td>WS</td>
+<td></td>
+<td>WebSocket endpoint for realtime events</td>
+</tr>
+<tr>
+<td><code>/login</code></td>
+<td>POST</td>
+<td>
+<pre lang="json">
 {
   "username": "string" ,
   "password" : "string",
   "domain" : "string",
   "proxy" : "optional-string*"
 }
-```
-`* optional fields : Fields should exist only with valid value.`
+</pre>
+</td>
+<td>Account login with the provided details <br>* optional fields : Fields should exist only with valid value.
 
+</td>
+</tr>
+<tr>
+<td><code>/logout</code></td>
+<td>POST</td>
+<td></td>
+<td>Logout of all accounts</td>
+</tr>
+<tr>
+<td><code>/accounts</code></td>
+<td>GET</td>
+<td></td>
+<td>Returns list of registed accounts</td>
+</tr>
+<tr>
+<td><code>/accounts/{account_name}/logout</code></td>
+<td>GET</td>
+<td></td>
+<td>Logout of account with provided <code>account_name</code></td>
+</tr>
+<tr>
+<td><code>/dial</code></td>
+<td>POST</td>
+<td>
+<pre lang="json">
+{
+  "uri": "sip-uri" ,
+  "account" : "account_name",
+}
+</pre>  
+</td>
+<td>Dial a call with provided <code>sip-uri</code></td>
+</tr>
+<tr>
+<td><code>/calls</code></td>
+<td>GET</td>
+<td></td>
+<td>Returns list of active calls</td>
+</tr>
+<tr>
+<td><code>/calls/{call_id}/answer</code></td>
+<td>POST</td>
+<td></td>
+<td>answer call with specified <code>call_id</code></td>
+</tr>
+<tr>
+<td><code>/calls/{call_id}/dtmf/{digits}</code></td>
+<td>POST</td>
+<td></td>
+<td>Send dtmf digits <code>digits</code> to call with specified <code>call_id</code></td>
+</tr>
+<tr>
+<td><code>/calls/{call_id}/hold</code></td>
+<td>PUT</td>
+<td></td>
+<td>Hold call with specified <code>call_id</code></td>
+</tr>
+<tr>
+<td><code>/calls/{call_id}/hold</code></td>
+<td>DELETE</td>
+<td></td>
+<td>UnHold call with specified <code>call_id</code></td>
+</tr>
+<tr>
+<td><code>/calls/{call_id}/hangup</code></td>
+<td>POST</td>
+<td></td>
+<td>hangup call with specified <code>call_id</code></td>
+</tr>
+<tr>
+<td><code>/hangup_all</code></td>
+<td>POST</td>
+<td></td>
+<td>Hangup all calls</td>
+</tr>
+<tr>
+<td><code>/exit</code></td>
+<td>POST</td>
+<td></td>
+<td>Exit the application</td>
+</tr>
+</tbody>
+</table>
+
+
+You can view the postman collection of the APIs [here](https://documenter.getpostman.com/view/111463/TVYC9zbp)
 
 
 ## Building Locally
