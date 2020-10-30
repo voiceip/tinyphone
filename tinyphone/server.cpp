@@ -633,9 +633,9 @@ void TinyPhoneHttpServer::Start() {
 		([&app](const crow::request& req) {
 		auto it = req.headers.find(HEADER_SECURITY_CODE);
 		json response = {
-			{"message",  "Server Shutdown Recieved"},
-			{ "result",  401 },
-			{"source", req.remoteIpAddress },
+			{"message", "Server Shutdown Recieved"},
+			{"result", 401},
+			{"source", req.remoteIpAddress},
 		};
 		CROW_LOG_INFO << "Shutdown Request from client: " << req.remoteIpAddress;
 		tp::MetricsClient.increment("api.exit");

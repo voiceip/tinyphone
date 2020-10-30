@@ -19,6 +19,7 @@
 #endif
 
 #define DEFUALT_PJ_LOG_LEVEL 3
+#define FROM_JSON_OPTIONAL(v1) if (j.find(#v1) != j.end()) j.at(#v1).get_to(p.v1);
 
 namespace tp {
 
@@ -63,8 +64,8 @@ namespace tp {
 		int metricsServerPort;
 
 		bool autoDeviceRefresh;
-		bool autoAnswer;
-		bool persistAccounts;
+		bool autoAnswer = true;
+		bool persistAccounts = true;
 
 
 		std::string ua(){
@@ -111,7 +112,7 @@ namespace tp {
 		};
     }
 
-   static void from_json(const nlohmann::json& j, appConfig& p) {
+    static void from_json(const nlohmann::json& j, appConfig& p) {
 		j.at("transport").get_to(p.transport);
 		j.at("timeoutSec").get_to(p.timeoutSec);
 		j.at("refreshIntervalSec").get_to(p.refreshIntervalSec);
@@ -142,8 +143,8 @@ namespace tp {
 		j.at("metricsProto").get_to(p.metricsProto);
 		j.at("metricsServerPort").get_to(p.metricsServerPort);
 		j.at("autoDeviceRefresh").get_to(p.autoDeviceRefresh);
-		j.at("autoAnswer").get_to(p.autoAnswer);
-		j.at("persistAccounts").get_to(p.persistAccounts);
+		FROM_JSON_OPTIONAL(autoAnswer);
+		FROM_JSON_OPTIONAL(persistAccounts);
     }
    
     extern appConfig ApplicationConfig;
