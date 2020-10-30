@@ -228,57 +228,62 @@ namespace tp {
 	}
 
 	bool TinyPhone::RestoreAccounts(){
-		std::ifstream ucfg(userConfigFile);
+		if(ApplicationConfig.persistAccounts){
+			std::ifstream ucfg(userConfigFile);
 
-		if (!ucfg.is_open()) {
-			PJ_LOG(3, (__FILENAME__, "UserAccount ConfigFile Not Found, Nothing to Restore %s",userConfigFile.c_str()));
-			return false;
-		}
-
-		json j;
-		try{
-			ucfg >> j;
-			ucfg.close();
-			tp::tpUserConfig uc = j.get<tpUserConfig>();
-
-			PJ_LOG(3, (__FILENAME__, "Restoring User Accounts %d", uc.accounts.size()));
-			try
-			{
-				BOOST_FOREACH(AccountConfig acfg,uc.accounts) {
-					AddAccount(acfg);
-				}
+			if (!ucfg.is_open()) {
+				PJ_LOG(3, (__FILENAME__, "UserAccount ConfigFile Not Found, Nothing to Restore %s",userConfigFile.c_str()));
+				return false;
 			}
-			catch(const std::domain_error e)
-			{
-				PJ_LOG(3, (__FILENAME__, "Restoring User Accounts Error %s", e.what()));
-				tp::MetricsClient.increment("api.login.error.device_error");
-				if (ApplicationConfig.deviceErrorAlert) {
-					tp::DisplayError(MSG_CONTACT_IT_SUPPORT, tp::OPS::ASYNC);
+
+			json j;
+			try{
+				ucfg >> j;
+				ucfg.close();
+				tp::tpUserConfig uc = j.get<tpUserConfig>();
+
+				PJ_LOG(3, (__FILENAME__, "Restoring User Accounts %d", uc.accounts.size()));
+				try
+				{
+					BOOST_FOREACH(AccountConfig acfg,uc.accounts) {
+						AddAccount(acfg);
+					}
 				}
+				catch(const std::domain_error e)
+				{
+					PJ_LOG(3, (__FILENAME__, "Restoring User Accounts Error %s", e.what()));
+					tp::MetricsClient.increment("api.login.error.device_error");
+					if (ApplicationConfig.deviceErrorAlert) {
+						tp::DisplayError(MSG_CONTACT_IT_SUPPORT, tp::OPS::ASYNC);
+					}
+				}
+			} catch(...) {
+				PJ_LOG(3, (__FILENAME__, "Restoring User Failed due to Error"));
+				return false;
 			}
-		} catch(...) {
-			PJ_LOG(3, (__FILENAME__, "Restoring User Failed due to Error"));
-			return false;
 		}
 		return true;
 	}
 
 	bool TinyPhone::SaveAccounts(){
-		tp::tpUserConfig uc;
-		BOOST_FOREACH(SIPAccount* acc, Accounts()){
-			uc.accounts.push_back(acc->accConfig);
+		if(ApplicationConfig.persistAccounts){
+			tp::tpUserConfig uc;
+			BOOST_FOREACH(SIPAccount* acc, Accounts()){
+				uc.accounts.push_back(acc->accConfig);
+			}
+			try
+			{
+				json j = uc;
+				std::ofstream o(userConfigFile);
+				o << std::setw(4) << j << std::endl;
+				o.close();
+				return true;
+			} catch(const std::exception& e) {
+				PJ_LOG(1, (__FILENAME__, "SaveAccounts:: Error %s", e.what()));
+				return false;
+			}
 		}
-		try
-		{
-			json j = uc;
-			std::ofstream o(userConfigFile);
-			o << std::setw(4) << j << std::endl;
-			o.close();
-			return true;
-		} catch(const std::exception& e) {
-			PJ_LOG(1, (__FILENAME__, "SaveAccounts:: Error %s", e.what()));
-			return false;
-		}
+		return true;
 	}
 
 	std::future<int> TinyPhone::AddAccount(AccountConfig& config) throw (std::exception) {

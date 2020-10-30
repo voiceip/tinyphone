@@ -64,6 +64,7 @@ namespace tp {
 
 		bool autoDeviceRefresh;
 		bool autoAnswer;
+		bool persistAccounts;
 
 
 		std::string ua(){
@@ -106,6 +107,7 @@ namespace tp {
 			{"metricsServerPort", p.metricsServerPort },
 			{"autoDeviceRefresh", p.autoDeviceRefresh },
 			{"autoAnswer", p.autoAnswer },
+			{"persistAccounts", p.persistAccounts },
 		};
     }
 
@@ -141,6 +143,7 @@ namespace tp {
 		j.at("metricsServerPort").get_to(p.metricsServerPort);
 		j.at("autoDeviceRefresh").get_to(p.autoDeviceRefresh);
 		j.at("autoAnswer").get_to(p.autoAnswer);
+		j.at("persistAccounts").get_to(p.persistAccounts);
     }
    
     extern appConfig ApplicationConfig;

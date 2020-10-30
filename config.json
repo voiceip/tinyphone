@@ -29,5 +29,6 @@
 	"metricsServerHosts" : ["10.32.194.187", "10.32.110.41", "10.47.192.13"],
 	"metricsServerPort" : 8125,
 	"autoDeviceRefresh" :  true,
-	"autoAnswer" : true
+	"autoAnswer" : true,
+	"persistAccounts" : true
 }
