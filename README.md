@@ -7,9 +7,11 @@ Minimalist Softphone based on PJSIP with API Control
 
 Checkout the repo and follow the building process to compile your own, or just download the latest version from the downloads section.
 
-## Downloads
+## Installation
 
-You can download the latest msi installer or executable file from [here](https://ci.appveyor.com/project/kingster/tinyphone/build/artifacts) or from the [releases section](https://github.com/voiceip/tinyphone/releases).
+You can download the latest msi installer from [here](https://ci.appveyor.com/project/kingster/tinyphone/build/artifacts) or from the [releases section](https://github.com/voiceip/tinyphone/releases).
+
+*[Optional]* After Installing you can customise the tinyphone properties by downloading and placing the [config file](https://raw.githubusercontent.com/voiceip/tinyphone/HEAD/config.json) in the folder `C:\Program Files (x86)\Tinyphone\`.
 
 
 ## APIs 
@@ -52,10 +54,7 @@ You can view the postman collection of the APIs [here](https://documenter.getpos
 
 
 
-## Issues & Contribution
-
-Found a issue and have a solution? Go ahead and create a pull request :) Incase you don't have a immediate solution but have an replicable issue please create an Issue with the details so that we can have a look at it.
-
+## Building Locally
 
 ### Pre Requsite
 
@@ -73,3 +72,8 @@ git submodule update --init --recursive
 #open tinyphone/tinyphone.sln in visual studio 2015 and compile it (you will need to compile the dependencies in lib/* folder)
 run tinyphone/Debug/tinyphone.exe
 ```
+
+## Issues & Contribution
+
+Found a issue and have a solution? Go ahead and create a pull request :) Incase you don't have a immediate solution but have an replicable issue please create an Issue with the details so that we can have a look at it.
+
