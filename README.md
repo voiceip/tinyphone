@@ -48,14 +48,14 @@ The softphone exposes the following resources on port `6060`.
 <td>
 <pre lang="json">
 {
-  "username": "string" ,
-  "password" : "string",
-  "domain" : "string",
-  "proxy" : "optional-string*"
+"username": "string" ,
+"password": "string",
+"domain": "string",
+"proxy": "optional-string**"
 }
 </pre>
 </td>
-<td>Account login with the provided details <br>* optional fields : Fields should exist only with valid value.
+<td>Account login with the provided details
 
 </td>
 </tr>
@@ -83,8 +83,8 @@ The softphone exposes the following resources on port `6060`.
 <td>
 <pre lang="json">
 {
-  "uri": "sip-uri" ,
-  "account" : "account_name",
+"uri": "sip-uri",
+"account": "account_name**" 
 }
 </pre>  
 </td>
@@ -139,8 +139,10 @@ The softphone exposes the following resources on port `6060`.
 <td>Exit the application</td>
 </tr>
 </tbody>
+
 </table>
 
+`** Optional Fields, should exist only with valid value`
 
 You can view the postman collection of the APIs [here](https://documenter.getpostman.com/view/111463/TVYC9zbp)
 
