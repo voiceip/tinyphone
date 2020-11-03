@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15702" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15702"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="DateTimeView" customModule="WorldTime" customModuleProvider="target">
+            <connections>
+                <outlet property="areaLabel" destination="2Gk-gy-uoz" id="xBL-ia-MQk"/>
+                <outlet property="dateLabel" destination="wKn-F5-CWv" id="nDg-a0-URF"/>
+                <outlet property="timeLabel" destination="zB4-KK-inp" id="0Na-No-a1U"/>
+                <outlet property="timezoneLabel" destination="Qcj-LT-3lJ" id="tGk-70-w6b"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="dtW-7l-12t">
+            <rect key="frame" x="0.0" y="0.0" width="250" height="170"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2Gk-gy-uoz">
+                    <rect key="frame" x="18" y="126" width="214" height="24"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="24" id="Jrm-tw-JFo"/>
+                    </constraints>
+                    <textFieldCell key="cell" lineBreakMode="truncatingTail" title="Label" id="hjh-8l-wGI">
+                        <font key="font" metaFont="systemBold" size="15"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wKn-F5-CWv">
+                    <rect key="frame" x="18" y="50" width="214" height="16"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="16" id="Oof-J3-ewQ"/>
+                    </constraints>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="Label" id="s1e-Il-sAV">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Qcj-LT-3lJ">
+                    <rect key="frame" x="18" y="26" width="214" height="16"/>
+                    <constraints>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="QGH-ba-KFj"/>
+                        <constraint firstAttribute="height" constant="16" id="es8-vg-Hem"/>
+                    </constraints>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="Label" id="VRo-zl-7jG">
+                        <font key="font" metaFont="system"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zB4-KK-inp">
+                    <rect key="frame" x="18" y="74" width="214" height="32"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="32" id="hFI-4o-Xjx"/>
+                    </constraints>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="Label" id="dOB-v0-43p">
+                        <font key="font" metaFont="systemThin" size="19"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="Qcj-LT-3lJ" secondAttribute="trailing" constant="20" id="0gh-tu-2k8"/>
+                <constraint firstItem="Qcj-LT-3lJ" firstAttribute="top" secondItem="wKn-F5-CWv" secondAttribute="bottom" constant="8" id="8X8-Aq-bdn"/>
+                <constraint firstAttribute="trailing" secondItem="zB4-KK-inp" secondAttribute="trailing" constant="20" id="9mK-II-vwc"/>
+                <constraint firstItem="wKn-F5-CWv" firstAttribute="leading" secondItem="dtW-7l-12t" secondAttribute="leading" constant="20" id="B5t-nf-yfx"/>
+                <constraint firstItem="zB4-KK-inp" firstAttribute="top" secondItem="2Gk-gy-uoz" secondAttribute="bottom" constant="20" id="MPU-Ds-imP"/>
+                <constraint firstItem="2Gk-gy-uoz" firstAttribute="leading" secondItem="dtW-7l-12t" secondAttribute="leading" constant="20" id="OsX-cW-jf0"/>
+                <constraint firstItem="wKn-F5-CWv" firstAttribute="top" secondItem="zB4-KK-inp" secondAttribute="bottom" constant="8" id="Tee-24-v0u"/>
+                <constraint firstItem="zB4-KK-inp" firstAttribute="leading" secondItem="dtW-7l-12t" secondAttribute="leading" constant="20" id="WwM-O8-Tou"/>
+                <constraint firstItem="Qcj-LT-3lJ" firstAttribute="leading" secondItem="dtW-7l-12t" secondAttribute="leading" constant="20" id="Wx1-hi-chz"/>
+                <constraint firstAttribute="trailing" secondItem="2Gk-gy-uoz" secondAttribute="trailing" constant="20" id="cdf-si-D03"/>
+                <constraint firstItem="2Gk-gy-uoz" firstAttribute="top" secondItem="dtW-7l-12t" secondAttribute="top" constant="20" id="wGR-qu-i5t"/>
+                <constraint firstAttribute="trailing" secondItem="wKn-F5-CWv" secondAttribute="trailing" constant="20" id="yL5-oz-rxa"/>
+            </constraints>
+            <point key="canvasLocation" x="117" y="168"/>
+        </customView>
+    </objects>
+</document>
