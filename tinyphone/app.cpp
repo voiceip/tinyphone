@@ -1,18 +1,24 @@
 #include "stdafx.h"
-#include <windows.h>
-#include <shellapi.h>
+
+
 #include <ctime>
-#include "resource.h"
-#include "guicon.h"
+
 #include "server.h"
 #include "utils.h"
 #include "net.h"
 #include "consts.h"
 #include "config.h"
 #include "log.h"
-#include "splash.h"
+
+#include <algorithm>
+
+#ifdef _WIN32
 #include <iphlpapi.h>
-#include <algorithm> 
+#include "guicon.h"
+#include "splash.h"
+#include <windows.h>
+#include <shellapi.h>
+#include "resource.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "libpjproject-i386-Win32-vc14-Debug-Static.lib")
@@ -24,6 +30,8 @@
 
 #define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
 #define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
+
+#endif
 
 
 #define WM_SYSICON  WM_APP

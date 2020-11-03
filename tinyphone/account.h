@@ -13,7 +13,6 @@
 #include "call.h"
 #include "utils.h"
 #include "config.h"
-#include <boost/foreach.hpp>
 
 
 using namespace std;
@@ -88,7 +87,7 @@ namespace tp {
 
 		virtual void onRegState(OnRegStateParam &prm);
 
-		std::future<int> Create(const pj::AccountConfig &cfg, bool make_default = false) throw(Error);
+		std::future<int> Create(const pj::AccountConfig &cfg, bool make_default = false);
 
 		void HoldAllCalls();
 

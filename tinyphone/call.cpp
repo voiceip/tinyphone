@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "config.h"
 #include <pjsua-lib/pjsua_internal.h>
+#include <boost/foreach.hpp>
 #include "metrics.h"
 
 namespace tp {

@@ -2,6 +2,7 @@
 #include "account.h"
 #include "phone.h"
 #include "metrics.h"
+#include <boost/foreach.hpp>
 
 using namespace std;
 using namespace pj;
@@ -50,7 +51,7 @@ namespace tp {
 		}
 	}
 
-	std::future<int> SIPAccount::Create(const pj::AccountConfig &cfg, bool make_default) throw(Error) {
+	std::future<int> SIPAccount::Create(const pj::AccountConfig &cfg, bool make_default) {
 		create(cfg, make_default);
 		return create_result_promise.get_future();
 	}

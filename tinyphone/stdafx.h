@@ -5,6 +5,8 @@
 
 #pragma once
 
+#ifdef _WIN32
+
 #define NO_WARN_MBCS_MFC_DEPRECATION
 
 #include "targetver.h"
@@ -28,9 +30,9 @@
 #include <afxcmn.h>                     // MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
-#include <iostream>
-
+#endif //WIN32
 
 // TODO: reference additional headers your program requires here
+#include <iostream>
 #include <string>
 #include "consts.h"

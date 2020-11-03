@@ -17,9 +17,8 @@
 #include <vector>
 #include <sstream>
 #include "consts.h"
-#include <boost/algorithm/string.hpp>
-#include <boost/format.hpp>
 #include <boost/filesystem.hpp>
+
 #include <ctime>
 #include <mutex>
 
@@ -137,8 +136,10 @@ namespace tp {
 
 	char* getMACAddress();
 
+	#ifdef _WIN32
 	std::string win32_utf16_to_utf8(const wchar_t* wstr);
 
+	#endif
 }
 #endif
  

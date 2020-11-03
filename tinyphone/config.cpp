@@ -113,6 +113,7 @@ namespace tp {
 		}
 #endif // ALLOW_OFFLINE_CONFIG
 
+        #ifdef _WIN32
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 		try {
 			auto j = nlohmann::json::parse(jsonConfig);
@@ -131,6 +132,6 @@ namespace tp {
 			exit(1);
 		}
 		SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE);
-		
+		#endif
 	}
 }

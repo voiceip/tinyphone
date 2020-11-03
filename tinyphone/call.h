@@ -10,7 +10,6 @@
 #include "enum.h"
 #include "events.h"
 #include "utils.h"
-#include <boost/foreach.hpp>
 
 using namespace std;
 using namespace pj;

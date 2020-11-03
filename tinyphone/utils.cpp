@@ -1,16 +1,24 @@
 #include "stdafx.h"
 #include "utils.h"
 #include <thread>
-#include <boost/algorithm/string.hpp>
+
+#ifdef _WIN32
 #include <windows.h>
 #include <winver.h>
+#include <mmsystem.h>
+#include <strsafe.h>
+#endif
+
 #include <cryptopp/sha3.h>
 #include <cryptopp/hex.h>
 #include <cryptopp/filters.h>
 #include <fstream>
-#include <mmsystem.h>
+
 #include <future>
-#include <strsafe.h>
+#include <boost/algorithm/string.hpp>
+#include <boost/format.hpp>
+#include <boost/filesystem.hpp>
+
 using namespace std;
 
 #pragma warning( disable : 4995 )
@@ -22,17 +30,25 @@ void print_thread_name()
 	cout << "Thread id: #" << this_id << endl;
 }	
 
+#ifndef _WIN32
+#define _T(x) x
+
+#endif
+
 namespace tp {
 
+
 	void ShowWinAlert(std::string title, std::string message) {
+		#ifdef _WIN32
 		wchar_t *wmsg = new wchar_t[message.length() + 1]; //memory allocation
 		mbstowcs(wmsg, message.c_str(), message.length() + 1);
 		MessageBoxW(NULL, wmsg, L"Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 		delete[]wmsg;
+		#endif
 	}
 
 	void DisplayError(std::string message, OPS mode) {
-
+		#ifdef _WIN32
 		HANDLE hConsoleErr = GetStdHandle(STD_ERROR_HANDLE);
 		SetConsoleTextAttribute(hConsoleErr, FOREGROUND_RED | FOREGROUND_INTENSITY);
 		
@@ -76,6 +92,7 @@ namespace tp {
 		else {
 			ShowWinAlert("Error", message);
 		}
+		#endif
 	}
 
 	bool IsPSTNNnmber(std::string number)
@@ -214,6 +231,7 @@ namespace tp {
 
 	bool GetProductVersion(std::string &version)
 	{
+		#ifdef _WIN32
 		// get the filename of the executable containing the version resource
 		TCHAR szFilename[MAX_PATH + 1] = { 0 };
 		if (GetModuleFileName(NULL, szFilename, MAX_PATH) == 0){
@@ -247,15 +265,16 @@ namespace tp {
 			HIWORD(pFixedInfo->dwProductVersionMS),LOWORD(pFixedInfo->dwProductVersionMS),
 			HIWORD(pFixedInfo->dwProductVersionLS),LOWORD(pFixedInfo->dwProductVersionLS));
 		version = appVersion;
+		#endif
 		return true;
 	}
 
 	std::string sha256(std::string data) {
 		
 		CryptoPP::SHA3_256 hash;
-		byte digest[CryptoPP::SHA3_256::DIGESTSIZE];
+		CryptoPP::byte digest[CryptoPP::SHA3_256::DIGESTSIZE];
 
-		hash.CalculateDigest(digest, (byte*)data.c_str(), data.length());
+		hash.CalculateDigest(digest, (CryptoPP::byte*)data.c_str(), data.length());
 
 		CryptoPP::HexEncoder encoder;
 		std::string output;
@@ -276,6 +295,7 @@ namespace tp {
 	}
 	
 	boost::filesystem::path GetAppDir(){
+		#ifdef _WIN32
 		LPWSTR path = NULL;
 		HRESULT hr = SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &path);
 		if (!SUCCEEDED(hr)) {
@@ -287,6 +307,9 @@ namespace tp {
 		if (!boost::filesystem::exists(tiny_dir))
 			boost::filesystem::create_directory(tiny_dir);
 		return tiny_dir;
+		#else
+		return GetLogDir();
+		#endif
 	}
 
 	tm* now() {
@@ -346,9 +369,11 @@ namespace tp {
 	}
 
 	char* getMACAddress() {
+		char *mac_addr = (char*)malloc(18);
+
+		#ifdef _WIN32
 		PIP_ADAPTER_INFO AdapterInfo;
 		DWORD dwBufLen = sizeof(IP_ADAPTER_INFO);
-		char *mac_addr = (char*)malloc(18);
 
 		AdapterInfo = (IP_ADAPTER_INFO *)malloc(sizeof(IP_ADAPTER_INFO));
 		if (AdapterInfo == NULL) {
@@ -387,11 +412,14 @@ namespace tp {
 			} while (pAdapterInfo);
 		}
 		free(AdapterInfo);
+		#endif
 		return mac_addr; // caller must free.
 	}
 
 
+	#ifdef _WIN32
 	std::string win32_utf16_to_utf8(const wchar_t* wstr) {
+
 		std::string res;
 		// If the 6th parameter is 0 then WideCharToMultiByte returns the number of bytes needed to store the result.
 		int actualSize = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, nullptr, 0, nullptr, nullptr);
@@ -408,4 +436,5 @@ namespace tp {
 		}
 		return res;
 	}
+	#endif
 }

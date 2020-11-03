@@ -14,8 +14,7 @@
 #include "json.h"
 
 #include <map> 
-#include <boost/foreach.hpp>
-#include <boost/algorithm/string.hpp>
+
 
 namespace tp {
 

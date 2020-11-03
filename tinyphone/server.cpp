@@ -18,6 +18,7 @@
 #include <algorithm>
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "portaudio.h"
+#include <boost/foreach.hpp>
 
 using namespace std;
 using namespace pj;
@@ -144,11 +145,13 @@ void TinyPhoneHttpServer::Start() {
 					{ "inputCount" ,  info->inputCount },
 					{ "outputCount" ,  info->outputCount },
 				};
+				#ifdef _WIN32
 				if (std::string("PA").compare(info->driver) == 0) {
 					const PaDeviceInfo *deviceInfo = Pa_GetDeviceInfo(dev_idx);
 					const PaHostApiInfo *hostApiInfo = Pa_GetHostApiInfo(deviceInfo->hostApi);
 					dev_info["pa-api"] = hostApiInfo->name;
 				}
+				#endif
 				response["devices"].push_back(dev_info);
 				dev_idx++;
 			}
@@ -618,7 +621,8 @@ void TinyPhoneHttpServer::Start() {
 			} else {
 				std::string dt = string(date) + " 00:00:00";
 				ptime t(time_from_string(dt));
-				pt_tm = &to_tm(t);
+                auto tm = to_tm(t);
+                pt_tm = &tm;
 				mtar_write_file(&tar, LogFileName(SIP_LOG_FILE, "log", pt_tm), GetLogFile(SIP_LOG_FILE, "log", pt_tm));
 				mtar_write_file(&tar, LogFileName(HTTP_LOG_FILE, "log", pt_tm), GetLogFile(HTTP_LOG_FILE, "log", pt_tm));
 			}
@@ -675,6 +679,7 @@ void TinyPhoneHttpServer::Start() {
 		return tp::response(200, response);
 	});
 
+    #ifdef _WIN32
 	if (is_tcp_port_in_use(http_port)) {
 		const int result = MessageBoxW(NULL, L"Failed to Start! Tinyphone is already running.\n\nDo you want to quit the other instance ?", L"Tinyphone Error",  MB_YESNO);
 		switch (result)
@@ -693,6 +698,7 @@ void TinyPhoneHttpServer::Start() {
 			break;
 		}
 	}
+    #endif
 
 	if (is_tcp_port_in_use(http_port)) {
 		tp::DisplayError("Failed to Bind Port!\n\nPlease ensure port " + std::to_string(http_port) + " is not used by any other application.", OPS::SYNC);

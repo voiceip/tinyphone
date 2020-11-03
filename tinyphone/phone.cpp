@@ -5,6 +5,8 @@
 #include "json.h"
 #include "config.h"
 #include <iomanip>
+#include <boost/foreach.hpp>
+#include <boost/algorithm/string.hpp>
 
 using json = nlohmann::json;
 
@@ -17,7 +19,11 @@ namespace tp {
 
 	void TinyPhone::SetCodecs() {
 		pjsua_codec_info codec[32];
+        #ifdef _WIN32
 		ZeroMemory(codec, sizeof(codec));
+        #else
+        memset(&codec, 0, sizeof(codec));
+        #endif
 		unsigned uCount = 32;
 		if (pjsua_enum_codecs(codec, &uCount) == PJ_SUCCESS) {
 			for (unsigned i = 0; i<uCount; ++i) {
@@ -296,6 +302,7 @@ namespace tp {
 	std::future<int> TinyPhone::AddAccount(AccountConfig& config) throw (std::exception) {
 		string account_name = SIP_ACCOUNT_NAME(config.username, config.domain);
 		tp::MetricsClient.increment("login");
+        std::future<int> res;
 		synchronized(add_acc_mutex){
 			auto exits = AccountByName(account_name);
 			if (exits != nullptr) {
@@ -333,14 +340,13 @@ namespace tp {
 
 				SIPAccount *acc(new SIPAccount(this, account_name, eventStream, config));
 				acc->domain = config.domain;
-				auto res = acc->Create(acc_cfg);
+				res = acc->Create(acc_cfg);
 
 				accounts.insert(std::pair<string, SIPAccount*>(account_name, acc));
-
 				SaveAccounts();
-				return res;
 			}
 		}
+        return res;
 	}
 
 	void TinyPhone::InitMetricsClient() {
