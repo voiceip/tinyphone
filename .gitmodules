@@ -31,3 +31,6 @@
 [submodule "lib/statsd-cpp"]
 	path = lib/statsd-cpp
 	url = git@github.com:voiceip/statsd-cpp.git
+[submodule "tinyphone-osx/vendor/boost"]
+	path = tinyphone-osx/vendor/boost
+	url = git@github.com:faithfracture/Apple-Boost-BuildScript.git

@@ -50,6 +50,8 @@ namespace tp {
 
 	void InitConfig() {
 
+		std::cout << "Config Load From Primary : " << REMOTE_CONFIG_URL << std::endl;
+
 		tp::HttpResponse remoteConfig = http_get(REMOTE_CONFIG_URL);
 		std::string jsonConfig;
 		std::string message;
@@ -113,24 +115,31 @@ namespace tp {
 		}
 #endif // ALLOW_OFFLINE_CONFIG
 
-        #ifdef _WIN32
+		#ifdef _WIN32
 		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		#endif
 		try {
 			auto j = nlohmann::json::parse(jsonConfig);
 			ApplicationConfig = j.get<tp::appConfig>();
 
 			nlohmann::json k = ApplicationConfig;
 
+			#ifdef _WIN32
 			SetConsoleTextAttribute(hConsole, FOREGROUND_YELLOW);
+			#endif
 			std::cout << "======= Application Config ======" << std::endl << k.dump(4) << std::endl;
 		}
 		catch (...) {
+			 #ifdef _WIN32
 			SetConsoleTextAttribute(hConsole, FOREGROUND_YELLOW);
+			#endif
 			std::cout << "======= Remote Config ======" << std::endl << jsonConfig << std::endl;
 
 			tp::DisplayError("Failed Parsing Config! Please contact support.", OPS::SYNC);
 			exit(1);
 		}
+		
+		#ifdef _WIN32
 		SetConsoleTextAttribute(hConsole, FOREGROUND_WHITE);
 		#endif
 	}

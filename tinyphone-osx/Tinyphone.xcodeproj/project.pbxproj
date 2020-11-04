@@ -3,12 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		B327CAF32551784A0092FDB7 /* call.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B327CAD2255178480092FDB7 /* call.cpp */; };
-		B327CAF42551784A0092FDB7 /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B327CAD5255178480092FDB7 /* stdafx.cpp */; };
 		B327CAF52551784A0092FDB7 /* microtar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B327CAD8255178480092FDB7 /* microtar.cpp */; };
 		B327CAF62551784A0092FDB7 /* resource.rc in Resources */ = {isa = PBXBuildFile; fileRef = B327CADA255178480092FDB7 /* resource.rc */; };
 		B327CAF82551784A0092FDB7 /* account.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B327CADE255178490092FDB7 /* account.cpp */; };
@@ -58,6 +57,7 @@
 		B327CB542551A2FD0092FDB7 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB532551A2FD0092FDB7 /* AudioToolbox.framework */; };
 		B33839072551C692000D6F04 /* libopus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B33839062551C692000D6F04 /* libopus.a */; };
 		B33839092551D3EF000D6F04 /* osxapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B33839082551D3EF000D6F04 /* osxapp.cpp */; };
+		B3B8EE182552A26D00B903D1 /* boost.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3B8EE172552A26D00B903D1 /* boost.xcframework */; };
 		B3D53FC92551696600523D5F /* DateTimeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3D53FC82551696600523D5F /* DateTimeView.xib */; };
 		B3D53FCC255169CF00523D5F /* DateTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D53FCB255169CF00523D5F /* DateTimeView.swift */; };
 		B3D53FCE25516A4200523D5F /* LoadableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D53FCD25516A4200523D5F /* LoadableView.swift */; };
@@ -86,7 +86,6 @@
 		B327CAD1255178480092FDB7 /* phone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = phone.h; path = ../../tinyphone/phone.h; sourceTree = "<group>"; };
 		B327CAD2255178480092FDB7 /* call.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = call.cpp; path = ../../tinyphone/call.cpp; sourceTree = "<group>"; };
 		B327CAD4255178480092FDB7 /* account.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = account.h; path = ../../tinyphone/account.h; sourceTree = "<group>"; };
-		B327CAD5255178480092FDB7 /* stdafx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = stdafx.cpp; path = ../../tinyphone/stdafx.cpp; sourceTree = "<group>"; };
 		B327CAD6255178480092FDB7 /* consts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = consts.h; path = ../../tinyphone/consts.h; sourceTree = "<group>"; };
 		B327CAD7255178480092FDB7 /* events.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = events.h; path = ../../tinyphone/events.h; sourceTree = "<group>"; };
 		B327CAD8255178480092FDB7 /* microtar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = microtar.cpp; path = ../../tinyphone/microtar.cpp; sourceTree = "<group>"; };
@@ -152,6 +151,8 @@
 		B327CB532551A2FD0092FDB7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		B33839062551C692000D6F04 /* libopus.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopus.a; path = ../lib/opus/libopus.a; sourceTree = "<group>"; };
 		B33839082551D3EF000D6F04 /* osxapp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = osxapp.cpp; sourceTree = "<group>"; };
+		B3B8EE172552A26D00B903D1 /* boost.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = boost.xcframework; path = vendor/boost/dist/boost.xcframework; sourceTree = "<group>"; };
+		B3B8EE192552A6D400B903D1 /* app.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = app.h; sourceTree = "<group>"; };
 		B3D53FC82551696600523D5F /* DateTimeView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DateTimeView.xib; sourceTree = "<group>"; };
 		B3D53FCB255169CF00523D5F /* DateTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimeView.swift; sourceTree = "<group>"; };
 		B3D53FCD25516A4200523D5F /* LoadableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadableView.swift; sourceTree = "<group>"; };
@@ -169,7 +170,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B33839072551C692000D6F04 /* libopus.a in Frameworks */,
+				B3B8EE182552A26D00B903D1 /* boost.xcframework in Frameworks */,
 				B327CB542551A2FD0092FDB7 /* AudioToolbox.framework in Frameworks */,
 				B327CB522551A2F40092FDB7 /* AudioUnit.framework in Frameworks */,
 				B327CB502551A2940092FDB7 /* CoreAudio.framework in Frameworks */,
@@ -200,7 +201,6 @@
 				B327CB202551A05E0092FDB7 /* libpjlib-util-x86_64-apple-darwin18.7.0.a in Frameworks */,
 				B327CB1C2551A0530092FDB7 /* libpjmedia-videodev-x86_64-apple-darwin18.7.0.a in Frameworks */,
 				B327CB142551A0410092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a in Frameworks */,
-				B327CB032551973A0092FDB7 /* libstatsd_static.a in Frameworks */,
 				B327CB0E2551A0130092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a in Frameworks */,
 				B327CB102551A0410092FDB7 /* libpjsip-simple-x86_64-apple-darwin18.7.0.a in Frameworks */,
 				B327CB1E2551A0530092FDB7 /* libpjsdp-x86_64-apple-darwin18.7.0.a in Frameworks */,
@@ -208,6 +208,8 @@
 				B327CB0F2551A0350092FDB7 /* libpj-x86_64-apple-darwin18.7.0.a in Frameworks */,
 				B327CB132551A0410092FDB7 /* libpjsua-x86_64-apple-darwin18.7.0.a in Frameworks */,
 				B327CB1D2551A0530092FDB7 /* libpjmedia-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B33839072551C692000D6F04 /* libopus.a in Frameworks */,
+				B327CB032551973A0092FDB7 /* libstatsd_static.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,6 +226,7 @@
 		B327CACF255178050092FDB7 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				B3B8EE192552A6D400B903D1 /* app.h */,
 				B327CADE255178490092FDB7 /* account.cpp */,
 				B327CAD4255178480092FDB7 /* account.h */,
 				B327CAD2255178480092FDB7 /* call.cpp */,
@@ -248,7 +251,6 @@
 				B327CADA255178480092FDB7 /* resource.rc */,
 				B327CAEC2551784A0092FDB7 /* server.cpp */,
 				B327CAE8255178490092FDB7 /* server.h */,
-				B327CAD5255178480092FDB7 /* stdafx.cpp */,
 				B327CADD255178490092FDB7 /* stdafx.h */,
 				B327CAEE2551784A0092FDB7 /* utils.cpp */,
 				B327CAE5255178490092FDB7 /* utils.h */,
@@ -261,6 +263,7 @@
 		B327CB00255195BC0092FDB7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B3B8EE172552A26D00B903D1 /* boost.xcframework */,
 				B33839062551C692000D6F04 /* libopus.a */,
 				B327CB532551A2FD0092FDB7 /* AudioToolbox.framework */,
 				B327CB512551A2F40092FDB7 /* AudioUnit.framework */,
@@ -429,7 +432,6 @@
 				B327CAFE2551784A0092FDB7 /* utils.cpp in Sources */,
 				B327CAFC2551784A0092FDB7 /* server.cpp in Sources */,
 				B327CAF82551784A0092FDB7 /* account.cpp in Sources */,
-				B327CAF42551784A0092FDB7 /* stdafx.cpp in Sources */,
 				B33839092551D3EF000D6F04 /* osxapp.cpp in Sources */,
 				B327CAF52551784A0092FDB7 /* microtar.cpp in Sources */,
 				B327CAF32551784A0092FDB7 /* call.cpp in Sources */,
@@ -610,6 +612,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = tinyphone/tinyphone.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -617,25 +620,30 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 2AZ6WZ7EP3;
 				GCC_NO_COMMON_BLOCKS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = tinyphone/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib,
+					"/Volumes/Workspace/code/voice/tinyphone/lib/statsd-cpp/build-osx/lib",
+					/Volumes/Workspace/code/voice/tinyphone/lib/pjproject/lib,
+				);
 				MARKETING_VERSION = 1.0.0;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
-					"-DBOOST_ERROR_CODE_HEADER_ONLY",
+					"-DBOOST_SYSTEM_DYN_LINK",
 				);
 				OTHER_LDFLAGS = (
 					"-lcryptopp",
 					"-lcurl",
-					"-L/Volumes/Workspace/code/voice/tinyphone/lib/statsd-cpp/build-osx/lib",
-					"-L/Volumes/Workspace/code/voice/tinyphone/lib/pjproject/lib",
-					"-lboost_system",
-					"-lboost_filesystem",
-					"-lboost_date_time",
 					"-lpthread",
+					"-lboost_filesystem",
+					"-lboost_system",
+					"-lboost_date_time",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.voiceip.tinyphone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -649,6 +657,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = tinyphone/tinyphone.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -661,20 +670,24 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib,
+					"/Volumes/Workspace/code/voice/tinyphone/lib/statsd-cpp/build-osx/lib",
+					/Volumes/Workspace/code/voice/tinyphone/lib/pjproject/lib,
+				);
 				MARKETING_VERSION = 1.0.0;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
-					"-DBOOST_ERROR_CODE_HEADER_ONLY",
+					"-DBOOST_SYSTEM_DYN_LINK",
 				);
 				OTHER_LDFLAGS = (
 					"-lcryptopp",
 					"-lcurl",
-					"-L/Volumes/Workspace/code/voice/tinyphone/lib/statsd-cpp/build-osx/lib",
-					"-L/Volumes/Workspace/code/voice/tinyphone/lib/pjproject/lib",
-					"-lboost_system",
-					"-lboost_filesystem",
-					"-lboost_date_time",
 					"-lpthread",
+					"-lboost_filesystem",
+					"-lboost_system",
+					"-lboost_date_time",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.voiceip.tinyphone;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -20,7 +20,7 @@ namespace tp {
 	void TinyPhone::SetCodecs() {
 		pjsua_codec_info codec[32];
         #ifdef _WIN32
-		ZeroMemory(codec, sizeof(codec));
+        ZeroMemory(codec, sizeof(codec));
         #else
         memset(&codec, 0, sizeof(codec));
         #endif

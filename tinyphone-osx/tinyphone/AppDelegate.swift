@@ -42,7 +42,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
         
-        
+        let dispatchQueue = DispatchQueue(label: "HTTPServerQueue", qos: .background)
+        dispatchQueue.async{
+            Start()
+        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
