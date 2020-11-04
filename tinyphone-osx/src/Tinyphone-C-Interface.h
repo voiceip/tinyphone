@@ -13,5 +13,6 @@
 // to invoke a specific Objective-C method FROM C++
 void ShowOSXAlert (const char *message);
 
+const char* GetAppSupportDirectory();
 
 #endif /* Tinyphone_C_Interface_h */

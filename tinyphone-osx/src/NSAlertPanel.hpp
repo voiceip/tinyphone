@@ -16,6 +16,9 @@
 
 // The Objective-C member function you want to call from C++
 - (void) ShowAlert:(NSString *) message;
+
+- (const char *) GetAppSupportDirectory;
+
 @end
 
  

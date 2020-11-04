@@ -9,6 +9,19 @@
 #include <strsafe.h>
 #endif
 
+#ifndef _WIN32
+#include <sys/ioctl.h>
+#include <net/if.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#endif
+
+#ifdef __APPLE__
+#define SIOCGIFHWADDR SIOCGIFCONF
+#define ifr_hwaddr ifr_addr
+#include "Tinyphone-C-Interface.h"
+#endif
+
 #include <cryptopp/sha3.h>
 #include <cryptopp/hex.h>
 #include <cryptopp/filters.h>
@@ -19,6 +32,10 @@
 #include <boost/format.hpp>
 #include <boost/filesystem.hpp>
 
+#ifdef __APPLE__
+#define _T(x) x
+#endif
+
 using namespace std;
 
 #pragma warning( disable : 4995 )
@@ -28,23 +45,18 @@ void print_thread_name()
 {
 	thread::id this_id = this_thread::get_id();
 	cout << "Thread id: #" << this_id << endl;
-}	
-
-#ifndef _WIN32
-#define _T(x) x
-#endif
+}
 
 namespace tp {
 
-
+	#ifdef _WIN32
 	void ShowWinAlert(std::string title, std::string message) {
-		#ifdef _WIN32
 		wchar_t *wmsg = new wchar_t[message.length() + 1]; //memory allocation
 		mbstowcs(wmsg, message.c_str(), message.length() + 1);
 		MessageBoxW(NULL, wmsg, L"Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 		delete[]wmsg;
-		#endif
 	}
+	#endif
 
 	void DisplayError(std::string message, OPS mode) {
 		#ifdef _WIN32
@@ -91,6 +103,8 @@ namespace tp {
 		else {
 			ShowWinAlert("Error", message);
 		}
+		#elif __APPLE__
+        ShowOSXAlert(message.c_str());
 		#endif
 	}
 
@@ -306,8 +320,10 @@ namespace tp {
 		if (!boost::filesystem::exists(tiny_dir))
 			boost::filesystem::create_directory(tiny_dir);
 		return tiny_dir;
-		#else
-		return GetLogDir();
+		#elif __APPLE__
+		auto path = GetAppSupportDirectory();
+		boost::filesystem::path appDir(path);
+		return appDir;
 		#endif
 	}
 
@@ -411,6 +427,50 @@ namespace tp {
 			} while (pAdapterInfo);
 		}
 		free(AdapterInfo);
+		#else 
+
+		struct ifreq ifr;
+		struct ifconf ifc;
+		char buf[1024];
+		int success = 0;
+
+		int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_IP);
+		if (sock == -1) { 
+			printf("Error call to socket\n");
+			free(mac_addr);
+			return NULL; // it is safe to call free(NULL)
+		};
+
+		ifc.ifc_len = sizeof(buf);
+		ifc.ifc_buf = buf;
+		if (ioctl(sock, SIOCGIFCONF, &ifc) == -1) { /* handle error */ }
+
+		struct ifreq* it = ifc.ifc_req;
+		const struct ifreq* const end = it + (ifc.ifc_len / sizeof(struct ifreq));
+
+		for (; it != end; ++it) {
+		    strcpy(ifr.ifr_name, it->ifr_name);
+		    if (ioctl(sock, SIOCGIFFLAGS, &ifr) == 0) {
+		        if (! (ifr.ifr_flags & IFF_LOOPBACK)) { // don't count loopback
+		            if (ioctl(sock, SIOCGIFHWADDR, &ifr) == 0) {
+		                success = 1;
+		                break;
+		            }
+		        }
+		    }
+		    else { /* handle error */ }
+		}
+
+		if(success){
+		    unsigned char mac_address[6];
+		    memcpy(mac_address, ifr.ifr_hwaddr.sa_data, 6);
+			sprintf(mac_addr, "%02X:%02X:%02X:%02X:%02X:%02X",
+							mac_address[0], mac_address[1],
+							mac_address[2], mac_address[3],
+							mac_address[4], mac_address[5]);
+			printf("Mac: %s\n",  mac_addr);
+		}
+
 		#endif
 		return mac_addr; // caller must free.
 	}
