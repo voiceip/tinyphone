@@ -135,8 +135,6 @@ namespace tp {
 
 	tm* now();
 
-	char* getMACAddress();
-
 	#ifdef _WIN32
 	std::string win32_utf16_to_utf8(const wchar_t* wstr);
 	#endif

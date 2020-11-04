@@ -99,9 +99,6 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
 	TinyPhoneHttpServer server(&ep, tp::httpLogFile);
 	tp::tpHttpServer = &server;
 	
-
-	CROW_LOG_INFO << "System Mac Address: " << getMACAddress();
-
 	//Run the server in non-ui thread.
 	std::thread thread_object([&server]() {
 		server.Start();

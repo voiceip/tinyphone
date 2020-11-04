@@ -162,8 +162,7 @@ void InitPJSUAEndpoint(std::string logfile) {
 
 void Start(){
     
-    CROW_LOG_INFO << "Starting App: ";
-    CROW_LOG_INFO << "System Mac Address: " << getMACAddress();
+    CROW_LOG_INFO << "Starting Tinyphone....";
 
     InitConfig();
 
