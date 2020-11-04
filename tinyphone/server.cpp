@@ -54,9 +54,9 @@ void TinyPhoneHttpServer::Start() {
 
 	phone.ConfigureAudioDevices();
 	phone.InitMetricsClient();
-	phone.RestoreAccounts();
 	
 	phone.CreateEventStream(&updates);
+	phone.RestoreAccounts();
 
 	crow::App<TinyPhoneMiddleware> app;
 	std::mutex mtx;;
