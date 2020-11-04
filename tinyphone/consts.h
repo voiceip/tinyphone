@@ -11,7 +11,12 @@
 
 #define UNUSED_ARG(arg)  (void)arg
 
+#ifdef _WIN32
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
+#else
+#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+#endif
+
 #define STRING_REMOVE_CHAR(str, ch) str.erase(std::remove(str.begin(), str.end(), ch), str.end())
 
 #define REMOTE_CONFIG_URL "http://fkrt.it/tpconf"

@@ -29,14 +29,15 @@
     NSFileManager *manager = [NSFileManager defaultManager];
     NSURL *applicationSupport = [manager URLForDirectory:NSApplicationSupportDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:false error:&error];
     NSString *identifier = [[NSBundle mainBundle] bundleIdentifier];
+    // NSString *identifier = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"];
     NSURL *folder = [applicationSupport URLByAppendingPathComponent:identifier];
     [manager createDirectoryAtURL:folder withIntermediateDirectories:true attributes:nil error:&error];
-	NSString *myString = folder.path;
+    NSString *myString = folder.path;
     return myString.UTF8String;
 }
 
 - (const char *) GetProductVersion {
-   NSDictionary* infoDict = [[NSBundle mainBundle] infoDictionary];
+    NSDictionary* infoDict = [[NSBundle mainBundle] infoDictionary];
     NSString* version = [infoDict objectForKey:@"CFBundleShortVersionString"];
     return version.UTF8String;
 }
