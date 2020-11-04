@@ -7,8 +7,12 @@
 //
 
 #include <stdio.h>
-
 #include <ctime>
+#include <algorithm>
+#include <arpa/inet.h>
+#include <ifaddrs.h>
+#include <resolv.h>
+#include <dns.h>
 
 #include "server.h"
 #include "utils.h"
@@ -18,7 +22,6 @@
 #include "log.h"
 #include "app.h"
 
-#include <algorithm>
 
 using namespace std;
 using namespace pj;
@@ -32,6 +35,41 @@ namespace tp {
 }
 
 pj::Endpoint ep;
+
+inline void  pj_logerror(pj_status_t status, char * message) {
+	if (status != PJ_SUCCESS) {
+		CROW_LOG_ERROR << "pjsua returned error : " << status;
+	}
+}
+
+std::vector<std::string> GetLocalDNSServers() {
+	std::vector <std::string> dnsServers;
+
+
+    // Get native iOS System Resolvers
+    // res_state *res = malloc(sizeof(res_state));
+    res_ninit(&_res);
+    res_state res = &_res;
+
+    for (int i = 0; i < res->nscount; i++) {
+        sa_family_t family = res->nsaddr_list[i].sin_family;
+        int port = ntohs(res->nsaddr_list[i].sin_port);
+        if (family == AF_INET) { // IPV4 address
+            char str[INET_ADDRSTRLEN]; // String representation of address
+            inet_ntop(AF_INET, & (res->nsaddr_list[i].sin_addr.s_addr), str, INET_ADDRSTRLEN);
+            // std::cout << "DNS: " << str << std::endl ;
+            dnsServers.push_back(str);
+
+        } else if (family == AF_INET6) { // IPV6 address
+            char str[INET6_ADDRSTRLEN]; // String representation of address
+            inet_ntop(AF_INET6, &(res->nsaddr_list [i].sin_addr.s_addr), str, INET6_ADDRSTRLEN);
+        }
+    }
+    res_ndestroy(res);
+
+	 
+	return dnsServers;
+}
 
 void InitPJSUAEndpoint(std::string logfile) {
     /* Create endpoint instance! */
@@ -98,18 +136,18 @@ void InitPJSUAEndpoint(std::string logfile) {
 
         // Configure the DNS resolvers to also handle SRV records
         pjsip_endpoint *endpt = pjsua_get_pjsip_endpt();
-//        std::vector<std::string> dnsServers = GetLocalDNSServers();
-//        pj_dns_resolver* resolver;
-//        pj_logerror(pjsip_endpt_create_resolver(endpt, &resolver),"pjsip_endpt_create_resolver");
+       std::vector<std::string> dnsServers = GetLocalDNSServers();
+       pj_dns_resolver* resolver;
+       pj_logerror(pjsip_endpt_create_resolver(endpt, &resolver),"pjsip_endpt_create_resolver");
 //        
-//        struct pj_str_t servers[4];
-//        for (unsigned int i = 0; i < dnsServers.size() ; ++i) {
-//            pj_cstr(&servers[i], dnsServers.at(i).c_str());
-//        }
+       struct pj_str_t servers[4];
+       for (unsigned int i = 0; i < dnsServers.size() ; ++i) {
+           pj_cstr(&servers[i], dnsServers.at(i).c_str());
+       }
 
-//        pj_dns_resolver_set_ns(resolver, dnsServers.size(), servers, NULL);
-//        pjsip_endpt_set_resolver(endpt, resolver);
-//        CROW_LOG_INFO << "PJSUA2 Set DNS Resolvers Done... : " << dnsServers.size();
+       pj_dns_resolver_set_ns(resolver, dnsServers.size(), servers, NULL);
+       pjsip_endpt_set_resolver(endpt, resolver);
+       CROW_LOG_INFO << "PJSUA2 Set DNS Resolvers Done... : " << dnsServers.size();
 
     }
     catch (Error & err) {
@@ -133,7 +171,8 @@ void InitPJSUAEndpoint(std::string logfile) {
 void Start(){
     
     CROW_LOG_INFO << "Starting App: ";
-    
+    CROW_LOG_INFO << "System Mac Address: " << getMACAddress();
+
     InitConfig();
 
     tp::launchDate = now();

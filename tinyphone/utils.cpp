@@ -32,7 +32,6 @@ void print_thread_name()
 
 #ifndef _WIN32
 #define _T(x) x
-
 #endif
 
 namespace tp {
