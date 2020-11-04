@@ -104,7 +104,8 @@ namespace tp {
 			ShowWinAlert("Error", message);
 		}
 		#elif __APPLE__
-        ShowOSXAlert(message.c_str());
+		bool block = mode == OPS::ASYNC? false : true;
+		ShowOSXAlert(message.c_str(),block);
 		#endif
 	}
 
@@ -278,7 +279,12 @@ namespace tp {
 			HIWORD(pFixedInfo->dwProductVersionMS),LOWORD(pFixedInfo->dwProductVersionMS),
 			HIWORD(pFixedInfo->dwProductVersionLS),LOWORD(pFixedInfo->dwProductVersionLS));
 		version = appVersion;
+		#elif __APPLE__
+		auto ver = GetOSXProductVersion();
+		if(ver != nullptr)
+			version = string(ver);
 		#endif
+
 		return true;
 	}
 

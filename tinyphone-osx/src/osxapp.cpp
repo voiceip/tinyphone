@@ -22,7 +22,6 @@
 #include "log.h"
 #include "app.h"
 
-
 using namespace std;
 using namespace pj;
 using namespace tp;
@@ -37,13 +36,13 @@ namespace tp {
 pj::Endpoint ep;
 
 inline void  pj_logerror(pj_status_t status, char * message) {
-	if (status != PJ_SUCCESS) {
-		CROW_LOG_ERROR << "pjsua returned error : " << status;
-	}
+    if (status != PJ_SUCCESS) {
+        CROW_LOG_ERROR << "pjsua returned error : " << status;
+    }
 }
 
 std::vector<std::string> GetLocalDNSServers() {
-	std::vector <std::string> dnsServers;
+    std::vector <std::string> dnsServers;
     // Get native iOS System Resolvers
     res_ninit(&_res);
     res_state res = &_res;
@@ -63,7 +62,7 @@ std::vector<std::string> GetLocalDNSServers() {
         }
     }
     res_ndestroy(res);
-	return dnsServers;
+    return dnsServers;
 }
 
 void InitPJSUAEndpoint(std::string logfile) {
@@ -131,19 +130,18 @@ void InitPJSUAEndpoint(std::string logfile) {
 
         // Configure the DNS resolvers to also handle SRV records
         pjsip_endpoint *endpt = pjsua_get_pjsip_endpt();
-       std::vector<std::string> dnsServers = GetLocalDNSServers();
-       pj_dns_resolver* resolver;
-       pj_logerror(pjsip_endpt_create_resolver(endpt, &resolver),"pjsip_endpt_create_resolver");
+        std::vector<std::string> dnsServers = GetLocalDNSServers();
+        pj_dns_resolver* resolver;
+        pj_logerror(pjsip_endpt_create_resolver(endpt, &resolver),"pjsip_endpt_create_resolver");
 
-       struct pj_str_t servers[4];
-       for (unsigned int i = 0; i < dnsServers.size() ; ++i) {
+        struct pj_str_t servers[4];
+        for (unsigned int i = 0; i < dnsServers.size() ; ++i) {
            pj_cstr(&servers[i], dnsServers.at(i).c_str());
-       }
+        }
 
-       pj_dns_resolver_set_ns(resolver, dnsServers.size(), servers, NULL);
-       pjsip_endpt_set_resolver(endpt, resolver);
-       CROW_LOG_INFO << "PJSUA2 Set DNS Resolvers Done... : " << dnsServers.size();
-
+        pj_dns_resolver_set_ns(resolver, dnsServers.size(), servers, NULL);
+        pjsip_endpt_set_resolver(endpt, resolver);
+        CROW_LOG_INFO << "PJSUA2 Set DNS Resolvers Done... : " << dnsServers.size();
     }
     catch (Error & err) {
         CROW_LOG_ERROR << "Exception: " << err.info();
@@ -159,7 +157,6 @@ void InitPJSUAEndpoint(std::string logfile) {
         CROW_LOG_ERROR << "Exception: " << err.info() ;
         exit(1);
     }
-
 }
 
 

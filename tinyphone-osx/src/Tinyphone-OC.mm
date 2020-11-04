@@ -15,7 +15,7 @@
 
 @implementation TinyphoneOC
 
-- (void)ShowAlert: (NSString *) dataPayload {
+- (void)ShowAlert: (NSString *) dataPayload  {
     NSAlert *alert = [[NSAlert alloc] init];
     [alert setMessageText: @"Error"];
     [alert addButtonWithTitle:@"OK"];
@@ -35,17 +35,28 @@
     return myString.UTF8String;
 }
 
+- (const char *) GetProductVersion {
+   NSDictionary* infoDict = [[NSBundle mainBundle] infoDictionary];
+    NSString* version = [infoDict objectForKey:@"CFBundleShortVersionString"];
+    return version.UTF8String;
+}
+
 @end
 
-void ShowOSXAlert(const char *dataPayload) {
+void ShowOSXAlert(const char *dataPayload, bool blocking) {
     NSString *convertedString = [[NSString alloc] initWithCString: dataPayload encoding:NSUTF8StringEncoding];
     TinyphoneOC *myInstance = [[TinyphoneOC alloc] init];
     // [myInstance ShowAlert: convertedString];
-    [myInstance performSelectorOnMainThread:@selector(ShowAlert:) withObject:convertedString waitUntilDone:NO];
+    [myInstance performSelectorOnMainThread:@selector(ShowAlert:) withObject:convertedString waitUntilDone: blocking ? YES : NO];
 }
 
 
 const char* GetAppSupportDirectory(){
     TinyphoneOC *myInstance = [[TinyphoneOC alloc] init];
     return [myInstance GetAppSupportDirectory];
+}
+
+const char* GetOSXProductVersion(){
+    TinyphoneOC *myInstance = [[TinyphoneOC alloc] init];
+    return [myInstance GetProductVersion];
 }

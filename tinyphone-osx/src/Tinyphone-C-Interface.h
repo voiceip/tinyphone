@@ -11,8 +11,10 @@
 
 // This is the C "ShowOSXAlert" function that will be used
 // to invoke a specific Objective-C method FROM C++
-void ShowOSXAlert (const char *message);
+void ShowOSXAlert (const char *message, bool blocking);
 
 const char* GetAppSupportDirectory();
+
+const char* GetOSXProductVersion();
 
 #endif /* Tinyphone_C_Interface_h */
