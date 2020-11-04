@@ -44,10 +44,7 @@ inline void  pj_logerror(pj_status_t status, char * message) {
 
 std::vector<std::string> GetLocalDNSServers() {
 	std::vector <std::string> dnsServers;
-
-
     // Get native iOS System Resolvers
-    // res_state *res = malloc(sizeof(res_state));
     res_ninit(&_res);
     res_state res = &_res;
 
@@ -66,8 +63,6 @@ std::vector<std::string> GetLocalDNSServers() {
         }
     }
     res_ndestroy(res);
-
-	 
 	return dnsServers;
 }
 
@@ -139,7 +134,7 @@ void InitPJSUAEndpoint(std::string logfile) {
        std::vector<std::string> dnsServers = GetLocalDNSServers();
        pj_dns_resolver* resolver;
        pj_logerror(pjsip_endpt_create_resolver(endpt, &resolver),"pjsip_endpt_create_resolver");
-//        
+
        struct pj_str_t servers[4];
        for (unsigned int i = 0; i < dnsServers.size() ; ++i) {
            pj_cstr(&servers[i], dnsServers.at(i).c_str());

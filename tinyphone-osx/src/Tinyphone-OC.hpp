@@ -9,7 +9,7 @@
 #include <string>
  
 //// An Objective-C class that needs to be accessed from C++
-@interface TPAlert : NSObject
+@interface TinyphoneOC : NSObject
 {
    
 }
