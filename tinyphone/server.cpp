@@ -238,8 +238,8 @@ void TinyPhoneHttpServer::Start() {
 		}
 		catch (pj::Error& e) {
 			tp::MetricsClient.increment("api.login.error.pjsua_error");
-			CROW_LOG_ERROR << "Exception catched : " << e.reason;
-			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
+            CROW_LOG_ERROR << "Exception catched : " << e.reason;
+            return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
 		}
 		catch (std::domain_error& e) {
 			tp::MetricsClient.increment("api.login.error.device_error");
@@ -251,7 +251,9 @@ void TinyPhoneHttpServer::Start() {
 				{ "message", response_msg },
 				{ "result", 503 }
 			});
-		}
+        } catch (...){
+            return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
+        }
 	});
 
 	CROW_ROUTE(app, "/accounts")

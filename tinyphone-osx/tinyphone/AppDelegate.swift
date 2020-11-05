@@ -15,11 +15,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem?
     
     @IBOutlet weak var menu: NSMenu?
+    //@IBOutlet weak var statusMenuItem: NSMenuItem?
+
     
     //implement https://www.appcoda.com/macos-status-bar-apps/
     @IBOutlet weak var firstMenuItem: NSMenuItem?
 
-    var dateTimeView: DateTimeView?
+    var accountView: AccountsView?
 
     
     override func awakeFromNib() {
@@ -35,14 +37,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         if let item = firstMenuItem {
-            dateTimeView = DateTimeView(frame: NSRect(x: 0.0, y: 0.0, width: 250.0, height: 150.0))
-            item.view = dateTimeView
+            accountView = AccountsView(frame: NSRect(x: 0.0, y: 0.0, width: 250.0, height: 70.0))
+            item.view = accountView
         }
+        
+        //let editMenuItem = NSMenuItem()
+        //editMenuItem.title = "Edit"
+        //menu?.insertItem(editMenuItem, at: 0)
     }
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
-        
         let dispatchQueue = DispatchQueue(label: "HTTPServerQueue", qos: .background)
         dispatchQueue.async{
             Start()
@@ -52,6 +57,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
+        Stop()
     }
 
 
@@ -82,11 +88,29 @@ func checkPermissions(){
 
 extension AppDelegate: NSMenuDelegate {
     func menuWillOpen(_ menu: NSMenu) {
-        dateTimeView?.startTimer()
+        accountView?.startTimer()
     }
     
     
     func menuDidClose(_ menu: NSMenu) {
-        dateTimeView?.stopTimer()
+        accountView?.stopTimer()
     }
+}
+
+
+/// Generates array form a tuple. Given tuple's elements must have homogenous type.
+///
+/// - Parameter tuple: a (homogenous) tuple
+/// - Returns: array of tuple elements
+func makeArray<Tuple, Value>(from tuple: Tuple) -> [Value] {
+    let tupleMirror = Mirror(reflecting: tuple)
+    assert(tupleMirror.displayStyle == .tuple, "Given argument is no tuple")
+    assert(tupleMirror.superclassMirror == nil, "Given tuple argument must not have a superclass (is: \(tupleMirror.superclassMirror!)")
+    assert(!tupleMirror.children.isEmpty, "Given tuple argument has no value elements")
+    func convert(child: Mirror.Child) -> Value? {
+        let valueMirror = Mirror(reflecting: child.value)
+        assert(valueMirror.subjectType == Value.self, "Given tuple argument's child type (\(valueMirror.subjectType)) does not reflect expected return value type (\(Value.self))")
+        return child.value as? Value
+    }
+    return tupleMirror.children.flatMap(convert)
 }

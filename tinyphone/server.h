@@ -78,8 +78,9 @@ class TinyPhoneHttpServer {
 public:
 	pj::Endpoint* endpoint;
 	std::string logfile;
-private:
 	tp::TinyPhone* tinyPhone;
+
+private:
 	std::atomic<bool> running;
 
 public:

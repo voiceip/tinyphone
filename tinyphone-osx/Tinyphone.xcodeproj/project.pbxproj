@@ -68,8 +68,8 @@
 		B392C7BB255412770068492F /* libopus.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B392C7BA255412770068492F /* libopus.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B39C3B442552C3CE00BBD999 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B39C3B432552C3CE00BBD999 /* libresolv.tbd */; };
 		B39C3B4B2552E1E700BBD999 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B39C3B4A2552E1E700BBD999 /* AppKit.framework */; };
-		B3D53FC92551696600523D5F /* DateTimeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3D53FC82551696600523D5F /* DateTimeView.xib */; };
-		B3D53FCC255169CF00523D5F /* DateTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D53FCB255169CF00523D5F /* DateTimeView.swift */; };
+		B3D53FC92551696600523D5F /* AccountsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3D53FC82551696600523D5F /* AccountsView.xib */; };
+		B3D53FCC255169CF00523D5F /* AccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D53FCB255169CF00523D5F /* AccountsView.swift */; };
 		B3D53FCE25516A4200523D5F /* LoadableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D53FCD25516A4200523D5F /* LoadableView.swift */; };
 		B3DDA55D25515DF700D269C9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3DDA55C25515DF700D269C9 /* AppDelegate.swift */; };
 		B3DDA55F25515DF700D269C9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3DDA55E25515DF700D269C9 /* ViewController.swift */; };
@@ -178,8 +178,8 @@
 		B39C3B562552EF1900BBD999 /* Tinyphone-C-Interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Tinyphone-C-Interface.h"; sourceTree = "<group>"; };
 		B3B8EE172552A26D00B903D1 /* boost.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = boost.xcframework; path = vendor/boost/dist/boost.xcframework; sourceTree = "<group>"; };
 		B3B8EE192552A6D400B903D1 /* app.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = app.h; sourceTree = "<group>"; };
-		B3D53FC82551696600523D5F /* DateTimeView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DateTimeView.xib; sourceTree = "<group>"; };
-		B3D53FCB255169CF00523D5F /* DateTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimeView.swift; sourceTree = "<group>"; };
+		B3D53FC82551696600523D5F /* AccountsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountsView.xib; sourceTree = "<group>"; };
+		B3D53FCB255169CF00523D5F /* AccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsView.swift; sourceTree = "<group>"; };
 		B3D53FCD25516A4200523D5F /* LoadableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadableView.swift; sourceTree = "<group>"; };
 		B3DDA55925515DF700D269C9 /* Tinyphone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tinyphone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3DDA55C25515DF700D269C9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -349,8 +349,8 @@
 		B3D53FCA2551699600523D5F /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
-				B3D53FC82551696600523D5F /* DateTimeView.xib */,
-				B3D53FCB255169CF00523D5F /* DateTimeView.swift */,
+				B3D53FC82551696600523D5F /* AccountsView.xib */,
+				B3D53FCB255169CF00523D5F /* AccountsView.swift */,
 				B3D53FCD25516A4200523D5F /* LoadableView.swift */,
 			);
 			path = "Custom Views";
@@ -456,7 +456,7 @@
 				B3DDA56125515DF900D269C9 /* Assets.xcassets in Resources */,
 				B3DDA56425515DF900D269C9 /* Main.storyboard in Resources */,
 				B327CAF62551784A0092FDB7 /* resource.rc in Resources */,
-				B3D53FC92551696600523D5F /* DateTimeView.xib in Resources */,
+				B3D53FC92551696600523D5F /* AccountsView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -489,7 +489,7 @@
 			files = (
 				B327CAFD2551784A0092FDB7 /* phone.cpp in Sources */,
 				B3D53FCE25516A4200523D5F /* LoadableView.swift in Sources */,
-				B3D53FCC255169CF00523D5F /* DateTimeView.swift in Sources */,
+				B3D53FCC255169CF00523D5F /* AccountsView.swift in Sources */,
 				B3DDA55F25515DF700D269C9 /* ViewController.swift in Sources */,
 				B327CAFE2551784A0092FDB7 /* utils.cpp in Sources */,
 				B327CAFC2551784A0092FDB7 /* server.cpp in Sources */,
@@ -681,7 +681,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 2AZ6WZ7EP3;
+				DEVELOPMENT_TEAM = 25JQ655X97;
 				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = tinyphone/Info.plist;
@@ -709,7 +709,7 @@
 					"-lboost_system",
 					"-lboost_date_time",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.voiceip.tinyphone;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.voiceip.tphone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "src/Tinyphone-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -727,7 +727,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 2AZ6WZ7EP3;
+				DEVELOPMENT_TEAM = 25JQ655X97;
 				GCC_NO_COMMON_BLOCKS = NO;
 				INFOPLIST_FILE = tinyphone/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -754,7 +754,7 @@
 					"-lboost_system",
 					"-lboost_date_time",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.voiceip.tinyphone;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.voiceip.tphone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "src/Tinyphone-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

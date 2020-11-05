@@ -13,6 +13,9 @@
 #include <ifaddrs.h>
 #include <resolv.h>
 #include <dns.h>
+#include <vector>
+
+#include <boost/foreach.hpp>
 
 #include "server.h"
 #include "utils.h"
@@ -176,5 +179,44 @@ void Start(){
     
     server.Start();
     exit(0);
-    
 }
+
+void Stop(){
+    CROW_LOG_INFO << "Stopping Tinyphone....";
+    if(tp::tpHttpServer != nullptr)
+        tp::tpHttpServer->Stop();
+}
+
+char* StringtoCharPtr(std::string str){
+    char* s = new char[str.size() + 1]{};
+    std::copy(str.begin(), str.end(), s);
+    return s;
+}
+
+struct UIAccountInfoArray Accounts(){
+    UIAccountInfoArray arrInfo;
+    arrInfo.count = 0;
+    if(tp::tpHttpServer != nullptr){
+        pj_thread_auto_register();
+        try{
+            auto tpAccounts = tp::tpHttpServer->tinyPhone->Accounts();
+            std::vector<UIAccountInfo> accounts;
+            BOOST_FOREACH(tp::SIPAccount* account, tpAccounts) {
+                UIAccountInfo acc;
+                acc.name =  StringtoCharPtr(account->Name());
+                acc.status = StringtoCharPtr(account->getInfo().regStatusText);
+                acc.primary = account->isDefault();
+                acc.active = account->getInfo().regIsActive;
+                accounts.push_back(acc);
+            }
+            arrInfo.count = accounts.size();
+            if (accounts.size() < 10 ) {
+                std::copy(accounts.begin(), accounts.end(), arrInfo.accounts);
+            }
+        } catch(...) {
+            //do nothing
+        }
+    }
+    return arrInfo;
+}
+

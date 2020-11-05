@@ -26,10 +26,10 @@
 	<string>Copyright © 2020 Kinshuk  Bairagi. All rights reserved.</string>
 	<key>NSMainStoryboardFile</key>
 	<string>Main</string>
-	<key>NSPrincipalClass</key>
-	<string>NSApplication</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app requires microphone access to stream audio during voice calls.</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
 	<key>NSSupportsAutomaticTermination</key>
 	<true/>
 	<key>NSSupportsSuddenTermination</key>
