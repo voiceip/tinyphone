@@ -165,6 +165,7 @@
 		B327CB4D2551A2940092FDB7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		B327CB512551A2F40092FDB7 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		B327CB532551A2FD0092FDB7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		B337E2C32554468C001696B7 /* config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = config.json; path = ../config.json; sourceTree = "<group>"; };
 		B33839062551C692000D6F04 /* libopus.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopus.a; path = ../lib/opus/libopus.a; sourceTree = "<group>"; };
 		B33839082551D3EF000D6F04 /* osxapp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = osxapp.cpp; sourceTree = "<group>"; };
 		B392C7A8255409390068492F /* libboost_date_time.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_date_time.dylib; path = /usr/local/opt/boost/lib/libboost_date_time.dylib; sourceTree = "<group>"; };
@@ -358,6 +359,7 @@
 		B3DDA55025515DF700D269C9 = {
 			isa = PBXGroup;
 			children = (
+				B337E2C32554468C001696B7 /* config.json */,
 				B392C7BA255412770068492F /* libopus.0.dylib */,
 				B392C7B8255412560068492F /* libcryptopp.dylib */,
 				B327CACF255178050092FDB7 /* src */,

@@ -5,6 +5,10 @@
 #include <boost/format.hpp> 
 #include "crypt.h"
 
+#ifdef __APPLE__
+#include "Tinyphone-C-Interface.h"
+#endif
+
 #define ALLOW_OFFLINE_CONFIG true
 #define LOCAL_CONFIG_FILE "config.json"
 
@@ -98,16 +102,24 @@ namespace tp {
 #ifndef ALLOW_OFFLINE_CONFIG
 			tp::DisplayError(message);
 			exit(1);
-#endif // ALLOW_OFFLINE_CONFIG
+#endif // NOT_ALLOW_OFFLINE_CONFIG
 		}
 		else {
 			jsonConfig = remoteConfig.body;
 		}
 
 #ifdef ALLOW_OFFLINE_CONFIG
-		if(file_exists(LOCAL_CONFIG_FILE)){
-			jsonConfig = file_get_contents(LOCAL_CONFIG_FILE);
-			std::cout << "Config Override From Local File" << std::endl;
+        std::string local_file_path = LOCAL_CONFIG_FILE;
+#ifdef __APPLE__
+        auto apple_config_file = GetResourceFilePath(local_file_path.c_str());
+        if(apple_config_file != nullptr){
+            std::string lp(apple_config_file);
+            local_file_path.swap(lp);
+        }
+#endif
+		if(file_exists(local_file_path)){
+			jsonConfig = file_get_contents(local_file_path);
+			std::cout << "Config Override From Local File: " << local_file_path << std::endl;
 		} else if (jsonConfig.size() == 0 ){
 			message += "\nERROR: Local Config Fallback also failed.";
 			tp::DisplayError(message, OPS::SYNC);

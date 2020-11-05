@@ -61,3 +61,15 @@ const char* GetOSXProductVersion(){
     TinyphoneOC *myInstance = [[TinyphoneOC alloc] init];
     return [myInstance GetProductVersion];
 }
+
+const char* GetResourceFilePath(const char * name){
+    CFURLRef appUrlRef = CFBundleCopyResourceURL(CFBundleGetMainBundle(), CFSTR("config.json"), NULL, NULL);
+    if (appUrlRef != nullptr){
+        CFStringRef filePathRef = CFURLCopyPath(appUrlRef);
+        const char* filePath = CFStringGetCStringPtr(filePathRef, kCFStringEncodingUTF8);
+        CFRelease(filePathRef);
+        CFRelease(appUrlRef);
+        return filePath;
+    }
+    return NULL;
+}

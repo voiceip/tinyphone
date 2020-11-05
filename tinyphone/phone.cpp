@@ -290,9 +290,10 @@ namespace tp {
 				std::ofstream o(userConfigFile);
 				o << std::setw(4) << j << std::endl;
 				o.close();
+				//PJ_LOG(3, (__FILENAME__, "SaveAccounts:: Successfully to %s", userConfigFile.c_str()));
 				return true;
 			} catch(const std::exception& e) {
-				PJ_LOG(1, (__FILENAME__, "SaveAccounts:: Error %s", e.what()));
+				PJ_LOG(3, (__FILENAME__, "SaveAccounts:: Error %s", e.what()));
 				return false;
 			}
 		}
