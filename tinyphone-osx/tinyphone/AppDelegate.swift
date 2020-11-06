@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import AVFoundation
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -46,6 +47,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         dispatchQueue.async{
             Start()
         }
+        checkPermissions()
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
@@ -53,6 +55,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
 
+}
+
+func checkPermissions(){
+    switch AVCaptureDevice.authorizationStatus(for: .audio) {
+        case .authorized:
+            // The user has previously granted access to the camera.
+            //all good :)
+        return
+        case .notDetermined: // The user has not yet been asked for camera access.
+            AVCaptureDevice.requestAccess(for: .audio) { granted in
+                if granted {
+                    print("Microphone Permission Granted")
+                } else {
+                    print("Microphone Permission Denined")
+                }
+            }
+        case .denied: // The user has previously denied access.
+            return
+        case .restricted: // The user can't grant access due to restrictions.
+            return
+    }
 }
 
 extension AppDelegate: NSMenuDelegate {

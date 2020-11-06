@@ -26,7 +26,7 @@ namespace tp {
 		if (j.find("enc_password") != j.end()) {
 			j.at("enc_password").get_to(encPass);
 			p.password = crypt.Decrypt(encPass);
-			std::cout << "Decrypted Password: " << p.password << std::endl;
+			//std::cout << "Decrypted Password: " << p.password << std::endl;
 		}
 
 		if (j.find("password") != j.end()) {
