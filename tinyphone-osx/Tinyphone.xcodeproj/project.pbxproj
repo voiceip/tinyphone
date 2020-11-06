@@ -477,8 +477,8 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nEXECFILE=${BUILT_PRODUCTS_DIR}/${EXECUTABLE_PATH}\nTARGETS=(libcryptopp.dylib libopus.0.dylib libboost_filesystem.dylib libboost_system.dylib libboost_date_time.dylib)\nfor TARGET in ${TARGETS} ; do\necho \"Running for $TARGET\"\nFULLTARGET=`otool -LD ${EXECFILE} | grep $TARGET | awk '{ print $1 }'`\ninstall_name_tool -change ${FULLTARGET} \"@rpath/${TARGET}\" ${EXECFILE}\ndone\n\n";
+			shellPath = /bin/bash;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nEXECFILE=${BUILT_PRODUCTS_DIR}/${EXECUTABLE_PATH}\ndeclare -a TARGETS=(\"libcryptopp.dylib\" \"libopus.0.dylib\" \"libboost_filesystem.dylib\" \"libboost_system.dylib\" \"libboost_date_time.dylib\")\nfor TARGET in \"${TARGETS[@]}\" ; do\necho \"Running for $TARGET\"\nFULLTARGET=`otool -LD ${EXECFILE} | grep $TARGET | awk '{ print $1 }'`\necho $FULLTARGET\ninstall_name_tool -change ${FULLTARGET} \"@rpath/${TARGET}\" ${EXECFILE}\ndone\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

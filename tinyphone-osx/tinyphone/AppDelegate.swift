@@ -75,6 +75,8 @@ func checkPermissions(){
             return
         case .restricted: // The user can't grant access due to restrictions.
             return
+        @unknown default:
+            return
     }
 }
 
