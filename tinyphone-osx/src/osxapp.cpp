@@ -173,9 +173,9 @@ void Start(){
     tp::sipLogFile = GetLogFile(SIP_LOG_FILE, "log");
     tp::httpLogFile = GetLogFile(HTTP_LOG_FILE, "log");
 
+    InitPJSUAEndpoint(tp::sipLogFile);
     TinyPhoneHttpServer server(&ep, tp::httpLogFile);
     tp::tpHttpServer = &server;
-    InitPJSUAEndpoint(tp::sipLogFile);
     
     server.Start();
     exit(0);
