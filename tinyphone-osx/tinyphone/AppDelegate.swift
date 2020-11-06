@@ -17,15 +17,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var menu: NSMenu?
     //@IBOutlet weak var statusMenuItem: NSMenuItem?
 
-    
     //implement https://www.appcoda.com/macos-status-bar-apps/
     @IBOutlet weak var firstMenuItem: NSMenuItem?
 
     var accountView: AccountsView?
 
-    
     override func awakeFromNib() {
-        
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         let itemImage = NSImage(named: "MenuIcon")
         itemImage?.isTemplate = true
@@ -40,7 +37,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             accountView = AccountsView(frame: NSRect(x: 0.0, y: 0.0, width: 250.0, height: 70.0))
             item.view = accountView
         }
-        
+
         //let editMenuItem = NSMenuItem()
         //editMenuItem.title = "Edit"
         //menu?.insertItem(editMenuItem, at: 0)
@@ -52,17 +49,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         dispatchQueue.async{
             Start()
         }
-        checkPermissions()
+        if #available(OSX 10.14, *) {
+            checkPermissions()
+        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
         Stop()
     }
-
-
 }
 
+@available(OSX 10.14, *)
 func checkPermissions(){
     switch AVCaptureDevice.authorizationStatus(for: .audio) {
         case .authorized:
