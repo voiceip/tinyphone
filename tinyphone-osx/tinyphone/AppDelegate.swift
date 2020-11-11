@@ -110,5 +110,5 @@ func makeArray<Tuple, Value>(from tuple: Tuple) -> [Value] {
         assert(valueMirror.subjectType == Value.self, "Given tuple argument's child type (\(valueMirror.subjectType)) does not reflect expected return value type (\(Value.self))")
         return child.value as? Value
     }
-    return tupleMirror.children.flatMap(convert)
+    return tupleMirror.children.compactMap(convert)
 }
