@@ -67,6 +67,9 @@ namespace tp {
 		bool autoAnswer = true;
 		bool persistAccounts = true;
 
+		bool enableSTUN;
+		bool enableICE;
+		std::vector<std::string> stunServers;
 
 		std::string ua(){
 			std::string productVersion;
@@ -109,6 +112,9 @@ namespace tp {
 			{"autoDeviceRefresh", p.autoDeviceRefresh },
 			{"autoAnswer", p.autoAnswer },
 			{"persistAccounts", p.persistAccounts },
+			{"enableSTUN", p.enableSTUN },
+			{"enableICE", p.enableICE },
+			{"stunServers", p.stunServers },
 		};
     }
 
@@ -145,7 +151,10 @@ namespace tp {
 		j.at("autoDeviceRefresh").get_to(p.autoDeviceRefresh);
 		FROM_JSON_OPTIONAL(autoAnswer);
 		FROM_JSON_OPTIONAL(persistAccounts);
-    }
+		FROM_JSON_OPTIONAL(enableSTUN);
+		FROM_JSON_OPTIONAL(enableICE);
+		FROM_JSON_OPTIONAL(stunServers);
+	}
    
     extern appConfig ApplicationConfig;
 
