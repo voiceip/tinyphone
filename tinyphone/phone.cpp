@@ -322,6 +322,9 @@ namespace tp {
 				acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
 				acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
 				acc_cfg.natConfig.iceEnabled = ApplicationConfig.enableICE ? PJ_TRUE : PJ_FALSE;
+				if(!ApplicationConfig.enableSTUN){
+					acc_cfg.natConfig.sdpNatRewriteUse = PJ_TRUE;
+				}
 
 				SIPAccount *acc(new SIPAccount(this, account_name, eventStream, config));
 				acc->domain = config.domain;
