@@ -10,7 +10,7 @@
 	"retryIntervalSec": 30,
 	"timeoutSec": 600,
 	"refreshIntervalSec" : 120,
-	"transport": 2,
+	"transport": 1,
 	"uaPrefix": "TinyPhone Pjsua2 v",
 	"prefferedAudioDevices" : [ "sound", "usb" , "headphone", "audio" , "microphone" , "speakers" ],
 	"useDefaultAudioDevice" : true,
@@ -30,5 +30,8 @@
 	"metricsServerPort" : 8125,
 	"autoDeviceRefresh" :  true,
 	"autoAnswer" : true,
-	"persistAccounts" : true
+	"persistAccounts" : true,
+	"enableSTUN" : true,
+	"enableICE" : false,
+	"stunServers" : [ "stun.l.google.com:19302" ]
 }

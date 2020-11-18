@@ -306,7 +306,8 @@ namespace tp {
 				acc_cfg.regConfig.registrarUri = ("sip:" + config.domain);
 				
 				addTransportSuffix(acc_cfg.regConfig.registrarUri);
-				acc_cfg.sipConfig.authCreds.push_back(AuthCredInfo("digest", "*", config.username, 0, config.password));
+				AuthCredInfo authCred("digest", "*", config.username, PJSIP_CRED_DATA_PLAIN_PASSWD, config.password);
+				acc_cfg.sipConfig.authCreds.push_back(authCred);
 				
 				if (config.proxy.size() > 0) {
 					acc_cfg.sipConfig.proxies = { config.proxy };
@@ -320,6 +321,10 @@ namespace tp {
 
 				acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
 				acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
+				acc_cfg.natConfig.iceEnabled = ApplicationConfig.enableICE ? PJ_TRUE : PJ_FALSE;
+				if(!ApplicationConfig.enableSTUN){
+					acc_cfg.natConfig.sdpNatRewriteUse = PJ_TRUE;
+				}
 
 				SIPAccount *acc(new SIPAccount(this, account_name, eventStream, config));
 				acc->domain = config.domain;
