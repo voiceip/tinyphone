@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "call.h"
 #include "account.h"
+#include "phone.h"
 #include "utils.h"
 #include "config.h"
 #include <pjsua-lib/pjsua_internal.h>
@@ -49,6 +50,7 @@ namespace tp {
 			"Remote hold",
 			"Error"
 		};
+        	account->getPhone()->StopRinging(this);
 
 		try {
 			AudioMedia *aud_med = NULL;
@@ -160,6 +162,8 @@ namespace tp {
 	}
 
 	void SIPCall::onCallEnd() {
+		account->getPhone()->StopRinging(this);
+
 		ToneGenerator toneGenerator;
 		try {
 			AudioMedia& play_med = Endpoint::instance().audDevManager().getPlaybackDevMedia();

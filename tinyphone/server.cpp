@@ -729,7 +729,7 @@ void TinyPhoneHttpServer::Stop(){
 		pj_thread_auto_register();
 		tinyPhone->HangupAllCalls();
 		tinyPhone->Logout();
-
+		tinyPhone->Shutdown();
 		endpoint->libDestroy();
 	} else {
 		CROW_LOG_INFO << "TinyPhoneHttpServer already shutdown";

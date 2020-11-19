@@ -31,6 +31,8 @@ namespace tp {
 
 	private:
 	    std::recursive_mutex add_acc_mutex;
+		ToneGenerator* ringingTone;
+		int ringing_count;
 
 		std::string addTransportSuffix(std::string &str) {
 			tp::AddTransportSuffix(str, ApplicationConfig.transport);
@@ -47,6 +49,7 @@ namespace tp {
 			auto logfile = tiny_dir.append("user.conf");
 			userConfigFile = logfile.string();
 			std::cout << "TinyPhone userConfigFile: " << userConfigFile << std::endl;
+			Initialize();
 		}
 
 		~TinyPhone() {
@@ -109,6 +112,12 @@ namespace tp {
 		void Hangup(SIPCall* call);
 
 		void HangupAllCalls();
+
+		bool Initialize();
+		void Shutdown();
+		
+		void StartRinging(SIPCall* call);
+		void StopRinging(SIPCall* call);
 	};
 
 }

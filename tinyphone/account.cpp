@@ -103,6 +103,12 @@ namespace tp {
 				prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
 				call->answer(prm);
 				onCallEstablished(call);
+			} else {
+				//play sound
+				CallOpParam prm;
+				prm.statusCode = pjsip_status_code::PJSIP_SC_RINGING;
+				call->answer(prm);
+				phone->StartRinging(call);
 			}
 		}
 		catch (...) {

@@ -70,6 +70,10 @@ namespace tp {
 			shutdown();
 		}
 
+		tp::TinyPhone* getPhone(){
+			return phone;
+		};
+
 		std::string Name();
 
 		/**
