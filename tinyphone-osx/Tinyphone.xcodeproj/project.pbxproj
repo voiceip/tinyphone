@@ -178,6 +178,7 @@
 		B39C3B562552EF1900BBD999 /* Tinyphone-C-Interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Tinyphone-C-Interface.h"; sourceTree = "<group>"; };
 		B3B8EE172552A26D00B903D1 /* boost.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = boost.xcframework; path = vendor/boost/dist/boost.xcframework; sourceTree = "<group>"; };
 		B3B8EE192552A6D400B903D1 /* app.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = app.h; sourceTree = "<group>"; };
+		B3B92C3C256804BE0095EF2C /* tpendpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tpendpoint.h; path = ../../tinyphone/tpendpoint.h; sourceTree = "<group>"; };
 		B3D53FC82551696600523D5F /* AccountsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountsView.xib; sourceTree = "<group>"; };
 		B3D53FCB255169CF00523D5F /* AccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsView.swift; sourceTree = "<group>"; };
 		B3D53FCD25516A4200523D5F /* LoadableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadableView.swift; sourceTree = "<group>"; };
@@ -256,6 +257,7 @@
 		B327CACF255178050092FDB7 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				B3B92C3C256804BE0095EF2C /* tpendpoint.h */,
 				B3025C1F25530D7E00C331CA /* Tinyphone-OC.hpp */,
 				B3025C1E25530D7E00C331CA /* Tinyphone-OC.mm */,
 				B39C3B562552EF1900BBD999 /* Tinyphone-C-Interface.h */,

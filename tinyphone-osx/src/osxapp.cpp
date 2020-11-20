@@ -24,6 +24,7 @@
 #include "config.h"
 #include "log.h"
 #include "app.h"
+#include "tpendpoint.h"
 
 using namespace std;
 using namespace pj;
@@ -36,7 +37,7 @@ namespace tp {
     TinyPhoneHttpServer* tpHttpServer;
 }
 
-pj::Endpoint ep;
+tp::Endpoint ep;
 
 inline void  pj_logerror(pj_status_t status, char * message) {
     if (status != PJ_SUCCESS) {
@@ -83,6 +84,9 @@ void InitPJSUAEndpoint(std::string logfile) {
         ep_cfg.logConfig.decor |= PJ_LOG_HAS_CR | PJ_LOG_HAS_DAY_OF_MON |  PJ_LOG_HAS_MONTH |  PJ_LOG_HAS_YEAR ;
         ep_cfg.uaConfig.userAgent = ApplicationConfig.ua();
         ep_cfg.uaConfig.threadCnt = ApplicationConfig.pjThreadCount;
+        if (ApplicationConfig.enableSTUN) {
+            ep_cfg.uaConfig.stunServer = ApplicationConfig.stunServers;
+        }
         ep_cfg.medConfig.threadCnt = ApplicationConfig.pjMediaThreadCount;
         ep_cfg.medConfig.noVad = ApplicationConfig.disableVAD;
         ep_cfg.medConfig.clockRate = ApplicationConfig.clockRate;

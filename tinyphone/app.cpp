@@ -11,6 +11,7 @@
 #include "config.h"
 #include "log.h"
 #include "splash.h"
+#include "tpendpoint.h"
 #include <iphlpapi.h>
 #include <algorithm> 
 
@@ -40,7 +41,7 @@ HMENU Hmenu;
 NOTIFYICONDATA notifyIconData;
 TCHAR szTIP[MAX_TOOLTIP_LENGTH] = TEXT("Strowger TinyPhone");
 char szClassName[] = "TinyPhone";
-Endpoint ep;
+tp::Endpoint ep;
 SPLASH splashScreen;
 
 
