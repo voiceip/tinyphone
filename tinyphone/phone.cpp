@@ -8,6 +8,11 @@
 
 using json = nlohmann::json;
 
+#define RING_FREQ1	400
+#define RING_FREQ2	450
+#define RING_ON	950
+#define RING_OFF	1700
+
 namespace tp {
 
 	void TinyPhone::SetCodecs() {
@@ -363,6 +368,67 @@ namespace tp {
 				tp::MetricsClient.increment("launch");
 			}
 		} 
+	}
+
+	void TinyPhone::StartRinging(SIPCall* call) {
+		if (call->isRinging == PJ_FALSE){
+			call->isRinging = PJ_TRUE;
+			if (++ringing_count==1){
+				PJ_LOG(3, (__FILENAME__, "TinyPhone::StartRinging....."));
+				try {
+					AudioMedia& play_med = Endpoint::instance().audDevManager().getPlaybackDevMedia();
+					ringingTone->startTransmit(play_med);
+				} catch (...) {
+					PJ_LOG(3, (__FILENAME__, "TinyPhone::StartRinging Error"));
+				}
+			}
+			return;
+		}
+		PJ_LOG(3, (__FILENAME__, "TinyPhone::StartRinging skipped"));
+	}
+
+	void TinyPhone::StopRinging(SIPCall* call) {
+		PJ_LOG(3, (__FILENAME__, "TinyPhone::StopRinging....."));
+		if (call->isRinging) {
+			call->isRinging = PJ_FALSE;
+			//pj_assert(ringing_count>0);
+			if (--ringing_count == 0) 
+			{
+				try{
+					AudioMedia& play_med = Endpoint::instance().audDevManager().getPlaybackDevMedia();
+					ringingTone->stopTransmit(play_med);
+				} catch (Error& err) {
+					UNUSED_ARG(err);
+					PJ_LOG(3, (__FILENAME__, "TinyPhone::StopRinging Error"));
+				}
+			}
+		}
+	}
+
+	bool TinyPhone::Initialize(){
+		PJ_LOG(3, (__FILENAME__, "TinyPhone::Initialize....."));
+		ringing_count = 0;
+		ringingTone = new ToneGenerator();
+		try {
+			ToneDesc tone;
+			tone.freq1 = RING_FREQ1;
+			tone.freq2 = RING_FREQ2;
+			tone.on_msec = RING_ON;
+			tone.off_msec = RING_OFF;
+			ToneDescVector tones = { tone };
+			ringingTone->createToneGenerator();
+			ringingTone->play(tones, true);
+		}
+		catch (Error& err) {
+			UNUSED_ARG(err);
+			PJ_LOG(3, (__FILENAME__, "TinyPhone::Initialize Error"));
+
+		}
+        	return true;
+	}
+
+	void TinyPhone::Shutdown(){
+		ringingTone->stop();
 	}
 
 }
