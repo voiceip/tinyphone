@@ -414,6 +414,7 @@ namespace tp {
 
 	bool TinyPhone::Initialize(){
 		PJ_LOG(3, (__FILENAME__, "TinyPhone::Initialize....."));
+		InitOptionsModule();
 		ringing_count = 0;
 		ringingTone = new ToneGenerator();
 		try {

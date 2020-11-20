@@ -200,6 +200,7 @@
     <ClCompile Include="config.cpp" />
     <ClCompile Include="guicon.cpp" />
     <ClCompile Include="microtar.cpp" />
+    <ClCompile Include="mod_notify.cpp" />
     <ClCompile Include="net.cpp" />
     <ClCompile Include="phone.cpp" />
     <ClCompile Include="server.cpp" />

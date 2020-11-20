@@ -29,13 +29,8 @@ namespace tp {
 			//std::cout << "Decrypted Password: " << p.password << std::endl;
 		}
 
-		if (j.find("password") != j.end()) {
-			j.at("password").get_to(p.password);
-		}
-
-		if (j.find("proxy") != j.end()) {
-			j.at("proxy").get_to(p.proxy);
-		}
+		FROM_JSON_OPTIONAL(password);
+		FROM_JSON_OPTIONAL(proxy);
 	}
 
 	void to_json(nlohmann::json& j, const AccountConfig& p) {

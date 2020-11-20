@@ -38,6 +38,8 @@ namespace tp {
 			return str;
 		}
 
+		bool InitOptionsModule();
+
 	public:
 		int input_audio_dev = 0, output_audio_dev = 0;
 
@@ -118,6 +120,7 @@ namespace tp {
 		void StartRinging(SIPCall* call);
 		void StopRinging(SIPCall* call);
 	};
+
 
 }
 #endif
