@@ -30,6 +30,17 @@ namespace tp {
 				break;
 			case PJSIP_INV_STATE_CONFIRMED:
 				break;
+			case PJSIP_INV_STATE_EARLY:
+				{
+					auto call_info = getInfo();
+					auto current_media = call_info.media;
+					auto code = call_info.lastStatusCode;
+					/* Start ringback for 180 for UAC unless there's SDP in 180 */
+					if (call_info.role==PJSIP_ROLE_UAC && code == 180  && !hasMedia()) {
+						account->getPhone()->StartRinging(this, RingBack);
+					}
+				}
+				break;
 			default:
 				break;
 			}
@@ -51,7 +62,8 @@ namespace tp {
 			"Remote hold",
 			"Error"
 		};
-        	account->getPhone()->StopRinging(this);
+		PJ_LOG(3, (__FILENAME__, "Call [%d] onCallMediaState", ci.id));
+		account->getPhone()->StopRinging(this);
 
 		try {
 			AudioMedia *aud_med = NULL;
