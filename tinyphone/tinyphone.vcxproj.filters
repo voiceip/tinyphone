@@ -113,6 +113,9 @@
     <ClCompile Include="splash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mod_notify.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\tinyphone.ico">

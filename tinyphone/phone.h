@@ -14,11 +14,14 @@
 #include "json.h"
 
 #include <map> 
-#include <boost/foreach.hpp>
-#include <boost/algorithm/string.hpp>
+
 
 namespace tp {
 
+    enum RingTune
+    {   IncomingRing = 0,
+        RingBack = 1
+    };
 
 	class TinyPhone
 	{
@@ -31,13 +34,17 @@ namespace tp {
 
 	private:
 	    std::recursive_mutex add_acc_mutex;
-		ToneGenerator* ringingTone;
-		int ringing_count;
+        ToneGenerator* ringingTone;
+        ToneGenerator* ringbackTone;
+        int ringing_count;
+        int ringback_count;
 
 		std::string addTransportSuffix(std::string &str) {
 			tp::AddTransportSuffix(str, ApplicationConfig.transport);
 			return str;
 		}
+
+		bool InitOptionsModule();
 
 	public:
 		int input_audio_dev = 0, output_audio_dev = 0;
@@ -116,9 +123,10 @@ namespace tp {
 		bool Initialize();
 		void Shutdown();
 		
-		void StartRinging(SIPCall* call);
+		void StartRinging(SIPCall* call, RingTune tune = IncomingRing);
 		void StopRinging(SIPCall* call);
 	};
+
 
 }
 #endif

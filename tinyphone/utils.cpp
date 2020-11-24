@@ -1,16 +1,41 @@
 #include "stdafx.h"
 #include "utils.h"
 #include <thread>
-#include <boost/algorithm/string.hpp>
+
+#ifdef _WIN32
 #include <windows.h>
 #include <winver.h>
+#include <mmsystem.h>
+#include <strsafe.h>
+#endif
+
+#ifndef _WIN32
+#include <sys/ioctl.h>
+#include <net/if.h>
+#include <unistd.h>
+#include <netinet/in.h>
+#endif
+
+#ifdef __APPLE__
+#define SIOCGIFHWADDR SIOCGIFCONF
+#define ifr_hwaddr ifr_addr
+#include "Tinyphone-C-Interface.h"
+#endif
+
 #include <cryptopp/sha3.h>
 #include <cryptopp/hex.h>
 #include <cryptopp/filters.h>
 #include <fstream>
-#include <mmsystem.h>
+
 #include <future>
-#include <strsafe.h>
+#include <boost/algorithm/string.hpp>
+#include <boost/format.hpp>
+#include <boost/filesystem.hpp>
+
+#ifdef __APPLE__
+#define _T(x) x
+#endif
+
 using namespace std;
 
 #pragma warning( disable : 4995 )
@@ -20,19 +45,21 @@ void print_thread_name()
 {
 	thread::id this_id = this_thread::get_id();
 	cout << "Thread id: #" << this_id << endl;
-}	
+}
 
 namespace tp {
 
+	#ifdef _WIN32
 	void ShowWinAlert(std::string title, std::string message) {
 		wchar_t *wmsg = new wchar_t[message.length() + 1]; //memory allocation
 		mbstowcs(wmsg, message.c_str(), message.length() + 1);
 		MessageBoxW(NULL, wmsg, L"Error!", MB_ICONEXCLAMATION | MB_OK | MB_SYSTEMMODAL);
 		delete[]wmsg;
 	}
+	#endif
 
 	void DisplayError(std::string message, OPS mode) {
-
+		#ifdef _WIN32
 		HANDLE hConsoleErr = GetStdHandle(STD_ERROR_HANDLE);
 		SetConsoleTextAttribute(hConsoleErr, FOREGROUND_RED | FOREGROUND_INTENSITY);
 		
@@ -76,6 +103,10 @@ namespace tp {
 		else {
 			ShowWinAlert("Error", message);
 		}
+		#elif __APPLE__
+		bool block = mode == OPS::ASYNC? false : true;
+		ShowOSXAlert(message.c_str(),block);
+		#endif
 	}
 
 	bool IsPSTNNnmber(std::string number)
@@ -214,6 +245,7 @@ namespace tp {
 
 	bool GetProductVersion(std::string &version)
 	{
+		#ifdef _WIN32
 		// get the filename of the executable containing the version resource
 		TCHAR szFilename[MAX_PATH + 1] = { 0 };
 		if (GetModuleFileName(NULL, szFilename, MAX_PATH) == 0){
@@ -247,15 +279,21 @@ namespace tp {
 			HIWORD(pFixedInfo->dwProductVersionMS),LOWORD(pFixedInfo->dwProductVersionMS),
 			HIWORD(pFixedInfo->dwProductVersionLS),LOWORD(pFixedInfo->dwProductVersionLS));
 		version = appVersion;
+		#elif __APPLE__
+		auto ver = GetOSXProductVersion();
+		if(ver != nullptr)
+			version = string(ver);
+		#endif
+
 		return true;
 	}
 
 	std::string sha256(std::string data) {
 		
 		CryptoPP::SHA3_256 hash;
-		byte digest[CryptoPP::SHA3_256::DIGESTSIZE];
+		CryptoPP::byte digest[CryptoPP::SHA3_256::DIGESTSIZE];
 
-		hash.CalculateDigest(digest, (byte*)data.c_str(), data.length());
+		hash.CalculateDigest(digest, (CryptoPP::byte*)data.c_str(), data.length());
 
 		CryptoPP::HexEncoder encoder;
 		std::string output;
@@ -276,6 +314,7 @@ namespace tp {
 	}
 	
 	boost::filesystem::path GetAppDir(){
+		#ifdef _WIN32
 		LPWSTR path = NULL;
 		HRESULT hr = SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &path);
 		if (!SUCCEEDED(hr)) {
@@ -287,6 +326,11 @@ namespace tp {
 		if (!boost::filesystem::exists(tiny_dir))
 			boost::filesystem::create_directory(tiny_dir);
 		return tiny_dir;
+		#elif __APPLE__
+		auto path = GetAppSupportDirectory();
+		boost::filesystem::path appDir(path);
+		return appDir;
+		#endif
 	}
 
 	tm* now() {
@@ -345,53 +389,9 @@ namespace tp {
 		return in.tellg();
 	}
 
-	char* getMACAddress() {
-		PIP_ADAPTER_INFO AdapterInfo;
-		DWORD dwBufLen = sizeof(IP_ADAPTER_INFO);
-		char *mac_addr = (char*)malloc(18);
-
-		AdapterInfo = (IP_ADAPTER_INFO *)malloc(sizeof(IP_ADAPTER_INFO));
-		if (AdapterInfo == NULL) {
-			printf("Error allocating memory needed to call GetAdaptersinfo\n");
-			free(mac_addr);
-			return NULL; // it is safe to call free(NULL)
-		}
-
-		// Make an initial call to GetAdaptersInfo to get the necessary size into the dwBufLen variable
-		if (GetAdaptersInfo(AdapterInfo, &dwBufLen) == ERROR_BUFFER_OVERFLOW) {
-			free(AdapterInfo);
-			AdapterInfo = (IP_ADAPTER_INFO *)malloc(dwBufLen);
-			if (AdapterInfo == NULL) {
-				printf("Error allocating memory needed to call GetAdaptersinfo\n");
-				free(mac_addr);
-				return NULL;
-			}
-		}
-
-		if (GetAdaptersInfo(AdapterInfo, &dwBufLen) == NO_ERROR) {
-			// Contains pointer to current adapter info
-			PIP_ADAPTER_INFO pAdapterInfo = AdapterInfo;
-			do {
-				// technically should look at pAdapterInfo->AddressLength
-				//   and not assume it is 6.
-				if (pAdapterInfo->AddressLength == 6 && pAdapterInfo->Address[0] != '0') {
-					sprintf(mac_addr, "%02X:%02X:%02X:%02X:%02X:%02X",
-						pAdapterInfo->Address[0], pAdapterInfo->Address[1],
-						pAdapterInfo->Address[2], pAdapterInfo->Address[3],
-						pAdapterInfo->Address[4], pAdapterInfo->Address[5]);
-					printf("Address: %s, mac: %s\n", pAdapterInfo->IpAddressList.IpAddress.String, mac_addr);
-					// print them all, return the last one.
-					// return mac_addr;
-				}
-				pAdapterInfo = pAdapterInfo->Next;
-			} while (pAdapterInfo);
-		}
-		free(AdapterInfo);
-		return mac_addr; // caller must free.
-	}
-
-
+	#ifdef _WIN32
 	std::string win32_utf16_to_utf8(const wchar_t* wstr) {
+
 		std::string res;
 		// If the 6th parameter is 0 then WideCharToMultiByte returns the number of bytes needed to store the result.
 		int actualSize = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, nullptr, 0, nullptr, nullptr);
@@ -408,4 +408,5 @@ namespace tp {
 		}
 		return res;
 	}
+	#endif
 }

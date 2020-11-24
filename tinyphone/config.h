@@ -71,6 +71,8 @@ namespace tp {
 		bool enableICE;
 		std::vector<std::string> stunServers;
 
+		bool handleNOTIFY;
+
 		std::string ua(){
 			std::string productVersion;
 			GetProductVersion(productVersion);
@@ -115,6 +117,7 @@ namespace tp {
 			{"enableSTUN", p.enableSTUN },
 			{"enableICE", p.enableICE },
 			{"stunServers", p.stunServers },
+			{"handleNOTIFY", p.handleNOTIFY },
 		};
     }
 
@@ -154,6 +157,7 @@ namespace tp {
 		FROM_JSON_OPTIONAL(enableSTUN);
 		FROM_JSON_OPTIONAL(enableICE);
 		FROM_JSON_OPTIONAL(stunServers);
+		FROM_JSON_OPTIONAL(handleNOTIFY);
 	}
    
     extern appConfig ApplicationConfig;

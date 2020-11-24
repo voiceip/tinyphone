@@ -1,0 +1,796 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 52;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B3025C2025530D7E00C331CA /* Tinyphone-OC.mm in Sources */ = {isa = PBXBuildFile; fileRef = B3025C1E25530D7E00C331CA /* Tinyphone-OC.mm */; };
+		B327CAF32551784A0092FDB7 /* call.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B327CAD2255178480092FDB7 /* call.cpp */; };
+		B327CAF52551784A0092FDB7 /* microtar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B327CAD8255178480092FDB7 /* microtar.cpp */; };
+		B327CAF62551784A0092FDB7 /* resource.rc in Resources */ = {isa = PBXBuildFile; fileRef = B327CADA255178480092FDB7 /* resource.rc */; };
+		B327CAF82551784A0092FDB7 /* account.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B327CADE255178490092FDB7 /* account.cpp */; };
+		B327CAF92551784A0092FDB7 /* config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B327CAE1255178490092FDB7 /* config.cpp */; };
+		B327CAFC2551784A0092FDB7 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B327CAEC2551784A0092FDB7 /* server.cpp */; };
+		B327CAFD2551784A0092FDB7 /* phone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B327CAED2551784A0092FDB7 /* phone.cpp */; };
+		B327CAFE2551784A0092FDB7 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B327CAEE2551784A0092FDB7 /* utils.cpp */; };
+		B327CAFF2551784A0092FDB7 /* net.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B327CAF02551784A0092FDB7 /* net.cpp */; };
+		B327CB032551973A0092FDB7 /* libstatsd_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB01255195BD0092FDB7 /* libstatsd_static.a */; };
+		B327CB0E2551A0130092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB0925519FFC0092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a */; };
+		B327CB0F2551A0350092FDB7 /* libpj-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB04255197CC0092FDB7 /* libpj-x86_64-apple-darwin18.7.0.a */; };
+		B327CB102551A0410092FDB7 /* libpjsip-simple-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB0C25519FFC0092FDB7 /* libpjsip-simple-x86_64-apple-darwin18.7.0.a */; };
+		B327CB112551A0410092FDB7 /* libpjsip-ua-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB0D25519FFC0092FDB7 /* libpjsip-ua-x86_64-apple-darwin18.7.0.a */; };
+		B327CB122551A0410092FDB7 /* libpjsip-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB0A25519FFC0092FDB7 /* libpjsip-x86_64-apple-darwin18.7.0.a */; };
+		B327CB132551A0410092FDB7 /* libpjsua-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB0B25519FFC0092FDB7 /* libpjsua-x86_64-apple-darwin18.7.0.a */; };
+		B327CB142551A0410092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB0925519FFC0092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a */; };
+		B327CB1A2551A0530092FDB7 /* libpjmedia-audiodev-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB162551A0510092FDB7 /* libpjmedia-audiodev-x86_64-apple-darwin18.7.0.a */; };
+		B327CB1B2551A0530092FDB7 /* libpjmedia-codec-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB172551A0510092FDB7 /* libpjmedia-codec-x86_64-apple-darwin18.7.0.a */; };
+		B327CB1C2551A0530092FDB7 /* libpjmedia-videodev-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB152551A0510092FDB7 /* libpjmedia-videodev-x86_64-apple-darwin18.7.0.a */; };
+		B327CB1D2551A0530092FDB7 /* libpjmedia-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB182551A0510092FDB7 /* libpjmedia-x86_64-apple-darwin18.7.0.a */; };
+		B327CB1E2551A0530092FDB7 /* libpjsdp-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB192551A0510092FDB7 /* libpjsdp-x86_64-apple-darwin18.7.0.a */; };
+		B327CB202551A05E0092FDB7 /* libpjlib-util-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB1F2551A05B0092FDB7 /* libpjlib-util-x86_64-apple-darwin18.7.0.a */; };
+		B327CB362551A18E0092FDB7 /* libpjmedia-videodev-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB212551A18E0092FDB7 /* libpjmedia-videodev-x86_64-apple-darwin18.7.0.a */; };
+		B327CB372551A18E0092FDB7 /* libyuv-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB222551A18E0092FDB7 /* libyuv-x86_64-apple-darwin18.7.0.a */; };
+		B327CB382551A18E0092FDB7 /* libresample-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB232551A18E0092FDB7 /* libresample-x86_64-apple-darwin18.7.0.a */; };
+		B327CB392551A18E0092FDB7 /* libpjmedia-codec-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB242551A18E0092FDB7 /* libpjmedia-codec-x86_64-apple-darwin18.7.0.a */; };
+		B327CB3A2551A18E0092FDB7 /* libgsmcodec-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB252551A18E0092FDB7 /* libgsmcodec-x86_64-apple-darwin18.7.0.a */; };
+		B327CB3B2551A18E0092FDB7 /* libpjsdp-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB262551A18E0092FDB7 /* libpjsdp-x86_64-apple-darwin18.7.0.a */; };
+		B327CB3C2551A18E0092FDB7 /* libpjsip-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB272551A18E0092FDB7 /* libpjsip-x86_64-apple-darwin18.7.0.a */; };
+		B327CB3D2551A18E0092FDB7 /* libilbccodec-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB282551A18E0092FDB7 /* libilbccodec-x86_64-apple-darwin18.7.0.a */; };
+		B327CB3E2551A18E0092FDB7 /* libpjsip-ua-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB292551A18E0092FDB7 /* libpjsip-ua-x86_64-apple-darwin18.7.0.a */; };
+		B327CB3F2551A18E0092FDB7 /* libpjsua-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB2A2551A18E0092FDB7 /* libpjsua-x86_64-apple-darwin18.7.0.a */; };
+		B327CB402551A18E0092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB2B2551A18E0092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a */; };
+		B327CB412551A18E0092FDB7 /* libspeex-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB2C2551A18E0092FDB7 /* libspeex-x86_64-apple-darwin18.7.0.a */; };
+		B327CB422551A18E0092FDB7 /* libpjnath-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB2D2551A18E0092FDB7 /* libpjnath-x86_64-apple-darwin18.7.0.a */; };
+		B327CB432551A18E0092FDB7 /* libpjmedia-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB2E2551A18E0092FDB7 /* libpjmedia-x86_64-apple-darwin18.7.0.a */; };
+		B327CB442551A18E0092FDB7 /* libpj-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB2F2551A18E0092FDB7 /* libpj-x86_64-apple-darwin18.7.0.a */; };
+		B327CB452551A18E0092FDB7 /* libwebrtc-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB302551A18E0092FDB7 /* libwebrtc-x86_64-apple-darwin18.7.0.a */; };
+		B327CB462551A18E0092FDB7 /* libg7221codec-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB312551A18E0092FDB7 /* libg7221codec-x86_64-apple-darwin18.7.0.a */; };
+		B327CB472551A18E0092FDB7 /* libsrtp-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB322551A18E0092FDB7 /* libsrtp-x86_64-apple-darwin18.7.0.a */; };
+		B327CB482551A18E0092FDB7 /* libpjsip-simple-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB332551A18E0092FDB7 /* libpjsip-simple-x86_64-apple-darwin18.7.0.a */; };
+		B327CB492551A18E0092FDB7 /* libpjlib-util-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB342551A18E0092FDB7 /* libpjlib-util-x86_64-apple-darwin18.7.0.a */; };
+		B327CB4A2551A18E0092FDB7 /* libpjmedia-audiodev-x86_64-apple-darwin18.7.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB352551A18E0092FDB7 /* libpjmedia-audiodev-x86_64-apple-darwin18.7.0.a */; };
+		B327CB502551A2940092FDB7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB4D2551A2940092FDB7 /* CoreAudio.framework */; };
+		B327CB522551A2F40092FDB7 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB512551A2F40092FDB7 /* AudioUnit.framework */; };
+		B327CB542551A2FD0092FDB7 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B327CB532551A2FD0092FDB7 /* AudioToolbox.framework */; };
+		B33839072551C692000D6F04 /* libopus.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B33839062551C692000D6F04 /* libopus.a */; };
+		B33839092551D3EF000D6F04 /* osxapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B33839082551D3EF000D6F04 /* osxapp.cpp */; };
+		B392C7A6255408B70068492F /* boost.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3B8EE172552A26D00B903D1 /* boost.xcframework */; };
+		B392C7AB255409390068492F /* libboost_date_time.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B392C7A8255409390068492F /* libboost_date_time.dylib */; };
+		B392C7AC255409390068492F /* libboost_date_time.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B392C7A8255409390068492F /* libboost_date_time.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B392C7AD255409390068492F /* libboost_filesystem.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B392C7A9255409390068492F /* libboost_filesystem.dylib */; };
+		B392C7AE255409390068492F /* libboost_filesystem.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B392C7A9255409390068492F /* libboost_filesystem.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B392C7AF255409390068492F /* libboost_system.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B392C7AA255409390068492F /* libboost_system.dylib */; };
+		B392C7B0255409390068492F /* libboost_system.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B392C7AA255409390068492F /* libboost_system.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B392C7B9255412560068492F /* libcryptopp.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B392C7B8255412560068492F /* libcryptopp.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B392C7BB255412770068492F /* libopus.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B392C7BA255412770068492F /* libopus.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B39C3B442552C3CE00BBD999 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B39C3B432552C3CE00BBD999 /* libresolv.tbd */; };
+		B39C3B4B2552E1E700BBD999 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B39C3B4A2552E1E700BBD999 /* AppKit.framework */; };
+		B3B92C3E2568152A0095EF2C /* mod_notify.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3B92C3D2568152A0095EF2C /* mod_notify.cpp */; };
+		B3D53FC92551696600523D5F /* AccountsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3D53FC82551696600523D5F /* AccountsView.xib */; };
+		B3D53FCC255169CF00523D5F /* AccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D53FCB255169CF00523D5F /* AccountsView.swift */; };
+		B3D53FCE25516A4200523D5F /* LoadableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D53FCD25516A4200523D5F /* LoadableView.swift */; };
+		B3DDA55D25515DF700D269C9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3DDA55C25515DF700D269C9 /* AppDelegate.swift */; };
+		B3DDA55F25515DF700D269C9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3DDA55E25515DF700D269C9 /* ViewController.swift */; };
+		B3DDA56125515DF900D269C9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3DDA56025515DF900D269C9 /* Assets.xcassets */; };
+		B3DDA56425515DF900D269C9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3DDA56225515DF900D269C9 /* Main.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B327CB0825519E550092FDB7 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B392C7BB255412770068492F /* libopus.0.dylib in Embed Frameworks */,
+				B392C7B9255412560068492F /* libcryptopp.dylib in Embed Frameworks */,
+				B392C7AE255409390068492F /* libboost_filesystem.dylib in Embed Frameworks */,
+				B392C7AC255409390068492F /* libboost_date_time.dylib in Embed Frameworks */,
+				B392C7B0255409390068492F /* libboost_system.dylib in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		B3025C1E25530D7E00C331CA /* Tinyphone-OC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "Tinyphone-OC.mm"; sourceTree = "<group>"; };
+		B3025C1F25530D7E00C331CA /* Tinyphone-OC.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Tinyphone-OC.hpp"; sourceTree = "<group>"; };
+		B327CAD0255178470092FDB7 /* Tinyphone-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tinyphone-Bridging-Header.h"; sourceTree = "<group>"; };
+		B327CAD1255178480092FDB7 /* phone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = phone.h; path = ../../tinyphone/phone.h; sourceTree = "<group>"; };
+		B327CAD2255178480092FDB7 /* call.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = call.cpp; path = ../../tinyphone/call.cpp; sourceTree = "<group>"; };
+		B327CAD4255178480092FDB7 /* account.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = account.h; path = ../../tinyphone/account.h; sourceTree = "<group>"; };
+		B327CAD6255178480092FDB7 /* consts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = consts.h; path = ../../tinyphone/consts.h; sourceTree = "<group>"; };
+		B327CAD7255178480092FDB7 /* events.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = events.h; path = ../../tinyphone/events.h; sourceTree = "<group>"; };
+		B327CAD8255178480092FDB7 /* microtar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = microtar.cpp; path = ../../tinyphone/microtar.cpp; sourceTree = "<group>"; };
+		B327CAD9255178480092FDB7 /* net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = net.h; path = ../../tinyphone/net.h; sourceTree = "<group>"; };
+		B327CADA255178480092FDB7 /* resource.rc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = resource.rc; path = ../../tinyphone/resource.rc; sourceTree = "<group>"; };
+		B327CADB255178480092FDB7 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../../tinyphone/config.h; sourceTree = "<group>"; };
+		B327CADD255178490092FDB7 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stdafx.h; path = ../../tinyphone/stdafx.h; sourceTree = "<group>"; };
+		B327CADE255178490092FDB7 /* account.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = account.cpp; path = ../../tinyphone/account.cpp; sourceTree = "<group>"; };
+		B327CADF255178490092FDB7 /* log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = log.h; path = ../../tinyphone/log.h; sourceTree = "<group>"; };
+		B327CAE0255178490092FDB7 /* microtar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = microtar.h; path = ../../tinyphone/microtar.h; sourceTree = "<group>"; };
+		B327CAE1255178490092FDB7 /* config.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = config.cpp; path = ../../tinyphone/config.cpp; sourceTree = "<group>"; };
+		B327CAE2255178490092FDB7 /* json.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = json.h; path = ../../tinyphone/json.h; sourceTree = "<group>"; };
+		B327CAE3255178490092FDB7 /* enum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = enum.h; path = ../../tinyphone/enum.h; sourceTree = "<group>"; };
+		B327CAE5255178490092FDB7 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utils.h; path = ../../tinyphone/utils.h; sourceTree = "<group>"; };
+		B327CAE6255178490092FDB7 /* call.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = call.h; path = ../../tinyphone/call.h; sourceTree = "<group>"; };
+		B327CAE7255178490092FDB7 /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = crypt.h; path = ../../tinyphone/crypt.h; sourceTree = "<group>"; };
+		B327CAE8255178490092FDB7 /* server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = server.h; path = ../../tinyphone/server.h; sourceTree = "<group>"; };
+		B327CAEA255178490092FDB7 /* channel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = channel.h; path = ../../tinyphone/channel.h; sourceTree = "<group>"; };
+		B327CAEC2551784A0092FDB7 /* server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = server.cpp; path = ../../tinyphone/server.cpp; sourceTree = "<group>"; };
+		B327CAED2551784A0092FDB7 /* phone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = phone.cpp; path = ../../tinyphone/phone.cpp; sourceTree = "<group>"; };
+		B327CAEE2551784A0092FDB7 /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = utils.cpp; path = ../../tinyphone/utils.cpp; sourceTree = "<group>"; };
+		B327CAEF2551784A0092FDB7 /* resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = resource.h; path = ../../tinyphone/resource.h; sourceTree = "<group>"; };
+		B327CAF02551784A0092FDB7 /* net.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = net.cpp; path = ../../tinyphone/net.cpp; sourceTree = "<group>"; };
+		B327CAF12551784A0092FDB7 /* metrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = metrics.h; path = ../../tinyphone/metrics.h; sourceTree = "<group>"; };
+		B327CB01255195BD0092FDB7 /* libstatsd_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libstatsd_static.a; path = "../lib/statsd-cpp/build-osx/lib/libstatsd_static.a"; sourceTree = "<group>"; };
+		B327CB04255197CC0092FDB7 /* libpj-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpj-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/pjlib/lib/libpj-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB0925519FFC0092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjsua2-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/pjsip/lib/libpjsua2-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB0A25519FFC0092FDB7 /* libpjsip-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjsip-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/pjsip/lib/libpjsip-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB0B25519FFC0092FDB7 /* libpjsua-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjsua-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/pjsip/lib/libpjsua-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB0C25519FFC0092FDB7 /* libpjsip-simple-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjsip-simple-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/pjsip/lib/libpjsip-simple-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB0D25519FFC0092FDB7 /* libpjsip-ua-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjsip-ua-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/pjsip/lib/libpjsip-ua-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB152551A0510092FDB7 /* libpjmedia-videodev-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjmedia-videodev-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/pjmedia/lib/libpjmedia-videodev-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB162551A0510092FDB7 /* libpjmedia-audiodev-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjmedia-audiodev-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/pjmedia/lib/libpjmedia-audiodev-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB172551A0510092FDB7 /* libpjmedia-codec-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjmedia-codec-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/pjmedia/lib/libpjmedia-codec-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB182551A0510092FDB7 /* libpjmedia-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjmedia-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/pjmedia/lib/libpjmedia-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB192551A0510092FDB7 /* libpjsdp-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjsdp-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/pjmedia/lib/libpjsdp-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB1F2551A05B0092FDB7 /* libpjlib-util-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjlib-util-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/pjlib-util/lib/libpjlib-util-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB212551A18E0092FDB7 /* libpjmedia-videodev-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjmedia-videodev-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libpjmedia-videodev-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB222551A18E0092FDB7 /* libyuv-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libyuv-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libyuv-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB232551A18E0092FDB7 /* libresample-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libresample-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libresample-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB242551A18E0092FDB7 /* libpjmedia-codec-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjmedia-codec-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libpjmedia-codec-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB252551A18E0092FDB7 /* libgsmcodec-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libgsmcodec-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libgsmcodec-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB262551A18E0092FDB7 /* libpjsdp-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjsdp-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libpjsdp-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB272551A18E0092FDB7 /* libpjsip-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjsip-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libpjsip-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB282551A18E0092FDB7 /* libilbccodec-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libilbccodec-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libilbccodec-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB292551A18E0092FDB7 /* libpjsip-ua-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjsip-ua-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libpjsip-ua-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB2A2551A18E0092FDB7 /* libpjsua-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjsua-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libpjsua-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB2B2551A18E0092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjsua2-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libpjsua2-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB2C2551A18E0092FDB7 /* libspeex-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libspeex-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libspeex-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB2D2551A18E0092FDB7 /* libpjnath-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjnath-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libpjnath-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB2E2551A18E0092FDB7 /* libpjmedia-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjmedia-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libpjmedia-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB2F2551A18E0092FDB7 /* libpj-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpj-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libpj-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB302551A18E0092FDB7 /* libwebrtc-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libwebrtc-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libwebrtc-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB312551A18E0092FDB7 /* libg7221codec-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libg7221codec-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libg7221codec-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB322551A18E0092FDB7 /* libsrtp-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsrtp-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libsrtp-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB332551A18E0092FDB7 /* libpjsip-simple-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjsip-simple-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libpjsip-simple-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB342551A18E0092FDB7 /* libpjlib-util-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjlib-util-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libpjlib-util-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB352551A18E0092FDB7 /* libpjmedia-audiodev-x86_64-apple-darwin18.7.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpjmedia-audiodev-x86_64-apple-darwin18.7.0.a"; path = "../lib/pjproject/lib/libpjmedia-audiodev-x86_64-apple-darwin18.7.0.a"; sourceTree = "<group>"; };
+		B327CB4B2551A2940092FDB7 /* CoreAudioTypes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioTypes.framework; path = System/Library/Frameworks/CoreAudioTypes.framework; sourceTree = SDKROOT; };
+		B327CB4C2551A2940092FDB7 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
+		B327CB4D2551A2940092FDB7 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		B327CB512551A2F40092FDB7 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
+		B327CB532551A2FD0092FDB7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		B337E2C32554468C001696B7 /* config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = config.json; path = ../config.json; sourceTree = "<group>"; };
+		B33839062551C692000D6F04 /* libopus.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopus.a; path = ../lib/opus/libopus.a; sourceTree = "<group>"; };
+		B33839082551D3EF000D6F04 /* osxapp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = osxapp.cpp; sourceTree = "<group>"; };
+		B392C7A8255409390068492F /* libboost_date_time.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_date_time.dylib; path = /usr/local/opt/boost/lib/libboost_date_time.dylib; sourceTree = "<group>"; };
+		B392C7A9255409390068492F /* libboost_filesystem.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_filesystem.dylib; path = /usr/local/opt/boost/lib/libboost_filesystem.dylib; sourceTree = "<group>"; };
+		B392C7AA255409390068492F /* libboost_system.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_system.dylib; path = /usr/local/opt/boost/lib/libboost_system.dylib; sourceTree = "<group>"; };
+		B392C7B8255412560068492F /* libcryptopp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcryptopp.dylib; path = /usr/local/opt/cryptopp/lib/libcryptopp.dylib; sourceTree = "<absolute>"; };
+		B392C7BA255412770068492F /* libopus.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopus.0.dylib; path = /usr/local/opt/opus/lib/libopus.0.dylib; sourceTree = "<absolute>"; };
+		B39C3B432552C3CE00BBD999 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+		B39C3B4A2552E1E700BBD999 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		B39C3B562552EF1900BBD999 /* Tinyphone-C-Interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Tinyphone-C-Interface.h"; sourceTree = "<group>"; };
+		B3B8EE172552A26D00B903D1 /* boost.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = boost.xcframework; path = vendor/boost/dist/boost.xcframework; sourceTree = "<group>"; };
+		B3B8EE192552A6D400B903D1 /* app.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = app.h; sourceTree = "<group>"; };
+		B3B92C3C256804BE0095EF2C /* tpendpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tpendpoint.h; path = ../../tinyphone/tpendpoint.h; sourceTree = "<group>"; };
+		B3B92C3D2568152A0095EF2C /* mod_notify.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mod_notify.cpp; path = ../../tinyphone/mod_notify.cpp; sourceTree = "<group>"; };
+		B3D53FC82551696600523D5F /* AccountsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountsView.xib; sourceTree = "<group>"; };
+		B3D53FCB255169CF00523D5F /* AccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsView.swift; sourceTree = "<group>"; };
+		B3D53FCD25516A4200523D5F /* LoadableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadableView.swift; sourceTree = "<group>"; };
+		B3DDA55925515DF700D269C9 /* Tinyphone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tinyphone.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3DDA55C25515DF700D269C9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B3DDA55E25515DF700D269C9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B3DDA56025515DF900D269C9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B3DDA56325515DF900D269C9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B3DDA56525515DF900D269C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B3DDA56625515DF900D269C9 /* tinyphone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tinyphone.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B3DDA55625515DF700D269C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B39C3B4B2552E1E700BBD999 /* AppKit.framework in Frameworks */,
+				B39C3B442552C3CE00BBD999 /* libresolv.tbd in Frameworks */,
+				B327CB542551A2FD0092FDB7 /* AudioToolbox.framework in Frameworks */,
+				B327CB522551A2F40092FDB7 /* AudioUnit.framework in Frameworks */,
+				B327CB502551A2940092FDB7 /* CoreAudio.framework in Frameworks */,
+				B327CB1A2551A0530092FDB7 /* libpjmedia-audiodev-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB1B2551A0530092FDB7 /* libpjmedia-codec-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB122551A0410092FDB7 /* libpjsip-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB362551A18E0092FDB7 /* libpjmedia-videodev-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB372551A18E0092FDB7 /* libyuv-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB382551A18E0092FDB7 /* libresample-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB392551A18E0092FDB7 /* libpjmedia-codec-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB3A2551A18E0092FDB7 /* libgsmcodec-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB3B2551A18E0092FDB7 /* libpjsdp-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB3C2551A18E0092FDB7 /* libpjsip-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB3D2551A18E0092FDB7 /* libilbccodec-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB3E2551A18E0092FDB7 /* libpjsip-ua-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB3F2551A18E0092FDB7 /* libpjsua-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB402551A18E0092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B392C7A6255408B70068492F /* boost.xcframework in Frameworks */,
+				B327CB412551A18E0092FDB7 /* libspeex-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB422551A18E0092FDB7 /* libpjnath-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB432551A18E0092FDB7 /* libpjmedia-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB442551A18E0092FDB7 /* libpj-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B392C7AB255409390068492F /* libboost_date_time.dylib in Frameworks */,
+				B327CB452551A18E0092FDB7 /* libwebrtc-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB462551A18E0092FDB7 /* libg7221codec-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB472551A18E0092FDB7 /* libsrtp-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB482551A18E0092FDB7 /* libpjsip-simple-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB492551A18E0092FDB7 /* libpjlib-util-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB4A2551A18E0092FDB7 /* libpjmedia-audiodev-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB202551A05E0092FDB7 /* libpjlib-util-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B392C7AF255409390068492F /* libboost_system.dylib in Frameworks */,
+				B327CB1C2551A0530092FDB7 /* libpjmedia-videodev-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB142551A0410092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB0E2551A0130092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB102551A0410092FDB7 /* libpjsip-simple-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB1E2551A0530092FDB7 /* libpjsdp-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB112551A0410092FDB7 /* libpjsip-ua-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB0F2551A0350092FDB7 /* libpj-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB132551A0410092FDB7 /* libpjsua-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B327CB1D2551A0530092FDB7 /* libpjmedia-x86_64-apple-darwin18.7.0.a in Frameworks */,
+				B392C7AD255409390068492F /* libboost_filesystem.dylib in Frameworks */,
+				B33839072551C692000D6F04 /* libopus.a in Frameworks */,
+				B327CB032551973A0092FDB7 /* libstatsd_static.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9EDB4E7B95299CB02F683BF7 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		B327CACF255178050092FDB7 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B3B92C3D2568152A0095EF2C /* mod_notify.cpp */,
+				B3B92C3C256804BE0095EF2C /* tpendpoint.h */,
+				B3025C1F25530D7E00C331CA /* Tinyphone-OC.hpp */,
+				B3025C1E25530D7E00C331CA /* Tinyphone-OC.mm */,
+				B39C3B562552EF1900BBD999 /* Tinyphone-C-Interface.h */,
+				B3B8EE192552A6D400B903D1 /* app.h */,
+				B327CADE255178490092FDB7 /* account.cpp */,
+				B327CAD4255178480092FDB7 /* account.h */,
+				B327CAD2255178480092FDB7 /* call.cpp */,
+				B327CAE6255178490092FDB7 /* call.h */,
+				B327CAEA255178490092FDB7 /* channel.h */,
+				B327CAE1255178490092FDB7 /* config.cpp */,
+				B327CADB255178480092FDB7 /* config.h */,
+				B327CAD6255178480092FDB7 /* consts.h */,
+				B327CAE7255178490092FDB7 /* crypt.h */,
+				B327CAE3255178490092FDB7 /* enum.h */,
+				B327CAD7255178480092FDB7 /* events.h */,
+				B327CAE2255178490092FDB7 /* json.h */,
+				B327CADF255178490092FDB7 /* log.h */,
+				B327CAF12551784A0092FDB7 /* metrics.h */,
+				B327CAD8255178480092FDB7 /* microtar.cpp */,
+				B327CAE0255178490092FDB7 /* microtar.h */,
+				B327CAF02551784A0092FDB7 /* net.cpp */,
+				B327CAD9255178480092FDB7 /* net.h */,
+				B327CAED2551784A0092FDB7 /* phone.cpp */,
+				B327CAD1255178480092FDB7 /* phone.h */,
+				B327CAEF2551784A0092FDB7 /* resource.h */,
+				B327CADA255178480092FDB7 /* resource.rc */,
+				B327CAEC2551784A0092FDB7 /* server.cpp */,
+				B327CAE8255178490092FDB7 /* server.h */,
+				B327CADD255178490092FDB7 /* stdafx.h */,
+				B327CAEE2551784A0092FDB7 /* utils.cpp */,
+				B327CAE5255178490092FDB7 /* utils.h */,
+				B327CAD0255178470092FDB7 /* Tinyphone-Bridging-Header.h */,
+				B33839082551D3EF000D6F04 /* osxapp.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		B327CB00255195BC0092FDB7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B392C7A8255409390068492F /* libboost_date_time.dylib */,
+				B392C7A9255409390068492F /* libboost_filesystem.dylib */,
+				B392C7AA255409390068492F /* libboost_system.dylib */,
+				B39C3B4A2552E1E700BBD999 /* AppKit.framework */,
+				B39C3B432552C3CE00BBD999 /* libresolv.tbd */,
+				B3B8EE172552A26D00B903D1 /* boost.xcframework */,
+				B33839062551C692000D6F04 /* libopus.a */,
+				B327CB532551A2FD0092FDB7 /* AudioToolbox.framework */,
+				B327CB512551A2F40092FDB7 /* AudioUnit.framework */,
+				B327CB4D2551A2940092FDB7 /* CoreAudio.framework */,
+				B327CB4C2551A2940092FDB7 /* CoreAudioKit.framework */,
+				B327CB4B2551A2940092FDB7 /* CoreAudioTypes.framework */,
+				B327CB1F2551A05B0092FDB7 /* libpjlib-util-x86_64-apple-darwin18.7.0.a */,
+				B327CB162551A0510092FDB7 /* libpjmedia-audiodev-x86_64-apple-darwin18.7.0.a */,
+				B327CB312551A18E0092FDB7 /* libg7221codec-x86_64-apple-darwin18.7.0.a */,
+				B327CB252551A18E0092FDB7 /* libgsmcodec-x86_64-apple-darwin18.7.0.a */,
+				B327CB282551A18E0092FDB7 /* libilbccodec-x86_64-apple-darwin18.7.0.a */,
+				B327CB2F2551A18E0092FDB7 /* libpj-x86_64-apple-darwin18.7.0.a */,
+				B327CB342551A18E0092FDB7 /* libpjlib-util-x86_64-apple-darwin18.7.0.a */,
+				B327CB352551A18E0092FDB7 /* libpjmedia-audiodev-x86_64-apple-darwin18.7.0.a */,
+				B327CB172551A0510092FDB7 /* libpjmedia-codec-x86_64-apple-darwin18.7.0.a */,
+				B327CB242551A18E0092FDB7 /* libpjmedia-codec-x86_64-apple-darwin18.7.0.a */,
+				B327CB152551A0510092FDB7 /* libpjmedia-videodev-x86_64-apple-darwin18.7.0.a */,
+				B327CB182551A0510092FDB7 /* libpjmedia-x86_64-apple-darwin18.7.0.a */,
+				B327CB2E2551A18E0092FDB7 /* libpjmedia-x86_64-apple-darwin18.7.0.a */,
+				B327CB2D2551A18E0092FDB7 /* libpjnath-x86_64-apple-darwin18.7.0.a */,
+				B327CB192551A0510092FDB7 /* libpjsdp-x86_64-apple-darwin18.7.0.a */,
+				B327CB0C25519FFC0092FDB7 /* libpjsip-simple-x86_64-apple-darwin18.7.0.a */,
+				B327CB332551A18E0092FDB7 /* libpjsip-simple-x86_64-apple-darwin18.7.0.a */,
+				B327CB0D25519FFC0092FDB7 /* libpjsip-ua-x86_64-apple-darwin18.7.0.a */,
+				B327CB292551A18E0092FDB7 /* libpjsip-ua-x86_64-apple-darwin18.7.0.a */,
+				B327CB0A25519FFC0092FDB7 /* libpjsip-x86_64-apple-darwin18.7.0.a */,
+				B327CB0B25519FFC0092FDB7 /* libpjsua-x86_64-apple-darwin18.7.0.a */,
+				B327CB0925519FFC0092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a */,
+				B327CB04255197CC0092FDB7 /* libpj-x86_64-apple-darwin18.7.0.a */,
+				B327CB212551A18E0092FDB7 /* libpjmedia-videodev-x86_64-apple-darwin18.7.0.a */,
+				B327CB262551A18E0092FDB7 /* libpjsdp-x86_64-apple-darwin18.7.0.a */,
+				B327CB272551A18E0092FDB7 /* libpjsip-x86_64-apple-darwin18.7.0.a */,
+				B327CB2A2551A18E0092FDB7 /* libpjsua-x86_64-apple-darwin18.7.0.a */,
+				B327CB2B2551A18E0092FDB7 /* libpjsua2-x86_64-apple-darwin18.7.0.a */,
+				B327CB232551A18E0092FDB7 /* libresample-x86_64-apple-darwin18.7.0.a */,
+				B327CB2C2551A18E0092FDB7 /* libspeex-x86_64-apple-darwin18.7.0.a */,
+				B327CB322551A18E0092FDB7 /* libsrtp-x86_64-apple-darwin18.7.0.a */,
+				B327CB302551A18E0092FDB7 /* libwebrtc-x86_64-apple-darwin18.7.0.a */,
+				B327CB222551A18E0092FDB7 /* libyuv-x86_64-apple-darwin18.7.0.a */,
+				B327CB01255195BD0092FDB7 /* libstatsd_static.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B3D53FCA2551699600523D5F /* Custom Views */ = {
+			isa = PBXGroup;
+			children = (
+				B3D53FC82551696600523D5F /* AccountsView.xib */,
+				B3D53FCB255169CF00523D5F /* AccountsView.swift */,
+				B3D53FCD25516A4200523D5F /* LoadableView.swift */,
+			);
+			path = "Custom Views";
+			sourceTree = "<group>";
+		};
+		B3DDA55025515DF700D269C9 = {
+			isa = PBXGroup;
+			children = (
+				B337E2C32554468C001696B7 /* config.json */,
+				B392C7BA255412770068492F /* libopus.0.dylib */,
+				B392C7B8255412560068492F /* libcryptopp.dylib */,
+				B327CACF255178050092FDB7 /* src */,
+				B3DDA55B25515DF700D269C9 /* tinyphone */,
+				B3DDA55A25515DF700D269C9 /* Products */,
+				B327CB00255195BC0092FDB7 /* Frameworks */,
+				9EDB4E7B95299CB02F683BF7 /* Pods */,
+			);
+			sourceTree = "<group>";
+		};
+		B3DDA55A25515DF700D269C9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B3DDA55925515DF700D269C9 /* Tinyphone.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B3DDA55B25515DF700D269C9 /* tinyphone */ = {
+			isa = PBXGroup;
+			children = (
+				B3D53FCA2551699600523D5F /* Custom Views */,
+				B3DDA55C25515DF700D269C9 /* AppDelegate.swift */,
+				B3DDA55E25515DF700D269C9 /* ViewController.swift */,
+				B3DDA56025515DF900D269C9 /* Assets.xcassets */,
+				B3DDA56225515DF900D269C9 /* Main.storyboard */,
+				B3DDA56525515DF900D269C9 /* Info.plist */,
+				B3DDA56625515DF900D269C9 /* tinyphone.entitlements */,
+			);
+			path = tinyphone;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B3DDA55825515DF700D269C9 /* Tinyphone */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B3DDA56925515DF900D269C9 /* Build configuration list for PBXNativeTarget "Tinyphone" */;
+			buildPhases = (
+				B3DDA55525515DF700D269C9 /* Sources */,
+				B3DDA55625515DF700D269C9 /* Frameworks */,
+				B3DDA55725515DF700D269C9 /* Resources */,
+				B327CB0825519E550092FDB7 /* Embed Frameworks */,
+				B392C7A52554035D0068492F /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Tinyphone;
+			productName = tinyphone;
+			productReference = B3DDA55925515DF700D269C9 /* Tinyphone.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B3DDA55125515DF700D269C9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1110;
+				LastUpgradeCheck = 1110;
+				ORGANIZATIONNAME = "Kinshuk  Bairagi";
+				TargetAttributes = {
+					B3DDA55825515DF700D269C9 = {
+						CreatedOnToolsVersion = 11.1;
+						LastSwiftMigration = 1110;
+					};
+				};
+			};
+			buildConfigurationList = B3DDA55425515DF700D269C9 /* Build configuration list for PBXProject "Tinyphone" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B3DDA55025515DF700D269C9;
+			productRefGroup = B3DDA55A25515DF700D269C9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B3DDA55825515DF700D269C9 /* Tinyphone */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B3DDA55725515DF700D269C9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B3DDA56125515DF900D269C9 /* Assets.xcassets in Resources */,
+				B3DDA56425515DF900D269C9 /* Main.storyboard in Resources */,
+				B327CAF62551784A0092FDB7 /* resource.rc in Resources */,
+				B3D53FC92551696600523D5F /* AccountsView.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B392C7A52554035D0068492F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nEXECFILE=${BUILT_PRODUCTS_DIR}/${EXECUTABLE_PATH}\ndeclare -a TARGETS=(\"libcryptopp.dylib\" \"libopus.0.dylib\" \"libboost_filesystem.dylib\" \"libboost_system.dylib\" \"libboost_date_time.dylib\")\nfor TARGET in \"${TARGETS[@]}\" ; do\necho \"Running for $TARGET\"\nFULLTARGET=`otool -LD ${EXECFILE} | grep $TARGET | awk '{ print $1 }'`\necho $FULLTARGET\ninstall_name_tool -change ${FULLTARGET} \"@rpath/${TARGET}\" ${EXECFILE}\ndone\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B3DDA55525515DF700D269C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B327CAFD2551784A0092FDB7 /* phone.cpp in Sources */,
+				B3D53FCE25516A4200523D5F /* LoadableView.swift in Sources */,
+				B3D53FCC255169CF00523D5F /* AccountsView.swift in Sources */,
+				B3DDA55F25515DF700D269C9 /* ViewController.swift in Sources */,
+				B327CAFE2551784A0092FDB7 /* utils.cpp in Sources */,
+				B327CAFC2551784A0092FDB7 /* server.cpp in Sources */,
+				B327CAF82551784A0092FDB7 /* account.cpp in Sources */,
+				B33839092551D3EF000D6F04 /* osxapp.cpp in Sources */,
+				B3B92C3E2568152A0095EF2C /* mod_notify.cpp in Sources */,
+				B327CAF52551784A0092FDB7 /* microtar.cpp in Sources */,
+				B327CAF32551784A0092FDB7 /* call.cpp in Sources */,
+				B3DDA55D25515DF700D269C9 /* AppDelegate.swift in Sources */,
+				B327CAF92551784A0092FDB7 /* config.cpp in Sources */,
+				B3025C2025530D7E00C331CA /* Tinyphone-OC.mm in Sources */,
+				B327CAFF2551784A0092FDB7 /* net.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		B3DDA56225515DF900D269C9 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B3DDA56325515DF900D269C9 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B3DDA56725515DF900D269C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../lib/crow/include,
+					../lib/json/include/,
+					"/usr/local/opt/boost@1.60/include",
+					../lib/pjproject/pjlib/include,
+					../lib/pjproject/pjnath/include,
+					"../lib/pjproject/pjlib-util/include",
+					../lib/pjproject/pjmedia/include,
+					../lib/pjproject/pjsip/include,
+					../lib/curl/include,
+					"/Volumes/Workspace/code/voice/tinyphone/lib/pjproject/pjlib-util/include",
+					../lib,
+					"../lib/statsd-cpp/include",
+					../lib/portaudio/include,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-lcryptopp",
+					"-lcurl",
+				);
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B3DDA56825515DF900D269C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../lib/crow/include,
+					../lib/json/include/,
+					"/usr/local/opt/boost@1.60/include",
+					../lib/pjproject/pjlib/include,
+					../lib/pjproject/pjnath/include,
+					"../lib/pjproject/pjlib-util/include",
+					../lib/pjproject/pjmedia/include,
+					../lib/pjproject/pjsip/include,
+					../lib/curl/include,
+					"/Volumes/Workspace/code/voice/tinyphone/lib/pjproject/pjlib-util/include",
+					../lib,
+					"../lib/statsd-cpp/include",
+					../lib/portaudio/include,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = (
+					"-lcryptopp",
+					"-lcurl",
+				);
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		B3DDA56A25515DF900D269C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = tinyphone/tinyphone.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 25JQ655X97;
+				GCC_NO_COMMON_BLOCKS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INFOPLIST_FILE = tinyphone/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib,
+					"/Volumes/Workspace/code/voice/tinyphone/lib/statsd-cpp/build-osx/lib",
+					/Volumes/Workspace/code/voice/tinyphone/lib/pjproject/lib,
+					/usr/local/Cellar/boost/1.72.0_3/lib,
+				);
+				MARKETING_VERSION = 36.0.0.80;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DBOOST_SYSTEM_DYN_LINK",
+				);
+				OTHER_LDFLAGS = (
+					"-lcryptopp",
+					"-lcurl",
+					"-lpthread",
+					"-lboost_filesystem",
+					"-lboost_system",
+					"-lboost_date_time",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.voiceip.tphone;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "src/Tinyphone-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B3DDA56B25515DF900D269C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = tinyphone/tinyphone.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 25JQ655X97;
+				GCC_NO_COMMON_BLOCKS = NO;
+				INFOPLIST_FILE = tinyphone/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/lib,
+					"/Volumes/Workspace/code/voice/tinyphone/lib/statsd-cpp/build-osx/lib",
+					/Volumes/Workspace/code/voice/tinyphone/lib/pjproject/lib,
+					/usr/local/Cellar/boost/1.72.0_3/lib,
+				);
+				MARKETING_VERSION = 36.0.0.80;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DBOOST_SYSTEM_DYN_LINK",
+				);
+				OTHER_LDFLAGS = (
+					"-lcryptopp",
+					"-lcurl",
+					"-lpthread",
+					"-lboost_filesystem",
+					"-lboost_system",
+					"-lboost_date_time",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.voiceip.tphone;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "src/Tinyphone-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B3DDA55425515DF700D269C9 /* Build configuration list for PBXProject "Tinyphone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B3DDA56725515DF900D269C9 /* Debug */,
+				B3DDA56825515DF900D269C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B3DDA56925515DF900D269C9 /* Build configuration list for PBXNativeTarget "Tinyphone" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B3DDA56A25515DF900D269C9 /* Debug */,
+				B3DDA56B25515DF900D269C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B3DDA55125515DF700D269C9 /* Project object */;
+}

@@ -33,5 +33,6 @@
 	"persistAccounts" : true,
 	"enableSTUN" : true,
 	"enableICE" : false,
-	"stunServers" : [ "stun.l.google.com:19302" ]
+	"stunServers" : [ "stun.l.google.com:19302" ],
+	"handleNOTIFY" : true
 }

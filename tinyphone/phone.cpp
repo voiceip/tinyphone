@@ -5,6 +5,8 @@
 #include "json.h"
 #include "config.h"
 #include <iomanip>
+#include <boost/foreach.hpp>
+#include <boost/algorithm/string.hpp>
 
 using json = nlohmann::json;
 
@@ -13,11 +15,20 @@ using json = nlohmann::json;
 #define RING_ON	950
 #define RING_OFF	1700
 
+#define RINGBACK_FREQ1    440
+#define RINGBACK_FREQ2    480
+#define RINGBACK_ON    1000
+#define RINGBACK_OFF    2000
+
 namespace tp {
 
 	void TinyPhone::SetCodecs() {
 		pjsua_codec_info codec[32];
-		ZeroMemory(codec, sizeof(codec));
+        #ifdef _WIN32
+        ZeroMemory(codec, sizeof(codec));
+        #else
+        memset(&codec, 0, sizeof(codec));
+        #endif
 		unsigned uCount = 32;
 		if (pjsua_enum_codecs(codec, &uCount) == PJ_SUCCESS) {
 			for (unsigned i = 0; i<uCount; ++i) {
@@ -284,9 +295,10 @@ namespace tp {
 				std::ofstream o(userConfigFile);
 				o << std::setw(4) << j << std::endl;
 				o.close();
+				//PJ_LOG(3, (__FILENAME__, "SaveAccounts:: Successfully to %s", userConfigFile.c_str()));
 				return true;
 			} catch(const std::exception& e) {
-				PJ_LOG(1, (__FILENAME__, "SaveAccounts:: Error %s", e.what()));
+				PJ_LOG(3, (__FILENAME__, "SaveAccounts:: Error %s", e.what()));
 				return false;
 			}
 		}
@@ -296,6 +308,7 @@ namespace tp {
 	std::future<int> TinyPhone::AddAccount(AccountConfig& config) throw (std::exception) {
 		string account_name = SIP_ACCOUNT_NAME(config.username, config.domain);
 		tp::MetricsClient.increment("login");
+		std::future<int> res;
 		synchronized(add_acc_mutex){
 			auto exits = AccountByName(account_name);
 			if (exits != nullptr) {
@@ -333,14 +346,13 @@ namespace tp {
 
 				SIPAccount *acc(new SIPAccount(this, account_name, eventStream, config));
 				acc->domain = config.domain;
-				auto res = acc->Create(acc_cfg);
+				res = acc->Create(acc_cfg);
 
 				accounts.insert(std::pair<string, SIPAccount*>(account_name, acc));
-
 				SaveAccounts();
-				return res;
 			}
 		}
+		return res;
 	}
 
 	void TinyPhone::InitMetricsClient() {
@@ -370,14 +382,18 @@ namespace tp {
 		} 
 	}
 
-	void TinyPhone::StartRinging(SIPCall* call) {
+	void TinyPhone::StartRinging(SIPCall* call, RingTune tune) {
 		if (call->isRinging == PJ_FALSE){
 			call->isRinging = PJ_TRUE;
-			if (++ringing_count==1){
+			AudioMedia& play_med = Endpoint::instance().audDevManager().getPlaybackDevMedia();
+			int count = tune == RingBack ? ++ringback_count : ++ringing_count ;
+			if (count == 1){
 				PJ_LOG(3, (__FILENAME__, "TinyPhone::StartRinging....."));
 				try {
-					AudioMedia& play_med = Endpoint::instance().audDevManager().getPlaybackDevMedia();
-					ringingTone->startTransmit(play_med);
+					if (tune == RingBack)
+						ringbackTone->startTransmit(play_med);
+					else
+						ringingTone->startTransmit(play_med);
 				} catch (...) {
 					PJ_LOG(3, (__FILENAME__, "TinyPhone::StartRinging Error"));
 				}
@@ -387,28 +403,33 @@ namespace tp {
 		PJ_LOG(3, (__FILENAME__, "TinyPhone::StartRinging skipped"));
 	}
 
+
 	void TinyPhone::StopRinging(SIPCall* call) {
-		PJ_LOG(3, (__FILENAME__, "TinyPhone::StopRinging....."));
 		if (call->isRinging) {
+			PJ_LOG(3, (__FILENAME__, "TinyPhone::StopRinging....."));
 			call->isRinging = PJ_FALSE;
-			//pj_assert(ringing_count>0);
-			if (--ringing_count == 0) 
-			{
-				try{
-					AudioMedia& play_med = Endpoint::instance().audDevManager().getPlaybackDevMedia();
-					ringingTone->stopTransmit(play_med);
-				} catch (Error& err) {
-					UNUSED_ARG(err);
-					PJ_LOG(3, (__FILENAME__, "TinyPhone::StopRinging Error"));
+			try {
+				AudioMedia& play_med = Endpoint::instance().audDevManager().getPlaybackDevMedia();
+				if (--ringing_count == 0) {
+						ringingTone->stopTransmit(play_med);
 				}
+				if (--ringback_count == 0){
+					ringbackTone->stopTransmit(play_med);
+				}
+			} catch (Error& err) {
+				UNUSED_ARG(err);
+				PJ_LOG(3, (__FILENAME__, "TinyPhone::StopRinging Error"));
 			}
 		}
 	}
 
 	bool TinyPhone::Initialize(){
 		PJ_LOG(3, (__FILENAME__, "TinyPhone::Initialize....."));
+		InitOptionsModule();
 		ringing_count = 0;
+		ringback_count = 0;
 		ringingTone = new ToneGenerator();
+		ringbackTone = new ToneGenerator();
 		try {
 			ToneDesc tone;
 			tone.freq1 = RING_FREQ1;
@@ -418,17 +439,27 @@ namespace tp {
 			ToneDescVector tones = { tone };
 			ringingTone->createToneGenerator();
 			ringingTone->play(tones, true);
+			
+			ToneDesc ringbackToneDesc;
+			ringbackToneDesc.freq1 = RINGBACK_FREQ1;
+			ringbackToneDesc.freq2 = RINGBACK_FREQ2;
+			ringbackToneDesc.on_msec = RINGBACK_ON;
+			ringbackToneDesc.off_msec = RINGBACK_OFF;
+			ToneDescVector ringBackTones = { ringbackToneDesc };
+			ringbackTone->createToneGenerator();
+			ringbackTone->play(ringBackTones, true);
 		}
 		catch (Error& err) {
 			UNUSED_ARG(err);
 			PJ_LOG(3, (__FILENAME__, "TinyPhone::Initialize Error"));
 
 		}
-        	return true;
+		return true;
 	}
 
 	void TinyPhone::Shutdown(){
 		ringingTone->stop();
+		ringbackTone->stop();
 	}
 
 }

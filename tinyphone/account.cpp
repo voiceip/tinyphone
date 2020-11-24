@@ -2,6 +2,7 @@
 #include "account.h"
 #include "phone.h"
 #include "metrics.h"
+#include <boost/foreach.hpp>
 
 using namespace std;
 using namespace pj;
@@ -23,13 +24,21 @@ namespace tp {
 
 	void SIPAccount::reRegister() {
 		PJ_LOG(3, (__FILENAME__, "ReReigstering %s ", account_name.c_str()));
-		setRegistration(true);
+        try {
+            setRegistration(true);
+        } catch (pj::Error& e){
+            //its okay will only happen due to pjsua_acc_set_registration(id, renew) error: Object is busy (PJSIP_EBUSY) (status=171001) [../src/pjsua2/account.cpp:1029]
+        }
 	}
 
 	void SIPAccount::UnRegister() {
 		tp::MetricsClient.increment("account.unregister");
 		PJ_LOG(3, (__FILENAME__, "UnRegister %s ", account_name.c_str()));
-		setRegistration(false);
+        try {
+            setRegistration(false);
+        } catch (pj::Error& e){
+            //will only happen due to pjsua_acc_set_registration(id, renew) error: Object is busy (PJSIP_EBUSY) (status=171001) [../src/pjsua2/account.cpp:1029]
+        }
 	}
 
 	void SIPAccount::onRegState(OnRegStateParam &prm) 
@@ -50,7 +59,7 @@ namespace tp {
 		}
 	}
 
-	std::future<int> SIPAccount::Create(const pj::AccountConfig &cfg, bool make_default) throw(Error) {
+	std::future<int> SIPAccount::Create(const pj::AccountConfig &cfg, bool make_default) {
 		create(cfg, make_default);
 		return create_result_promise.get_future();
 	}
