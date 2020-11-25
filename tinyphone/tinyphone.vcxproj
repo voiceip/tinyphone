@@ -173,6 +173,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="account.h" />
+    <ClInclude Include="app.hpp" />
     <ClInclude Include="call.h" />
     <ClInclude Include="channel.h" />
     <ClInclude Include="config.h" />
@@ -195,7 +196,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="account.cpp" />
-    <ClCompile Include="app.cpp" />
+    <ClCompile Include="baseapp.cpp" />
     <ClCompile Include="call.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="guicon.cpp" />
@@ -212,6 +213,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="utils.cpp" />
+    <ClCompile Include="winapp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\splash.bmp" />

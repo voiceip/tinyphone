@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#include "server.h"
 #include "utils.h"
 #include "net.h"
 #include "consts.h"
@@ -9,6 +11,9 @@
 
 #include <boost/foreach.hpp>
 
+using namespace std;
+using namespace pj;
+
 inline void  pj_logerror(pj_status_t status, char * message) {
     if (status != PJ_SUCCESS) {
         CROW_LOG_ERROR << "pjsua returned error : " << status;
@@ -18,7 +23,7 @@ inline void  pj_logerror(pj_status_t status, char * message) {
 namespace tp {
 
     tm* launchDate;
-    string sipLogFile, httpLogFile;
+    std::string sipLogFile, httpLogFile;
     TinyPhoneHttpServer* tpHttpServer;
     tp::Endpoint ep;
 
@@ -120,7 +125,7 @@ namespace tp {
     }
 
 
-    void Start(){
+    void StartApp(){
         
         CROW_LOG_INFO << "Starting Tinyphone....";
 
@@ -131,14 +136,12 @@ namespace tp {
         tp::httpLogFile = GetLogFile(HTTP_LOG_FILE, "log");
 
         InitPJSUAEndpoint(tp::sipLogFile);
-        TinyPhoneHttpServer server(&ep, tp::httpLogFile);
-        tp::tpHttpServer = &server;
+        tp::tpHttpServer = new TinyPhoneHttpServer(&ep, tp::httpLogFile);
         
-        server.Start();
-        exit(0);
+        tp::tpHttpServer->Start();
     }
 
-    void Stop(){
+    void StopApp(){
         CROW_LOG_INFO << "Stopping Tinyphone....";
         if(tp::tpHttpServer != nullptr)
             tp::tpHttpServer->Stop();

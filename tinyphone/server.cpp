@@ -731,7 +731,8 @@ void TinyPhoneHttpServer::Stop(){
 
 	CROW_LOG_INFO << "TinyPhoneHttpServer::Stop.....";
 
-	if (running.exchange(false)) {
+	if (running) {
+		running = false; 
 		CROW_LOG_INFO << "Terminating current running call(s) if any...";
 
 		pj_thread_auto_register();

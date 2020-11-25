@@ -59,11 +59,12 @@ namespace tp {
 }
 
 void Start(){
-   tp::Start();
+   tp::StartApp();
+   exit(0);
 }
 
 void Stop(){
-    tp::Stop();
+    tp::StopApp();
 }
 
 char* StringtoCharPtr(std::string str){

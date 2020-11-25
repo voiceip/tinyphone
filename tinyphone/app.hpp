@@ -10,14 +10,15 @@
 namespace tp {
 
     extern tm* launchDate;
-    extern string sipLogFile;
-    extern string httpLogFile;
-    extern TinyPhoneHttpServer* tpHttpServer;
+    extern std::string sipLogFile;
+    extern std::string httpLogFile;
 
     void StartApp();
     void StopApp();
     TinyPhone* GetPhone();
     std::vector<std::string> GetLocalDNSServers();
+
+    //void InitPJSUAEndpoint(std::string logfile) ; //temporary
 }
 
 #endif
