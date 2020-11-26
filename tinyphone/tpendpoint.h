@@ -8,7 +8,7 @@
 namespace tp {
     class Endpoint : public pj::Endpoint
 	{
-        void onNatDetectionComplete(const OnNatDetectionCompleteParam &prm){ 
+        void onNatDetectionComplete(const pj::OnNatDetectionCompleteParam &prm){ 
             PJ_UNUSED_ARG(prm); 
         }
 

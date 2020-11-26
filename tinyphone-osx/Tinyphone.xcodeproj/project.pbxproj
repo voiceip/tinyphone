@@ -76,6 +76,7 @@
 		B3DDA55F25515DF700D269C9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3DDA55E25515DF700D269C9 /* ViewController.swift */; };
 		B3DDA56125515DF900D269C9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3DDA56025515DF900D269C9 /* Assets.xcassets */; };
 		B3DDA56425515DF900D269C9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3DDA56225515DF900D269C9 /* Main.storyboard */; };
+		B3F31832256EC23E00A3B272 /* baseapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3F31831256EC23D00A3B272 /* baseapp.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -178,7 +179,6 @@
 		B39C3B4A2552E1E700BBD999 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		B39C3B562552EF1900BBD999 /* Tinyphone-C-Interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Tinyphone-C-Interface.h"; sourceTree = "<group>"; };
 		B3B8EE172552A26D00B903D1 /* boost.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = boost.xcframework; path = vendor/boost/dist/boost.xcframework; sourceTree = "<group>"; };
-		B3B8EE192552A6D400B903D1 /* app.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = app.h; sourceTree = "<group>"; };
 		B3B92C3C256804BE0095EF2C /* tpendpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tpendpoint.h; path = ../../tinyphone/tpendpoint.h; sourceTree = "<group>"; };
 		B3B92C3D2568152A0095EF2C /* mod_notify.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = mod_notify.cpp; path = ../../tinyphone/mod_notify.cpp; sourceTree = "<group>"; };
 		B3D53FC82551696600523D5F /* AccountsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AccountsView.xib; sourceTree = "<group>"; };
@@ -191,6 +191,9 @@
 		B3DDA56325515DF900D269C9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B3DDA56525515DF900D269C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B3DDA56625515DF900D269C9 /* tinyphone.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = tinyphone.entitlements; sourceTree = "<group>"; };
+		B3F3182F256EC23100A3B272 /* osxapp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxapp.h; sourceTree = "<group>"; };
+		B3F31831256EC23D00A3B272 /* baseapp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = baseapp.cpp; path = ../../tinyphone/baseapp.cpp; sourceTree = "<group>"; };
+		B3F31833256EC2E100A3B272 /* app.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = app.hpp; path = ../../tinyphone/app.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -259,6 +262,9 @@
 		B327CACF255178050092FDB7 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				B3F31833256EC2E100A3B272 /* app.hpp */,
+				B3F31831256EC23D00A3B272 /* baseapp.cpp */,
+				B3F3182F256EC23100A3B272 /* osxapp.h */,
 				B3B92C3D2568152A0095EF2C /* mod_notify.cpp */,
 				B3B92C3C256804BE0095EF2C /* tpendpoint.h */,
 				B3025C1F25530D7E00C331CA /* Tinyphone-OC.hpp */,
@@ -500,6 +506,7 @@
 				B327CAFC2551784A0092FDB7 /* server.cpp in Sources */,
 				B327CAF82551784A0092FDB7 /* account.cpp in Sources */,
 				B33839092551D3EF000D6F04 /* osxapp.cpp in Sources */,
+				B3F31832256EC23E00A3B272 /* baseapp.cpp in Sources */,
 				B3B92C3E2568152A0095EF2C /* mod_notify.cpp in Sources */,
 				B327CAF52551784A0092FDB7 /* microtar.cpp in Sources */,
 				B327CAF32551784A0092FDB7 /* call.cpp in Sources */,

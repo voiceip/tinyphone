@@ -81,12 +81,13 @@ public:
 	tp::TinyPhone* tinyPhone;
 
 private:
-	std::atomic<bool> running;
+	bool running;
 
 public:
 	TinyPhoneHttpServer(pj::Endpoint* ep, std::string log_file) {
 		endpoint = ep;
 		logfile = log_file;
+		running = false;
 	}
 
 	~TinyPhoneHttpServer() {
