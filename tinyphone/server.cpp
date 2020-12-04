@@ -502,6 +502,51 @@ void TinyPhoneHttpServer::Start() {
 			return tp::response(202, response);
 		}
 	});
+	
+	CROW_ROUTE(app, "/calls/<int>/transfer")
+	.methods("POST"_method)
+	([&phone](const crow::request& req, int call_id) {
+		pj_thread_auto_register();
+		
+		std::string refer_uri;
+		try {
+			json j = json::parse(req.body);
+			j.at("uri").get_to(refer_uri);
+		} catch (...) {
+			return tp::response(400, {
+				{ "message", "Bad request payload." },
+			});
+		}
+		
+		SIPCall* call = phone.CallById(call_id);
+		if (call == nullptr) {
+			return tp::response(400, {
+				{ "message", "Call Not Found" },
+				{"call_id" , call_id}
+			});
+		}
+		
+		auto sip_uri = tp::GetSIPURI(refer_uri, call->getAccount()->domain);
+		CROW_LOG_INFO << "Transfer Request to " << sip_uri ;
+		
+		try {
+			CallOpParam prm;
+			call->xfer(sip_uri, &prm);
+			string account_name = call->getAccount()->Name();
+			json response = {
+				{ "message", "Transfering Call"},
+				{ "call_id", call->getId() },
+				{ "sid", call->getInfo().callIdString },
+				{ "dest", refer_uri },
+				{ "account", account_name }
+			};
+			return tp::response(202, response);
+		}
+		catch (pj::Error& e) {
+			CROW_LOG_ERROR << "Exception catched : " << e.reason;
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
+		}
+	});
 
 	CROW_ROUTE(app, "/calls/<int>/dtmf/<string>")
 		.methods("POST"_method)

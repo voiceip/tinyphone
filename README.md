@@ -121,6 +121,19 @@ The softphone exposes the following resources on port `6060`.
 <td>UnHold call with specified <code>call_id</code></td>
 </tr>
 <tr>
+<td><code>/calls/{call_id}/transfer</code></td>
+<td>POST</td>
+<td>
+<pre lang="json">
+{
+"uri": "sip-uri",
+}
+</pre> 
+</td>
+<td>transfer <code>call_id</code> to specified <code>uri</code></td>
+</tr>
+<tr>
+<tr>
 <td><code>/calls/{call_id}/hangup</code></td>
 <td>POST</td>
 <td></td>
