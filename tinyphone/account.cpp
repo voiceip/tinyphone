@@ -3,6 +3,8 @@
 #include "phone.h"
 #include "metrics.h"
 #include <boost/foreach.hpp>
+#include <boost/asio.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 using namespace std;
 using namespace pj;
@@ -107,7 +109,7 @@ namespace tp {
 
 			calls.push_back(call);
 
-			if(ApplicationConfig.autoAnswer){
+			if(ApplicationConfig.autoAnswer && ApplicationConfig.autoAnswerDelay == 0){
 				CallOpParam prm;
 				prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
 				call->answer(prm);
@@ -118,6 +120,18 @@ namespace tp {
 				prm.statusCode = pjsip_status_code::PJSIP_SC_RINGING;
 				call->answer(prm);
 				phone->StartRinging(call);
+				
+				if(ApplicationConfig.autoAnswer && ApplicationConfig.autoAnswerDelay > 0){
+					boost::asio::io_service io;
+					boost::asio::deadline_timer t(io, boost::posix_time::milliseconds(ApplicationConfig.autoAnswerDelay));
+					t.async_wait([&](const boost::system::error_code& /*e*/){
+						CallOpParam prm;
+						prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
+						call->answer(prm);
+						onCallEstablished(call);
+					});
+					io.run();
+				}
 			}
 		}
 		catch (...) {

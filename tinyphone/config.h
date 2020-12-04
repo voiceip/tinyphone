@@ -72,6 +72,7 @@ namespace tp {
 		std::vector<std::string> stunServers;
 
 		bool handleNOTIFY;
+		long autoAnswerDelay = 0;
 
 		std::string ua(){
 			std::string productVersion;
@@ -118,6 +119,7 @@ namespace tp {
 			{"enableICE", p.enableICE },
 			{"stunServers", p.stunServers },
 			{"handleNOTIFY", p.handleNOTIFY },
+			{"autoAnswerDelay", p.autoAnswerDelay}
 		};
     }
 
@@ -158,6 +160,7 @@ namespace tp {
 		FROM_JSON_OPTIONAL(enableICE);
 		FROM_JSON_OPTIONAL(stunServers);
 		FROM_JSON_OPTIONAL(handleNOTIFY);
+		FROM_JSON_OPTIONAL(autoAnswerDelay);
 	}
    
     extern appConfig ApplicationConfig;

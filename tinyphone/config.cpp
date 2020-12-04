@@ -136,11 +136,12 @@ namespace tp {
 			#endif
 			std::cout << "======= Application Config ======" << std::endl << k.dump(4) << std::endl;
 		}
-		catch (...) {
-			 #ifdef _WIN32
+		catch (nlohmann::detail::parse_error& ex) {
+			#ifdef _WIN32
 			SetConsoleTextAttribute(hConsole, FOREGROUND_YELLOW);
 			#endif
 			std::cout << "======= Remote Config ======" << std::endl << jsonConfig << std::endl;
+			std::cout << "Parse Error " << ex.what()  << std::endl;
 
 			tp::DisplayError("Failed Parsing Config! Please contact support.", OPS::SYNC);
 			exit(1);
