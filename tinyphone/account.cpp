@@ -1,10 +1,13 @@
 #include "stdafx.h"
+#include <boost/foreach.hpp>
+#include <boost/asio/io_service.hpp>  //must be at top https://www.codeofclimber.ru/2015/pjsip-and-winsock2-api-C2039-error/                                                                                            
+#include <boost/asio/deadline_timer.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 #include "account.h"
 #include "phone.h"
 #include "metrics.h"
-#include <boost/foreach.hpp>
-#include <boost/asio.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+
 
 using namespace std;
 using namespace pj;
@@ -26,21 +29,23 @@ namespace tp {
 
 	void SIPAccount::reRegister() {
 		PJ_LOG(3, (__FILENAME__, "ReReigstering %s ", account_name.c_str()));
-        try {
-            setRegistration(true);
-        } catch (pj::Error& e){
-            //its okay will only happen due to pjsua_acc_set_registration(id, renew) error: Object is busy (PJSIP_EBUSY) (status=171001) [../src/pjsua2/account.cpp:1029]
-        }
+		try {
+			setRegistration(true);
+		} catch (pj::Error& e){
+			UNUSED_ARG(e);
+			//its okay will only happen due to pjsua_acc_set_registration(id, renew) error: Object is busy (PJSIP_EBUSY) (status=171001) [../src/pjsua2/account.cpp:1029]
+		}
 	}
 
 	void SIPAccount::UnRegister() {
 		tp::MetricsClient.increment("account.unregister");
 		PJ_LOG(3, (__FILENAME__, "UnRegister %s ", account_name.c_str()));
-        try {
-            setRegistration(false);
-        } catch (pj::Error& e){
-            //will only happen due to pjsua_acc_set_registration(id, renew) error: Object is busy (PJSIP_EBUSY) (status=171001) [../src/pjsua2/account.cpp:1029]
-        }
+		try {
+			setRegistration(false);
+		} catch (pj::Error& e){
+			UNUSED_ARG(e);
+			//will only happen due to pjsua_acc_set_registration(id, renew) error: Object is busy (PJSIP_EBUSY) (status=171001) [../src/pjsua2/account.cpp:1029]
+		}
 	}
 
 	void SIPAccount::onRegState(OnRegStateParam &prm) 
