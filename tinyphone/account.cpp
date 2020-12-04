@@ -106,7 +106,13 @@ namespace tp {
 		PJ_LOG(3, (__FILENAME__, "TimedAnswer Call: [%d]", *call_id));
 		pjsua_call_info call_info;
 		if (pjsua_call_get_info(*call_id, &call_info) == PJ_SUCCESS) {
-			pjsua_call_answer(*call_id,200, NULL, NULL);
+			//check if not already answered.
+			if(call_info.last_status == 180 || call_info.last_status == 183){
+				PJ_LOG(3, (__FILENAME__, "TimedAnswer Call: [%d] Answering Call", *call_id));
+				pjsua_call_answer(*call_id,200, NULL, NULL);
+			} else {
+				PJ_LOG(3, (__FILENAME__, "TimedAnswer Call: [%d] Already Answered", *call_id));
+			}
 		}
 		delete(call_id);
 	}
