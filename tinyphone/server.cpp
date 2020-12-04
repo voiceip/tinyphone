@@ -457,9 +457,7 @@ void TinyPhoneHttpServer::Start() {
 			});
 		}
 		else {
-			CallOpParam prm;
-			prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
-			call->answer(prm);
+			phone.Answer(call);
 			json response = {
 				{ "message",  "Answer Triggered" },
 				{ "call_id" , call_id }

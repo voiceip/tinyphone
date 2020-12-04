@@ -1,8 +1,12 @@
 #include "stdafx.h"
+#include <boost/foreach.hpp>
+
 #include "account.h"
 #include "phone.h"
 #include "metrics.h"
-#include <boost/foreach.hpp>
+#include <pjsua-lib/pjsua.h>
+#include <pjsua-lib/pjsua_internal.h>
+
 
 using namespace std;
 using namespace pj;
@@ -24,21 +28,23 @@ namespace tp {
 
 	void SIPAccount::reRegister() {
 		PJ_LOG(3, (__FILENAME__, "ReReigstering %s ", account_name.c_str()));
-        try {
-            setRegistration(true);
-        } catch (pj::Error& e){
-            //its okay will only happen due to pjsua_acc_set_registration(id, renew) error: Object is busy (PJSIP_EBUSY) (status=171001) [../src/pjsua2/account.cpp:1029]
-        }
+		try {
+			setRegistration(true);
+		} catch (pj::Error& e){
+			UNUSED_ARG(e);
+			//its okay will only happen due to pjsua_acc_set_registration(id, renew) error: Object is busy (PJSIP_EBUSY) (status=171001) [../src/pjsua2/account.cpp:1029]
+		}
 	}
 
 	void SIPAccount::UnRegister() {
 		tp::MetricsClient.increment("account.unregister");
 		PJ_LOG(3, (__FILENAME__, "UnRegister %s ", account_name.c_str()));
-        try {
-            setRegistration(false);
-        } catch (pj::Error& e){
-            //will only happen due to pjsua_acc_set_registration(id, renew) error: Object is busy (PJSIP_EBUSY) (status=171001) [../src/pjsua2/account.cpp:1029]
-        }
+		try {
+			setRegistration(false);
+		} catch (pj::Error& e){
+			UNUSED_ARG(e);
+			//will only happen due to pjsua_acc_set_registration(id, renew) error: Object is busy (PJSIP_EBUSY) (status=171001) [../src/pjsua2/account.cpp:1029]
+		}
 	}
 
 	void SIPAccount::onRegState(OnRegStateParam &prm) 
@@ -95,6 +101,22 @@ namespace tp {
 		}
 	}
 
+	void TimedAnswer(void* _call_id){
+		int *call_id =  (int*) _call_id;
+		PJ_LOG(3, (__FILENAME__, "TimedAnswer Call: [%d]", *call_id));
+		pjsua_call_info call_info;
+		if (pjsua_call_get_info(*call_id, &call_info) == PJ_SUCCESS) {
+			//check if not already answered.
+			if(call_info.last_status == 180 || call_info.last_status == 183){
+				PJ_LOG(3, (__FILENAME__, "TimedAnswer Call: [%d] Answering Call", *call_id));
+				pjsua_call_answer(*call_id,200, NULL, NULL);
+			} else {
+				PJ_LOG(3, (__FILENAME__, "TimedAnswer Call: [%d] Already Answered", *call_id));
+			}
+		}
+		delete(call_id);
+	}
+	 
 	void SIPAccount::onIncomingCall(OnIncomingCallParam &iprm)
 	{
 		SIPCall *call = new SIPCall(*this, iprm.callId);
@@ -104,13 +126,10 @@ namespace tp {
 			PJ_LOG(3, (__FILENAME__, "Incoming Call: [%s] [%s]", ci.remoteUri.c_str(), ci.stateText.c_str()));
 
 			eventStream->publishEvent(ci, iprm);
-
 			calls.push_back(call);
 
-			if(ApplicationConfig.autoAnswer){
-				CallOpParam prm;
-				prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
-				call->answer(prm);
+			if(ApplicationConfig.autoAnswer && ApplicationConfig.autoAnswerDelay == 0){
+				phone->Answer(call);
 				onCallEstablished(call);
 			} else {
 				//play sound
@@ -118,6 +137,12 @@ namespace tp {
 				prm.statusCode = pjsip_status_code::PJSIP_SC_RINGING;
 				call->answer(prm);
 				phone->StartRinging(call);
+				
+				if(ApplicationConfig.autoAnswer && ApplicationConfig.autoAnswerDelay > 0){
+					//TODO: change this to use Endpoint::utilTimerSchedule()
+					int *call_id = new int(iprm.callId);
+					pjsua_schedule_timer2(&TimedAnswer, (void *)call_id, ApplicationConfig.autoAnswerDelay);
+				}
 			}
 		}
 		catch (...) {

@@ -24,11 +24,11 @@ namespace tp {
 
 	void TinyPhone::SetCodecs() {
 		pjsua_codec_info codec[32];
-        #ifdef _WIN32
-        ZeroMemory(codec, sizeof(codec));
-        #else
-        memset(&codec, 0, sizeof(codec));
-        #endif
+		#ifdef _WIN32
+		ZeroMemory(codec, sizeof(codec));
+		#else
+		memset(&codec, 0, sizeof(codec));
+		#endif
 		unsigned uCount = 32;
 		if (pjsua_enum_codecs(codec, &uCount) == PJ_SUCCESS) {
 			for (unsigned i = 0; i<uCount; ++i) {
@@ -193,6 +193,12 @@ namespace tp {
 		BOOST_FOREACH(SIPCall* c, all_calls) {
 			c->HoldCall();
 		}
+	}
+
+	void TinyPhone::Answer(SIPCall* call){
+		CallOpParam prm;
+		prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
+		call->answer(prm);
 	}
 
 	void TinyPhone::Hangup(SIPCall* call) {

@@ -116,6 +116,7 @@ namespace tp {
 
 		void HoldOtherCalls(SIPCall* call);
 
+		void Answer(SIPCall* call);
 		void Hangup(SIPCall* call);
 
 		void HangupAllCalls();
