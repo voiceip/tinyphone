@@ -40,6 +40,7 @@ namespace tp {
 
 		virtual void onCallState(OnCallStateParam &prm);
 		virtual void onCallMediaState(OnCallMediaStateParam &prm);
+		virtual void onCallTransferStatus(OnCallTransferStatusParam &prm);
 		virtual bool HoldCall();
 		virtual bool UnHoldCall();
 		virtual tp::HoldStatus HoldState();

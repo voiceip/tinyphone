@@ -107,6 +107,10 @@ namespace tp {
 		}
 	}
 
+	void SIPCall::onCallTransferStatus(OnCallTransferStatusParam &prm){
+		PJ_LOG(3, (__FILENAME__, "Call [%d] onCallTransferStatus Status Update : %s", getId(),  prm.reason.c_str()));
+	}
+
 	tp::HoldStatus SIPCall::HoldState() {
 		auto call_info = getInfo();
 		if (call_info.state == PJSIP_INV_STATE_CONFIRMED) {
