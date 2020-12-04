@@ -416,10 +416,12 @@ namespace tp {
 			call->isRinging = PJ_FALSE;
 			try {
 				AudioMedia& play_med = Endpoint::instance().audDevManager().getPlaybackDevMedia();
-				if (--ringing_count == 0) {
-						ringingTone->stopTransmit(play_med);
+				if (ringing_count - 1 == 0) {
+					--ringing_count;
+					ringingTone->stopTransmit(play_med);
 				}
-				if (--ringback_count == 0){
+				if (ringback_count - 1 == 0){ //test and then decrement, otherwise can go below zero.
+					--ringback_count;
 					ringbackTone->stopTransmit(play_med);
 				}
 			} catch (Error& err) {
