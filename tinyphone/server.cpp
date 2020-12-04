@@ -430,6 +430,7 @@ void TinyPhoneHttpServer::Start() {
 						{ "callerId", uri.user },
 						{ "displayName", uri.name },
 						{ "state", ci.stateText },
+						{ "direction", call->incoming ? "INCOMING" : "OUTGOING" },
 						{ "duration", ci.totalDuration.sec },
 						{ "hold", call->HoldState()._to_string() }
 					};

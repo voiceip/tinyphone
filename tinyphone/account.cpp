@@ -120,6 +120,7 @@ namespace tp {
 	void SIPAccount::onIncomingCall(OnIncomingCallParam &iprm)
 	{
 		SIPCall *call = new SIPCall(*this, iprm.callId);
+		call->incoming = true;
 		CallInfo ci = call->getInfo();
 		try {
 
