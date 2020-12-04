@@ -537,7 +537,7 @@ void TinyPhoneHttpServer::Start() {
 				{ "message", "Transfering Call"},
 				{ "call_id", call->getId() },
 				{ "sid", call->getInfo().callIdString },
-				{ "dest", refer_uri },
+				{ "dest", sip_uri },
 				{ "account", account_name }
 			};
 			return tp::response(202, response);
