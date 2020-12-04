@@ -1,12 +1,11 @@
 #include "stdafx.h"
 #include <boost/foreach.hpp>
-#include <boost/asio/io_service.hpp>  //must be at top https://www.codeofclimber.ru/2015/pjsip-and-winsock2-api-C2039-error/                                                                                            
-#include <boost/asio/deadline_timer.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
 
 #include "account.h"
 #include "phone.h"
 #include "metrics.h"
+#include <pjsua-lib/pjsua.h>
+#include <pjsua-lib/pjsua_internal.h>
 
 
 using namespace std;
@@ -102,6 +101,16 @@ namespace tp {
 		}
 	}
 
+	void TimedAnswer(void* _call_id){
+		int *call_id =  (int*) _call_id;
+		PJ_LOG(3, (__FILENAME__, "TimedAnswer Call: [%d]", *call_id));
+		pjsua_call_info call_info;
+		if (pjsua_call_get_info(*call_id, &call_info) == PJ_SUCCESS) {
+			pjsua_call_answer(*call_id,200, NULL, NULL);
+		}
+		delete(call_id);
+	}
+	 
 	void SIPAccount::onIncomingCall(OnIncomingCallParam &iprm)
 	{
 		SIPCall *call = new SIPCall(*this, iprm.callId);
@@ -111,13 +120,10 @@ namespace tp {
 			PJ_LOG(3, (__FILENAME__, "Incoming Call: [%s] [%s]", ci.remoteUri.c_str(), ci.stateText.c_str()));
 
 			eventStream->publishEvent(ci, iprm);
-
 			calls.push_back(call);
 
 			if(ApplicationConfig.autoAnswer && ApplicationConfig.autoAnswerDelay == 0){
-				CallOpParam prm;
-				prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
-				call->answer(prm);
+				phone->Answer(call);
 				onCallEstablished(call);
 			} else {
 				//play sound
@@ -127,15 +133,9 @@ namespace tp {
 				phone->StartRinging(call);
 				
 				if(ApplicationConfig.autoAnswer && ApplicationConfig.autoAnswerDelay > 0){
-					boost::asio::io_service io;
-					boost::asio::deadline_timer t(io, boost::posix_time::milliseconds(ApplicationConfig.autoAnswerDelay));
-					t.async_wait([&](const boost::system::error_code& /*e*/){
-						CallOpParam prm;
-						prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
-						call->answer(prm);
-						onCallEstablished(call);
-					});
-					io.run();
+					//TODO: change this to use Endpoint::utilTimerSchedule()
+					int *call_id = new int(iprm.callId);
+					pjsua_schedule_timer2(&TimedAnswer, (void *)call_id, ApplicationConfig.autoAnswerDelay);
 				}
 			}
 		}
