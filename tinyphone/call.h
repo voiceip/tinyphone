@@ -26,12 +26,14 @@ namespace tp {
 
 	public:
 		bool isRinging;
+		bool incoming;
 
 		SIPCall(Account &acc, int call_id = PJSUA_INVALID_ID)
 			: Call(acc, call_id)
 		{
 			account = (SIPAccount *)&acc;
 			isRinging = false;
+			incoming = false;
 		}
 
 		SIPAccount* getAccount() {
