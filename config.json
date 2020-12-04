@@ -34,7 +34,6 @@
 	"enableSTUN" : true,
 	"enableICE" : false,
 	"stunServers" : [ "stun.l.google.com:19302" ],
-	"handleNOTIFY" : true
 	"handleNOTIFY" : true,
 	"autoAnswerDelay" : 1000
 }
