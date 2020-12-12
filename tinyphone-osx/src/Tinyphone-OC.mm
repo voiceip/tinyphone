@@ -73,3 +73,15 @@ const char* GetResourceFilePath(const char * name){
     }
     return NULL;
 }
+
+const char* GetLogsDirectory(){
+	NSString* bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
+	NSString* logsPath = [NSString stringWithFormat:@"Library/Logs/%@",bundleName];
+	NSString* libraryPath = [NSHomeDirectory() stringByAppendingPathComponent:logsPath];
+	NSError * error = nil;
+	[[NSFileManager defaultManager] createDirectoryAtPath:libraryPath  withIntermediateDirectories:YES attributes:nil error:&error];
+	if (error != nil) {
+		NSLog(@"error creating directory: %@", error);
+	}
+	return [libraryPath UTF8String];
+}

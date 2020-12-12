@@ -306,11 +306,17 @@ namespace tp {
 
 
 	boost::filesystem::path GetLogDir() {
+		#ifdef __APPLE__
+		auto path = GetLogsDirectory();
+		boost::filesystem::path tmpDir(path);
+		return tmpDir;
+		#else
 		auto tmp_dir = boost::filesystem::temp_directory_path();
 		auto tiny_dir = tmp_dir.append("tinyphone");
 		if (!boost::filesystem::exists(tiny_dir))
 			boost::filesystem::create_directory(tiny_dir);
 		return tiny_dir;
+		#endif
 	}
 	
 	boost::filesystem::path GetAppDir(){
