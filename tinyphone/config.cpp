@@ -30,6 +30,7 @@ namespace tp {
 		}
 
 		FROM_JSON_OPTIONAL(password);
+		FROM_JSON_OPTIONAL(login);
 		FROM_JSON_OPTIONAL(proxy);
 	}
 
@@ -38,6 +39,7 @@ namespace tp {
 
 		j = nlohmann::json{
 			{"username", p.username },
+			{"login", p.login },
 			{"domain", p.domain },
 			{"enc_password", encPass },
 		};
