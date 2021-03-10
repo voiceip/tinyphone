@@ -172,6 +172,7 @@ namespace tp {
 		std::string domain;
 		std::string password;
 		std::string proxy;
+		std::string login;
 	};
 
 	void from_json(const nlohmann::json& j, AccountConfig& p);

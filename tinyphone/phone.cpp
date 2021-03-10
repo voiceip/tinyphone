@@ -330,7 +330,8 @@ namespace tp {
 				acc_cfg.regConfig.registrarUri = ("sip:" + config.domain);
 				
 				addTransportSuffix(acc_cfg.regConfig.registrarUri);
-				AuthCredInfo authCred("digest", "*", config.username, PJSIP_CRED_DATA_PLAIN_PASSWD, config.password);
+				auto loginId = config.login.empty() ? config.username : config.login;
+				AuthCredInfo authCred("digest", "*", loginId, PJSIP_CRED_DATA_PLAIN_PASSWD, config.password);
 				acc_cfg.sipConfig.authCreds.push_back(authCred);
 				
 				if (config.proxy.size() > 0) {

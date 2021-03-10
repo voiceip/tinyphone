@@ -49,6 +49,7 @@ The softphone exposes the following resources on port `6060`.
 <pre lang="json">
 {
 "username": "string" ,
+"login": "optional-string**" ,
 "password": "string",
 "domain": "string",
 "proxy": "optional-string**"
