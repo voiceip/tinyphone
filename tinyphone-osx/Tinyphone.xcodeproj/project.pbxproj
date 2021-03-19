@@ -709,7 +709,7 @@
 					/Volumes/Workspace/code/voice/tinyphone/lib/pjproject/lib,
 					/usr/local/Cellar/boost/1.72.0_3/lib,
 				);
-				MARKETING_VERSION = 36.0.0.80;
+				MARKETING_VERSION = 36.0.0.81;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DBOOST_SYSTEM_DYN_LINK",
@@ -755,7 +755,7 @@
 					/Volumes/Workspace/code/voice/tinyphone/lib/pjproject/lib,
 					/usr/local/Cellar/boost/1.72.0_3/lib,
 				);
-				MARKETING_VERSION = 36.0.0.80;
+				MARKETING_VERSION = 36.0.0.81;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DBOOST_SYSTEM_DYN_LINK",
