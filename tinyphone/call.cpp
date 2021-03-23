@@ -38,6 +38,8 @@ namespace tp {
 					/* Start ringback for 180 for UAC unless there's SDP in 180 */
 					if (call_info.role==PJSIP_ROLE_UAC && code == 180  && !hasMedia()) {
 						account->getPhone()->StartRinging(this, RingBack);
+					} else {
+						PJ_LOG(3, (__FILENAME__, "Call [%d] Already has Media In EARLY", ci.id));
 					}
 				}
 				break;
@@ -66,34 +68,22 @@ namespace tp {
 		account->getPhone()->StopRinging(this);
 
 		try {
-			AudioMedia *aud_med = NULL;
-			// Iterate all the call medias
-			for (unsigned i = 0; i < ci.media.size(); i++) {
-				if (ci.media[i].type == PJMEDIA_TYPE_AUDIO && getMedia(i)) {
-					if (ci.media[i].status == PJSUA_CALL_MEDIA_ACTIVE || ci.media[i].status == PJSUA_CALL_MEDIA_REMOTE_HOLD) {
-						PJ_LOG(3, (__FILENAME__, "Found Call [%d] Media Resource [%d]", ci.id, i));
-						aud_med = (AudioMedia *)getMedia(i);
-						break;
-					}
-					else {
-						pj_assert(ci.media[i].status <= PJ_ARRAY_SIZE(status_name));
-						PJ_LOG(3, (__FILENAME__, "Call [%d] OnCallMediaState Media State %s", ci.id, status_name[ci.media[i].status]));
-					}
-				}
-			}
-
-			if (aud_med) {
-				// Connect the call audio media to sound device
-				AudDevManager& mgr = Endpoint::instance().audDevManager();
-				PJ_LOG(3, (__FILENAME__, "Connecting Call [%d] to Media Device Input #%d , Output # %d", ci.id, mgr.getCaptureDev(), mgr.getPlaybackDev()));
-				// This will connect the sound device/mic to the call audio media
-				mgr.getCaptureDevMedia().startTransmit(*aud_med);
-				// And this will connect the call audio media to the sound device/speaker
-				aud_med->startTransmit(mgr.getPlaybackDevMedia());
-			}
-			else {
+			AudioMedia aud_med;
+			try {
+				// Get the first audio media // for PJSIP version > 2.8 
+				aud_med = getAudioMedia(-1);
+			} catch(...) {
 				PJ_LOG(3, (__FILENAME__, "ERROR: Call [%d] OnCallMediaState Media Not Found", ci.id));
+				return;
 			}
+		
+			// Connect the call audio media to sound device
+			AudDevManager& mgr = Endpoint::instance().audDevManager();
+			PJ_LOG(3, (__FILENAME__, "Connecting Call [%d] to Media Device Input #%d , Output # %d", ci.id, mgr.getCaptureDev(), mgr.getPlaybackDev()));
+			// This will connect the sound device/mic to the call audio media
+			mgr.getCaptureDevMedia().startTransmit(aud_med);
+			// And this will connect the call audio media to the sound device/speaker
+			aud_med.startTransmit(mgr.getPlaybackDevMedia());
 		}
 		catch (...) {
 			PJ_LOG(3, (__FILENAME__, "Call [%d] OnCallMediaState Media Connect Error", ci.id));
