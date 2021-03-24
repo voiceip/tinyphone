@@ -145,12 +145,14 @@ namespace tp {
 	std::string AddTransportSuffix(std::string &str, pjsip_transport_type_e transport)
 	{
 		switch (transport) {
-		case PJSIP_TRANSPORT_TCP:
-			return str.append(_T(";transport=tcp"));
-			break;
-		case PJSIP_TRANSPORT_TLS:
-			return  str.append(_T(";transport=tls"));
-			break;
+			case PJSIP_TRANSPORT_TCP:
+				return str.append(_T(";transport=tcp"));
+				break;
+			case PJSIP_TRANSPORT_TLS:
+				return  str.append(_T(";transport=tls"));
+				break;
+			default:
+				break;
 		}
 		return str;
 	}
