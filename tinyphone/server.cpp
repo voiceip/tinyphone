@@ -483,24 +483,59 @@ void TinyPhoneHttpServer::Start() {
 			json response;
 			bool status;
 			switch (req.method) {
-			case crow::HTTPMethod::Put:
-				status = call->HoldCall();
-				response = {
-					{ "message",  "Hold Triggered" },
-					{ "call_id" , call_id },
-					{ "status" , status }
-				};
-				break;
-			case crow::HTTPMethod::Delete:
-				status = call->UnHoldCall();
-				response = {
-					{ "message",  "UnHold Triggered" },
-					{ "call_id" , call_id },
-					{ "status" , status }
-				};
-				break;
+				case crow::HTTPMethod::Put:
+					status = call->HoldCall();
+					response = {
+						{ "message",  "Hold Triggered" },
+						{ "call_id" , call_id },
+						{ "status" , status }
+					};
+					break;
+				case crow::HTTPMethod::Delete:
+					status = call->UnHoldCall();
+					response = {
+						{ "message",  "UnHold Triggered" },
+						{ "call_id" , call_id },
+						{ "status" , status }
+					};
+					break;
+				default:
+					break;
 			}
 			return tp::response(202, response);
+		}
+	});
+
+	CROW_ROUTE(app, "/calls/<int>/conference")
+		.methods("PUT"_method, "DELETE"_method)
+		([&phone](const crow::request& req,int call_id) {
+		pj_thread_auto_register();
+
+		SIPCall* call = phone.CallById(call_id);
+		if (call == nullptr) {
+			return tp::response(400, {
+				{ "message", "Call Not Found" },
+				{ "call_id", call_id}
+			});
+		}
+		else {
+			json response = {
+				{ "call_id" , call_id }
+			};
+			switch (req.method)
+			{
+				case crow::HTTPMethod::Put:
+					response["message"] = "Conference Triggered";
+					response["status"] = phone.Conference(call);
+					break;
+				case crow::HTTPMethod::Delete:
+					response["message"] = "BreakConference Triggered";
+					response["status"] = phone.BreakConference(call);	
+					break;
+				default:
+					break;
+			}
+			return tp::response(200, response);
 		}
 	});
 	
