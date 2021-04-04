@@ -39,6 +39,12 @@ namespace tp {
 
 using namespace tp;
 
+void TinyPhoneHttpServer::Configure() {
+
+	app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
+	app.loglevel(crow::LogLevel::Info);
+	crow::logger::setHandler(new TinyPhoneHTTPLogHandler(logfile));
+}
 
 void TinyPhoneHttpServer::Start() {
 
@@ -46,7 +52,7 @@ void TinyPhoneHttpServer::Start() {
 	channel<std::string> updates;
 	std::thread ws_publisher_thread;
 
-	std::cout << "Starting TinyPhone" << std::endl;
+	CROW_LOG_INFO << "Starting TinyPhone";
 
 	TinyPhone phone(endpoint);
 	tinyPhone = &phone;
@@ -59,11 +65,8 @@ void TinyPhoneHttpServer::Start() {
 	phone.CreateEventStream(&updates);
 	phone.RestoreAccounts();
 
-	crow::App<TinyPhoneMiddleware> app;
 	std::mutex mtx;;
-	app.get_middleware<TinyPhoneMiddleware>().setMessage("tinyphone");
-	app.loglevel(crow::LogLevel::Info);
-	crow::logger::setHandler(new TinyPhoneHTTPLogHandler(logfile));
+
 	int http_port = 6060;
 
 	CROW_LOG_INFO << "Starting the TinyPhone HTTP API";
@@ -731,7 +734,7 @@ void TinyPhoneHttpServer::Start() {
 
 	CROW_ROUTE(app, "/exit")
 		.methods("POST"_method)
-		([&app](const crow::request& req) {
+		([this](const crow::request& req) {
 		auto it = req.headers.find(HEADER_SECURITY_CODE);
 		json response = {
 			{"message", "Server Shutdown Recieved"},

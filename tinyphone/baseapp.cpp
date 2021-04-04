@@ -127,16 +127,17 @@ namespace tp {
 
     void StartApp(){
         
-        CROW_LOG_INFO << "Starting Tinyphone....";
+        std:cout << "Starting Tinyphone...." << std::endl;
 
         InitConfig();
 
         tp::launchDate = now();
         tp::sipLogFile = GetLogFile(SIP_LOG_FILE, "log");
         tp::httpLogFile = GetLogFile(HTTP_LOG_FILE, "log");
+        tp::tpHttpServer = new TinyPhoneHttpServer(&ep, tp::httpLogFile);
+        tp::tpHttpServer->Configure();
 
         InitPJSUAEndpoint(tp::sipLogFile);
-        tp::tpHttpServer = new TinyPhoneHttpServer(&ep, tp::httpLogFile);
         
         tp::tpHttpServer->Start();
     }

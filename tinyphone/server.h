@@ -82,6 +82,7 @@ public:
 
 private:
 	bool running;
+	crow::App<TinyPhoneMiddleware> app;
 
 public:
 	TinyPhoneHttpServer(pj::Endpoint* ep, std::string log_file) {
@@ -94,6 +95,7 @@ public:
 		std::cout << "Shutting Down TinyPhone HTTP Service" << std::endl;
 	}
 
+	void Configure();
 	
 	void Start();
 
