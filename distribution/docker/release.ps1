@@ -1,16 +1,17 @@
 # Build Script...
 $ErrorActionPreference="Stop"
 $BuildMode="Release"
-
+git config --global url.https://github.com/.insteadOf git@github.com:
 
 Write-Host 'Building Tinyphone!'
+#cd C:\Code
+  
 
-cd C:\Code
-
-git config --global url.https://github.com/.insteadOf git@github.com:
-git clone --recurse-submodules -j8 https://github.com/voiceip/tinyphone.git
 cd C:\Code\tinyphone\
 # git checkout docker
+
+Write-Host "Updating Submodules......"
+git submodule -q update --init
 
 # git apply C:\Build\fk.patch
 
@@ -60,9 +61,14 @@ msbuild /m statsd-cpp.vcxproj /p:Configuration=$BuildMode /p:Platform=Win32
 
 #ls E:\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl
 cd E:\tinyphone
+sed -i 's/stampver.inf.*\$/stampver.inf $/g' tinyphone.vcxproj
+
 #msbuild /m tinyphone.sln -target:tinyphone /p:Configuration=$BuildMode /p:Platform=x86
 #msbuild /m tinyphone.sln -target:tinyphone:Rebuild /p:Configuration=$BuildMode /p:Platform=x86
 msbuild /m tinyphone.sln /p:Configuration=$BuildMode /p:Platform=x86
 
+
+#required for github-ci permission issue.
+cmd /c icacls E:/tinyphone-installer/bin/Release/tinyphone_installer.msi /grant everyone:f
 
 #git diff --exit-code stampver.inf
