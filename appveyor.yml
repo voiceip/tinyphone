@@ -10,7 +10,7 @@ branches:
   only:
     - master
 install:
-- appveyor DownloadFile https://dl.bintray.com/boostorg/release/1.68.0/binaries/boost_1_68_0-msvc-14.0-32.exe
+- appveyor DownloadFile https://master.dl.sourceforge.net/project/boost/boost-binaries/1.68.0/boost_1_68_0-msvc-14.0-32.exe
 - call boost_1_68_0-msvc-14.0-32.exe /SILENT
 - ps : |
     ls "C:\local\boost_1_68_0"
