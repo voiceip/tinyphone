@@ -119,6 +119,9 @@ namespace tp {
 		void Answer(SIPCall* call);
 		void Hangup(SIPCall* call);
 
+		bool Conference(SIPCall* call);
+		bool BreakConference(SIPCall* call);
+
 		void HangupAllCalls();
 
 		bool Initialize();

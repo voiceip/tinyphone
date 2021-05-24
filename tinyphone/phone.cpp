@@ -471,4 +471,58 @@ namespace tp {
 		ringbackTone->stop();
 	}
 
+	bool TinyPhone::Conference(SIPCall* call) {
+
+		CallInfo ci = call->getInfo();
+		AudioMedia aud_med, aud_med2;
+		try {
+			aud_med = call->getAudioMedia(-1);
+		} catch(...) {
+			PJ_LOG(3, (__FILENAME__, "TinyPhone::Conference getAudioMedia Error"));
+			return false;
+		}
+
+		BOOST_FOREACH(SIPCall* c, Calls()) {
+			if (c->getId() != call->getId()){
+				try {
+					c->UnHoldCall();
+					aud_med2 = call->getAudioMedia(-1);
+					aud_med.startTransmit(aud_med2);
+					aud_med2.startTransmit(aud_med);
+				} catch(...) {
+					PJ_LOG(3, (__FILENAME__, "TinyPhone::Conference getAudioMedia2 Error"));
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	bool TinyPhone::BreakConference(SIPCall* call) {
+		CallInfo ci = call->getInfo();
+		AudioMedia aud_med, aud_med2;
+		try {
+			aud_med = call->getAudioMedia(-1);
+		} catch(...) {
+			PJ_LOG(3, (__FILENAME__, "TinyPhone::BreakConference getAudioMedia Error"));
+			return false;
+		}
+
+		BOOST_FOREACH(SIPCall* c, Calls()) {
+			if (c->getId() != call->getId()){
+				try {
+					c->HoldCall();
+					aud_med2 = call->getAudioMedia(-1);
+					aud_med.stopTransmit(aud_med2);
+					aud_med2.stopTransmit(aud_med);
+				} catch(...) {
+					PJ_LOG(3, (__FILENAME__, "TinyPhone::BreakConference getAudioMedia2 Error"));
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 }
+

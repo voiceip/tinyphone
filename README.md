@@ -122,6 +122,18 @@ The softphone exposes the following resources on port `6060`.
 <td>UnHold call with specified <code>call_id</code></td>
 </tr>
 <tr>
+<td><code>/calls/{call_id}/conference</code></td>
+<td>PUT</td>
+<td></td>
+<td>Create conference by merging other running calls with given <code>call_id</code></td>
+</tr>
+<tr>
+<td><code>/calls/{call_id}/conference</code></td>
+<td>DELETE</td>
+<td></td>
+<td>Break specified <code>call_id</code> out of conference</td>
+</tr>
+<tr>
 <td><code>/calls/{call_id}/transfer</code></td>
 <td>POST</td>
 <td>
