@@ -1,9 +1,7 @@
 # escape=`
+FROM mcr.microsoft.com/dotnet/framework/runtime:3.5-windowsservercore-ltsc2016
 
-FROM microsoft/dotnet-framework:3.5-windowsservercore-ltsc2016
-MAINTAINER Kinshuk B (hi@kinsh.uk)
-
-RUN mkdir C:\BuildTools
+RUN powershell.exe mkdir C:\BuildTools
 
 # Reset the shell.
 SHELL ["cmd", "/S", "/C"]
@@ -38,17 +36,17 @@ RUN powershell.exe [Net.ServicePointManager]::SecurityProtocol =[Net.SecurityPro
 RUN powershell.exe scoop install git wget cmake win32-openssh unzip make;
 RUN powershell.exe [environment]::setenvironmentvariable('GIT_SSH', (resolve-path (scoop which ssh)), 'USER');
 
-ADD https://bintray.com/boostorg/release/download_file?file_path=1.68.0%2Fbinaries%2Fboost_1_68_0-msvc-14.0-32.exe C:\TEMP\boost_1_68_0-msvc-14.0-32.exe
-RUN C:\TEMP\boost_1_68_0-msvc-14.0-32.exe /SILENT
+ADD https://boost.teeks99.com/bin/1.68.0/boost_1_68_0-msvc-14.0-32.exe C:\TEMP\boost_1_68_0-msvc-14.0-32.exe
+RUN powershell.exe C:\TEMP\boost_1_68_0-msvc-14.0-32.exe /SILENT
 
 ADD https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311.exe C:\TEMP\wix311.exe
-RUN C:\TEMP\Install.cmd C:\TEMP\wix311.exe /install /quiet /norestart
+RUN powershell.exe C:\TEMP\Install.cmd C:\TEMP\wix311.exe /install /quiet /norestart
 
 RUN mkdir C:\Code
 
 # fix for paste issue https://github.com/moby/moby/issues/29646#issuecomment-300483809
 WORKDIR "Program Files"
-RUN rd /S /Q WindowsPowerShell\Modules\PSReadLine
+RUN powershell.exe rd /S /Q WindowsPowerShell\Modules\PSReadLine
 
 #subst E: C:\Code\tinyphone
 
