@@ -29,11 +29,10 @@ RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --n
     --add Microsoft.Component.MSBuild `
     --add Microsoft.VisualStudio.Component.VC.140 `
     --add Microsoft.VisualStudio.Component.WinXP `
-    --installPath C:\BuildTools 
+    --installPath C:\BuildTools
 
 # Install Scoop
-RUN powershell.exe -ExecutionPolicy RemoteSigned `
-  iex (new-object net.webclient).downloadstring('https://get.scoop.sh');
+RUN powershell.exe [Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12 ; Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh');
 
 # Install Git & other tools
 RUN powershell.exe scoop install git wget cmake openssh unzip make
