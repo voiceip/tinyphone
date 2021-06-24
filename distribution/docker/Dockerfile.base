@@ -35,11 +35,10 @@ RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --n
 RUN powershell.exe [Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12 ; Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh');
 
 # Install Git & other tools
-RUN powershell.exe scoop install git wget cmake openssh unzip make
+RUN powershell.exe scoop install git wget cmake win32-openssh unzip make;
+RUN powershell.exe [environment]::setenvironmentvariable('GIT_SSH', (resolve-path (scoop which ssh)), 'USER');
 
-RUN powershell.exe [environment]::setenvironmentvariable('GIT_SSH', (resolve-path (scoop which ssh)), 'USER')
-
-ADD https://dl.bintray.com/boostorg/release/1.68.0/binaries/boost_1_68_0-msvc-14.0-32.exe C:\TEMP\boost_1_68_0-msvc-14.0-32.exe
+ADD https://bintray.com/boostorg/release/download_file?file_path=1.68.0%2Fbinaries%2Fboost_1_68_0-msvc-14.0-32.exe C:\TEMP\boost_1_68_0-msvc-14.0-32.exe
 RUN C:\TEMP\boost_1_68_0-msvc-14.0-32.exe /SILENT
 
 ADD https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311.exe C:\TEMP\wix311.exe
