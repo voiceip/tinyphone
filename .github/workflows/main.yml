@@ -32,6 +32,7 @@ jobs:
         password: ${{ secrets.GH_TOKEN }}
     - name: Get Changed Files
       uses: jitterbit/get-changed-files@v1
+      if: github.event_name != 'workflow_dispatch'
       id: changed_files
       with:
         format: 'space-delimited'
