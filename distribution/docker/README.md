@@ -1,12 +1,11 @@
 ## Build Docker Image
 
 ```
-docker build  -f Dockerfile.base -m 2G -t dotnet3.5-vs17:latest  .
-docker build  -f Dockerfile.build -m 2G -t tinyphone  .
+docker build  -f Dockerfile.base -m 2G -t tinyphone_base  .
 ```
 
-## Run Docker
+## Run Docker Build
 
 ```
-./release.sh
+cat release.ps1 | docker run -v `pwd`:"C:\Code\tinyphone" -i tinyphone_base
 ```
