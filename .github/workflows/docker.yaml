@@ -1,0 +1,74 @@
+name: Tinyphone Docker Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: 
+      - labeled
+    branches:
+      - master
+
+jobs:
+  tinyphone_docker_job:
+    if: github.event.label.name == 'ci/github' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'release'
+    name: Build Tinyphone
+    runs-on: windows-2016
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Checkout Submodules
+      shell: bash
+      run: |
+        git config --global url."https://github.com/".insteadOf "git@github.com:"
+        auth_header="$(git config --local --get http.https://github.com/.extraheader)"
+        git submodule sync --recursive
+        git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
+        password: ${{ secrets.GH_TOKEN }}
+    - name: Get Changed Files
+      uses: jitterbit/get-changed-files@v1
+      if: github.event_name != 'workflow_dispatch'
+      id: changed_files
+      with:
+        format: 'space-delimited'
+      continue-on-error: true
+    - name: Set vars
+      id: vars
+      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+    - name: Build and Push tinyphone_base  to registry
+      if: contains(steps.changed_files.outputs.modified, 'Dockerfile.base')
+      run: |
+        docker build --file=./distribution/docker/Dockerfile.base -t ghcr.io/${{ github.repository_owner }}/tinyphone_base:latest -t ghcr.io/${{ github.repository_owner }}/tinyphone_base:${{ steps.vars.outputs.sha_short }} ./distribution/docker
+        docker push ghcr.io/${{ github.repository_owner }}/tinyphone_base:latest
+        docker push ghcr.io/${{ github.repository_owner }}/tinyphone_base:${{ steps.vars.outputs.sha_short }}
+    - name: Update CodeDir
+      run : |
+        sed -i 's/$env:CodeDir/C:\\Code\\tinyphone/g' ./distribution/docker/release.ps1
+        cat ./distribution/docker/release.ps1
+      shell : bash
+    - name: Build tinyphone
+      run: |
+        cat ./distribution/docker/release.ps1 | docker run -v ${PWD}:"C:\Code\tinyphone" -i  ghcr.io/${{ github.repository_owner }}/tinyphone_base:latest
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: tinyphone_installer
+        path: |
+          ./tinyphone-installer/bin/Release/tinyphone_installer.msi
+
+    # - name: Create Release
+    #   uses: ncipollo/release-action@v1
+    #   if: startsWith(github.ref, 'refs/tags/v')
+    #   with:
+    #     artifacts: "./tinyphone/Release/tinyphone.exe,tinyphone-installer/bin/Release/tinyphone_installer.msi"
+    #     draft: true
+    #     allowUpdates: true
+    #     token: ${{ secrets.GH_TOKEN }}

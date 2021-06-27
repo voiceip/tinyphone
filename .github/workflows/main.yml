@@ -1,59 +1,71 @@
 name: Tinyphone Build
 
 on:
-  workflow_dispatch:
   release:
+  push: 
+    branches:
+      - master
   pull_request:
-    types: 
-      - labeled
     branches:
       - master
 
 jobs:
   tinyphone_win_job:
-    if: github.event.label.name == 'ci/github' || github.event_name == 'workflow_dispatch' || github.event_name == 'release'
     name: Build Tinyphone Windows
     runs-on: windows-2016
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    # - name: Cache Docker layers
-    #   uses: actions/cache@v2
-    #   with:
-    #     path: "C:\buildx-cache"
-    #     key: ${{ runner.os }}-buildx-${{ github.sha }}
-    #     restore-keys: |
-    #       ${{ runner.os }}-buildx-
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v1
-      with:
-        registry: ghcr.io
-        username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
-        password: ${{ secrets.GH_TOKEN }}
-    - name: Get Changed Files
-      uses: jitterbit/get-changed-files@v1
-      if: github.event_name != 'workflow_dispatch'
-      id: changed_files
-      with:
-        format: 'space-delimited'
-    - name: Set vars
-      id: vars
-      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-    - name: Build and Push tinyphone_base  to registry
-      if: contains(steps.changed_files.outputs.modified, 'Dockerfile.base')
+    - name: Checkout submodules # checkout rest
+      shell: bash
       run: |
-        docker build --file=./distribution/docker/Dockerfile.base -t ghcr.io/${{ github.repository_owner }}/tinyphone_base:latest -t ghcr.io/${{ github.repository_owner }}/tinyphone_base:${{ steps.vars.outputs.sha_short }} ./distribution/docker
-        docker push ghcr.io/${{ github.repository_owner }}/tinyphone_base:latest
-        docker push ghcr.io/${{ github.repository_owner }}/tinyphone_base:${{ steps.vars.outputs.sha_short }}
-    - name: Build tinyphone
+        git config --global url."https://github.com/".insteadOf "git@github.com:"
+        auth_header="$(git config --local --get http.https://github.com/.extraheader)"
+        git submodule sync --recursive
+        git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+
+    - name: Restore Boost Cache
+      uses: actions/cache@v2
+      id: cache-boost
+      with:
+        path: C:\local\boost_1_68_0
+        key: boost
+    - name: Install Boost
+      if: steps.cache-boost.outputs.cache-hit != 'true'
       run: |
-        cat ./distribution/docker/release.ps1 | docker run -v ${PWD}:"C:\Code\tinyphone" -i  ghcr.io/${{ github.repository_owner }}/tinyphone_base:latest
-        # docker cp $(docker ps -a --last 1 -q):"C:\Code\tinyphone\tinyphone-installer\bin\Release\tinyphone_installer.msi" "tinyphone_installer.$(date +%s).msi"
+        # Use the boost_1_72_0-msvc-14.1-64.exe for Windows 2016
+        $Url = "https://boost.teeks99.com/bin/1.68.0/boost_1_68_0-msvc-14.0-32.exe"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
+        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost_1_68_0"
+
+    - name: Install Scoop & Binaries
+      run : |
+        [Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12 ; 
+        Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh');
+        scoop install curl wget cmake unzip make;
+
+    - name: Install wixtoolset
+      run : |
+        $Url = "https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311.exe"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\wix311.exe")
+        Start-Process -Wait -FilePath "$env:TEMP\wix311.exe" "/install","/quiet","/norestart"
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Configure build for Windows MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x86
+
+    - name: Build Project
+      run : |
+        $env:CodeDir=$(pwd)
+        .\distribution\docker\release.ps1 -ErrorAction Stop
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: tinyphone_installer
+        name: tinyphone
         path: |
           ./tinyphone-installer/bin/Release/tinyphone_installer.msi
 
