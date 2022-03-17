@@ -7,7 +7,7 @@
 //
 import Cocoa
 
-protocol LoadableView: class {
+protocol LoadableView: AnyObject {
     func load(fromNIBNamed nibName: String) -> Bool
     func add(toView parentView: NSView)
 }
