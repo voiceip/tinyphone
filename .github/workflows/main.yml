@@ -41,7 +41,8 @@ jobs:
     - name: Install Scoop & Binaries
       run : |
         [Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12 ; 
-        Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh');
+        (New-Object System.Net.WebClient).DownloadFile('https://get.scoop.sh', "install_scoop.ps1");
+        .\install_scoop.ps1 -RunAsAdmin
         scoop install curl wget cmake unzip make;
 
     - name: Install wixtoolset
