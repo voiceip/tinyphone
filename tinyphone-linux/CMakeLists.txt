@@ -16,6 +16,7 @@ list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/guicon.cpp)
 list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/splash.cpp)
 list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/guicon.h)
 list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/splash.h)
+list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/winapp.cpp)
 
 
 # foreach(file_path ${SOURCES})
@@ -41,4 +42,6 @@ target_include_directories(tinyphone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/
 target_include_directories(tinyphone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/statsd-cpp/include)
 target_include_directories(tinyphone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/crow/include)
 target_include_directories(tinyphone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/portaudio/include)
+target_include_directories(tinyphone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib)
+target_include_directories(tinyphone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone)
 target_link_libraries(tinyphone ${Boost_LIBRARIES})

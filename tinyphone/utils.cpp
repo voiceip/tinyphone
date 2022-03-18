@@ -32,7 +32,7 @@
 #include <boost/format.hpp>
 #include <boost/filesystem.hpp>
 
-#ifdef __APPLE__
+#ifndef _WIN32
 #define _T(x) x
 #endif
 
