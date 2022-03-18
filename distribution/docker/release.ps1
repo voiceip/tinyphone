@@ -2,6 +2,7 @@
 Set-StrictMode -Version latest
 $ErrorActionPreference="Stop"
 $PSDefaultParameterValues['*:ErrorAction']='Stop'
+[Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12 ; 
 
 $BuildMode="Release"
  
