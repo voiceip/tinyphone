@@ -12,7 +12,7 @@ on:
 jobs:
   tinyphone_win_job:
     name: Build Tinyphone Windows
-    runs-on: windows-2016
+    runs-on: windows-2019
     steps:
     - name: Checkout
       uses: actions/checkout@v2
