@@ -1,0 +1,10 @@
+platform :macos, '10.15'
+use_frameworks!
+
+target 'Tinyphone' do
+  pod 'YbridOpus'
+  # pod 'libopus-static'
+  # pod 'pjsip', '~> 2.9.0.2'
+  pod 'pjsip', :git => 'https://github.com/voiceip/cocoapod-pjsip' , :branch => 'no-libopus'
+end
+

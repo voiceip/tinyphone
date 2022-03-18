@@ -25,3 +25,9 @@ DerivedData/
 ## Gcc Patch
 /*.gcno
 *.dmg
+
+
+#xcode
+Pods/
+Tinyphone.xcworkspace/
+
