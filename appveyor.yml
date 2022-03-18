@@ -16,10 +16,11 @@ install:
     ls "C:\local\boost_1_68_0"
 
     # Install Scoop
-    iwr -useb get.scoop.sh | iex
+    iwr -useb get.scoop.sh -outfile 'install_scoop.ps1'
+    .\install_scoop.ps1 -RunAsAdmin
 
     # Install Git & other tools
-    powershell.exe scoop install git wget cmake openssh unzip make sed cat
+    scoop install git wget cmake openssh unzip make sed 
 
 configuration: Release
 build_script:
