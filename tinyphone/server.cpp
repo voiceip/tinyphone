@@ -718,7 +718,8 @@ void TinyPhoneHttpServer::Start() {
 			auto tar_bytes = file_all_bytes(tmp_file);
 			remove(tmp_file.c_str());
 
-			auto response = crow::response(tar_bytes);
+			std::string data_str(tar_bytes.begin(), tar_bytes.end());
+			auto response = crow::response(data_str);
 			response.set_header("Content-Type", "application/octet-stream"); 
 
 			std::string ip_addr = local_ip_address();
