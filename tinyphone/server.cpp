@@ -186,14 +186,14 @@ void TinyPhoneHttpServer::Start() {
 				tp::MetricsClient.increment("api.login.exists");
 				try {
 					phone.EnableAccount(existing_account);
-					return tp::response(208, {
+					return tp::response(200, {
 						{ "message", "Account already exists" },
 						{ "account_name", account_name },
 						{ "id", existing_account->getId() },
-						{ "result", 202 }
+						{ "result", 200 }
 					});
 				} catch(...) {
-					return tp::response(408, {
+					return tp::response(202, {
 						{ "message", "Account already exists, but login progress, please try again in sometime" },
 						{ "account_name", account_name },
 						{ "id", existing_account->getId() },
@@ -219,7 +219,7 @@ void TinyPhoneHttpServer::Start() {
 						});
 					}
 					else {
-						return tp::response(408, {
+						return tp::response(202, {
 							{ "message", "Account login still in progress" },
 							{ "account_name", account_name },
 							{ "result", 202 }

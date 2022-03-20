@@ -30,9 +30,9 @@ public:
 	}
 
 	void log(const std::string message, crow::LogLevel /*level*/) {
-		log_writer << message ;
+		log_writer << message << std::endl ;
 #ifdef _DEBUG
-		std::cout << message;
+		std::cout << message << std::endl ;
 #endif
 		log_writer.flush();
 	}
