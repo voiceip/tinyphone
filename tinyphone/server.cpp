@@ -20,6 +20,8 @@
 #include "portaudio.h"
 #include <boost/foreach.hpp>
 
+#define CROW_MAIN
+
 using namespace std;
 using namespace pj;
 using json = nlohmann::json;
@@ -739,11 +741,11 @@ void TinyPhoneHttpServer::Start() {
 		json response = {
 			{"message", "Server Shutdown Recieved"},
 			{"result", 401},
-			{"source", req.remoteIpAddress},
+			{"source", req.remote_ip_address},
 		};
-		CROW_LOG_INFO << "Shutdown Request from client: " << req.remoteIpAddress;
+		CROW_LOG_INFO << "Shutdown Request from client: " << req.remote_ip_address;
 		tp::MetricsClient.increment("api.exit");
-		if (req.remoteIpAddress.compare("127.0.0.1") == 0) {
+		if (req.remote_ip_address.compare("127.0.0.1") == 0) {
 			CROW_LOG_INFO << "Shutdown Request from localhost authenticated";
 			response["result"] = 200;
 			app.stop();

@@ -29,7 +29,7 @@ public:
 		log_writer.close();
 	}
 
-	void log(const std::string &message, crow::LogLevel /*level*/) override {
+	void log(const std::string message, crow::LogLevel /*level*/) {
 		log_writer << message ;
 #ifdef _DEBUG
 		std::cout << message;
@@ -38,6 +38,21 @@ public:
 	}
 };
 
+
+class BinaryResponse : public crow::returnable
+{
+	std::vector<char> res_bytes;
+	std::string content_type;
+
+	std::string dump() const {
+				
+	}
+
+	returnable(std::string ctype, std::vector<char> res_bytes): content_type{ctype}, res_bytes{res_bytes} {};
+
+	~returnable(){};
+
+}
 struct TinyPhoneMiddleware
 {
 	std::string message;

@@ -264,3 +264,4 @@ GitHubVS.sln.DotSettings
 lib/datadog-cpp
 
 logs/
+.vagrant/
