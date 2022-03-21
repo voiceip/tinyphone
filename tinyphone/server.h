@@ -2,6 +2,7 @@
 
 #ifndef SERVER_HEADER_FILE_H
 #define SERVER_HEADER_FILE_H
+#define CROW_USE_LOCALTIMEZONE 1
 
 #include <crow.h>
 #include <iostream>
