@@ -34,13 +34,6 @@ build_script:
 
     cmd /c subst E: C:\projects\tinyphone
 
-    cd E:\lib\curl\
-    ls
-    .\buildconf.bat
-    cd E:\lib\curl\winbuild
-
-    ls
-
     pushd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools"
     cmd /c "VsDevCmd.bat&set" |
     foreach {
@@ -51,16 +44,15 @@ build_script:
     popd
     Write-Host "`nVisual Studio 2019 Command Prompt variables set." -ForegroundColor Yellow
 
-    where.exe msbuild.exe
+    cd E:\lib\curl\
+    ls
+    .\buildconf.bat
+    cd E:\lib\curl\winbuild
 
+    where.exe msbuild.exe
     nmake /f Makefile.vc mode=dll VC=19 DEBUG=no
 
-    cd E:\lib\curl\builds
-
-    ls 
-
     cmd /c MKLINK /D E:\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl E:\lib\curl\builds\libcurl-vc19-x86-release-dll-ipv6-sspi-winssl
-    ls E:\lib\curl\builds
     cmd /c .\libcurl-vc19-x86-release-dll-ipv6-sspi-winssl\bin\curl.exe https://wttr.in/bangalore
 
     #G729
