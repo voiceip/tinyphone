@@ -36,7 +36,7 @@ RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --n
     # --remove Microsoft.VisualStudio.Component.Windows10SDK.10586 `
     # --remove Microsoft.VisualStudio.Component.Windows10SDK.14393 `
     # --remove Microsoft.VisualStudio.Component.Windows81SDK `
-    --installPath C:\BuildTools 
+    # --installPath C:\BuildTools 
 
 # Verify if .NET isn't broken (bug with the ltsc2016 docker image)
 # RUN powershell.exe -Command echo Everything is OK
