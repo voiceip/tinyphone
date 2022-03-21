@@ -3,11 +3,12 @@
 #ifndef UTILS_HEADER_FILE_H
 #define UTILS_HEADER_FILE_H
 
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#define vsnprintf _vsnprintf
-#endif
+//#ifdef _MSC_VER && _MSC_VER < 1500 // VC++ 8.0 and below
+//#define snprintf _snprintf
+//#define vsnprintf _vsnprintf
+//#endif
 
+#include <boost/filesystem.hpp>
 #include <pj/pool.h>
 #include <pj/string.h>
 #include <string.h>
@@ -17,8 +18,6 @@
 #include <vector>
 #include <sstream>
 #include "consts.h"
-
-#include <boost/filesystem.hpp>
 
 #include <ctime>
 #include <mutex>
