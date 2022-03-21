@@ -43,7 +43,7 @@ jobs:
       id: vars
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
     - name: Build and Push tinyphone_base  to registry
-      if: contains(steps.changed_files.outputs.modified, 'Dockerfile.base')
+      # if: contains(steps.changed_files.outputs.modified, 'Dockerfile.base')
       run: |
         docker build --file=./distribution/docker/Dockerfile.base -t ghcr.io/${{ github.repository_owner }}/tinyphone_base:vc2019 -t ghcr.io/${{ github.repository_owner }}/tinyphone_base:${{ steps.vars.outputs.sha_short }} ./distribution/docker
         docker push ghcr.io/${{ github.repository_owner }}/tinyphone_base:vc2019
