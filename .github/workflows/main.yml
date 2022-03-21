@@ -28,8 +28,8 @@ jobs:
       uses: actions/cache@v2
       id: cache-boost
       with:
-        path: C:\local\boost_1_68_0
-        key: boost
+        path: C:\local\boost_1_74_0
+        key: boost-74
     - name: Install Boost
       if: steps.cache-boost.outputs.cache-hit != 'true'
       run: |
