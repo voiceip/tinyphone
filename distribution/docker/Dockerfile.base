@@ -24,7 +24,6 @@ ADD https://aka.ms/vs/16/release/vs_buildtools.exe C:\TEMP\vs_buildtools.exe
 RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache `
     --channelUri C:\TEMP\VisualStudio.chman `
     --installChannelUri C:\TEMP\VisualStudio.chman `
-    --installPath "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\BuildTools" `
     --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended `
     --add Microsoft.Component.MSBuild `
     --add Microsoft.VisualStudio.Component.VC.140 `
@@ -35,17 +34,19 @@ RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --n
     # --remove Microsoft.VisualStudio.Component.Windows10SDK.10240 `
     # --remove Microsoft.VisualStudio.Component.Windows10SDK.10586 `
     # --remove Microsoft.VisualStudio.Component.Windows10SDK.14393 `
-    # --remove Microsoft.VisualStudio.Component.Windows81SDK `
-    # --installPath C:\BuildTools 
+    --remove Microsoft.VisualStudio.Component.Windows81SDK `
+    --installPath C:\BuildTools 
+    # --installPath "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\BuildTools" 
 
 # Verify if .NET isn't broken (bug with the ltsc2016 docker image)
 # RUN powershell.exe -Command echo Everything is OK
 
 # Install Scoop
-RUN powershell.exe [Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12 ; Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh');
+RUN powershell.exe [Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12 ; (New-Object System.Net.WebClient).DownloadFile('https://get.scoop.sh', 'install_scoop.ps1'); .\install_scoop.ps1 -RunAsAdmin
+
 
 # Install Git & other tools
-RUN powershell.exe scoop install git curl wget cmake win32-openssh unzip make;
+RUN powershell.exe scoop install git curl wget cmake openssh unzip make;
 RUN powershell.exe [environment]::setenvironmentvariable('GIT_SSH', (resolve-path (scoop which ssh)), 'USER');
 
 ADD https://onboardcloud.dl.sourceforge.net/project/boost/boost-binaries/1.74.0/boost_1_74_0-msvc-14.2-32.exe C:\TEMP\boost.exe
