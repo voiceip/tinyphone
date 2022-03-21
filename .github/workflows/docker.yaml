@@ -13,7 +13,7 @@ on:
 
 jobs:
   tinyphone_docker_job:
-    if: github.event.label.name == 'ci/github' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'release'
+    # if: github.event.label.name == 'ci/github' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'release'
     name: Build Tinyphone
     runs-on: windows-2019
     steps:
