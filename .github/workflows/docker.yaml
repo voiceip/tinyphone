@@ -42,6 +42,12 @@ jobs:
     - name: Set vars
       id: vars
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+      continue-on-error: true
+      with:
+        key: tinyphone-base-docker-cache-{hash}
+        restore-keys: |
+          tinyphone-base-docker-cache-
     - name: Build and Push tinyphone_base  to registry
       # if: contains(steps.changed_files.outputs.modified, 'Dockerfile.base')
       run: |
