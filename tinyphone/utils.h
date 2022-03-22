@@ -3,10 +3,12 @@
 #ifndef UTILS_HEADER_FILE_H
 #define UTILS_HEADER_FILE_H
 
-//#ifdef _MSC_VER && _MSC_VER < 1500 // VC++ 8.0 and below
-//#define snprintf _snprintf
-//#define vsnprintf _vsnprintf
-//#endif
+#ifdef _MSC_VER
+#if _MSC_VER < 1500 // VC++ 8.0 and below
+#define snprintf _snprintf
+#define vsnprintf _vsnprintf
+#endif
+#endif
 
 #include <boost/filesystem.hpp>
 #include <pj/pool.h>
