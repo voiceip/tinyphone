@@ -46,7 +46,7 @@ RUN powershell.exe [Net.ServicePointManager]::SecurityProtocol =[Net.SecurityPro
 
 
 # Install Git & other tools
-RUN powershell.exe scoop install git curl wget cmake openssh unzip make;
+RUN powershell.exe scoop install git curl wget openssh unzip make sed;
 RUN powershell.exe [environment]::setenvironmentvariable('GIT_SSH', (resolve-path (scoop which ssh)), 'USER');
 
 ADD https://onboardcloud.dl.sourceforge.net/project/boost/boost-binaries/1.74.0/boost_1_74_0-msvc-14.2-32.exe C:\TEMP\boost.exe
