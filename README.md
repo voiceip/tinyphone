@@ -1,7 +1,7 @@
 # Tinyphone
 Minimalist Softphone based on PJSIP with API Control
 
-[![AppVeyor](https://img.shields.io/appveyor/ci/kingster/tinyphone)](https://ci.appveyor.com/project/kingster/tinyphone/) 
+[![Tinyphone Build](https://github.com/voiceip/tinyphone/actions/workflows/main.yml/badge.svg)](https://github.com/voiceip/tinyphone/actions/workflows/main.yml)
 
 ## Getting Started
 
