@@ -104,7 +104,8 @@ namespace tp {
             pj_logerror(pjsip_endpt_create_resolver(endpt, &resolver),"pjsip_endpt_create_resolver");
 
             struct pj_str_t servers[MAX_DNS_SERVERS];
-            for (unsigned int i = 0; i < std::min(static_cast<int>(dnsServers.size()), MAX_DNS_SERVERS) ; ++i) {
+            int dnsServersCount = static_cast<int>(dnsServers.size());
+            for (unsigned int i = 0; i < std::min(dnsServersCount, MAX_DNS_SERVERS); ++i) {
                 pj_cstr(&servers[i], dnsServers.at(i).c_str());
             }
 
