@@ -11,12 +11,21 @@ SHELL ["cmd", "/S", "/C"]
 COPY Install.cmd C:\TEMP\
 ADD https://aka.ms/vscollect.exe C:\TEMP\collect.exe
 
-# Download and install Build Tools 14.0
-# ADD https://download.microsoft.com/download/E/E/D/EEDF18A8-4AED-4CE0-BEBE-70A83094FC5A/BuildTools_Full.exe C:\TEMP\msbuild14.exe
-# RUN start /wait C:\TEMP\msbuild14.exe /q /full /log C:\TEMP\msbuild14.log
+# Install Scoop
+RUN powershell.exe [Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12 ; (New-Object System.Net.WebClient).DownloadFile('https://get.scoop.sh', 'install_scoop.ps1'); .\install_scoop.ps1 -RunAsAdmin
+
+# Use devel branch of scoop due to https://github.com/ScoopInstaller/Scoop/issues/4792
+RUN scoop config SCOOP_BRANCH develop ; scoop update
+
+# Install Git & other tools
+RUN powershell.exe scoop install git curl wget openssh unzip make sed;
+RUN powershell.exe [environment]::setenvironmentvariable('GIT_SSH', (resolve-path (scoop which ssh)), 'USER');
 
 # Download channel for fixed install.
-ADD https://aka.ms/vs/16/release/channel C:\TEMP\VisualStudio.chman
+RUN curl -L  https://aka.ms/vs/16/release/channel -o /tmp/VisualStudio.chman
+
+# Download channel for fixed install.
+# ADD https://aka.ms/vs/16/release/channel C:\TEMP\VisualStudio.chman
 
 # Download and install Build Tools for Visual Studio 2019 for native desktop workload.
 ADD https://aka.ms/vs/16/release/vs_buildtools.exe C:\TEMP\vs_buildtools.exe
@@ -41,15 +50,6 @@ RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --n
 # Verify if .NET isn't broken (bug with the ltsc2016 docker image)
 # RUN powershell.exe -Command echo Everything is OK
 
-# Install Scoop
-RUN powershell.exe [Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12 ; (New-Object System.Net.WebClient).DownloadFile('https://get.scoop.sh', 'install_scoop.ps1'); .\install_scoop.ps1 -RunAsAdmin
-
-# Use devel branch of scoop due to https://github.com/ScoopInstaller/Scoop/issues/4792
-RUN scoop config SCOOP_BRANCH develop ; scoop update
-
-# Install Git & other tools
-RUN powershell.exe scoop install git curl wget openssh unzip make sed;
-RUN powershell.exe [environment]::setenvironmentvariable('GIT_SSH', (resolve-path (scoop which ssh)), 'USER');
 
 ADD https://onboardcloud.dl.sourceforge.net/project/boost/boost-binaries/1.74.0/boost_1_74_0-msvc-14.2-32.exe C:\TEMP\boost.exe
 RUN cmd.exe /c C:\TEMP\boost.exe /SILENT
