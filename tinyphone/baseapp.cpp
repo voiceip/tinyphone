@@ -10,9 +10,13 @@
 #include "tpendpoint.h"
 
 #include <boost/foreach.hpp>
+#include <algorithm>
 
 using namespace std;
 using namespace pj;
+
+#define MAX_DNS_SERVERS 4
+
 
 inline void  pj_logerror(pj_status_t status, char * message) {
     if (status != PJ_SUCCESS) {
@@ -99,9 +103,9 @@ namespace tp {
             pj_dns_resolver* resolver;
             pj_logerror(pjsip_endpt_create_resolver(endpt, &resolver),"pjsip_endpt_create_resolver");
 
-            struct pj_str_t servers[4];
-            for (unsigned int i = 0; i < dnsServers.size() ; ++i) {
-            pj_cstr(&servers[i], dnsServers.at(i).c_str());
+            struct pj_str_t servers[MAX_DNS_SERVERS];
+            for (unsigned int i = 0; i < std::min(static_cast<int>(dnsServers.size()), MAX_DNS_SERVERS) ; ++i) {
+                pj_cstr(&servers[i], dnsServers.at(i).c_str());
             }
 
             pj_dns_resolver_set_ns(resolver, dnsServers.size(), servers, NULL);
