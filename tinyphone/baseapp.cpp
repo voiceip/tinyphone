@@ -10,7 +10,7 @@
 #include "tpendpoint.h"
 
 #include <boost/foreach.hpp>
-#include <algorithm>
+#include <math.h>
 
 using namespace std;
 using namespace pj;
@@ -105,7 +105,7 @@ namespace tp {
 
             struct pj_str_t servers[MAX_DNS_SERVERS];
             int dnsServersCount = static_cast<int>(dnsServers.size());
-            for (unsigned int i = 0; i < std::min(dnsServersCount, MAX_DNS_SERVERS); ++i) {
+            for (unsigned int i = 0; i < min(dnsServersCount, MAX_DNS_SERVERS); ++i) {
                 pj_cstr(&servers[i], dnsServers.at(i).c_str());
             }
 
