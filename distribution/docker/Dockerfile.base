@@ -44,6 +44,8 @@ RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --n
 # Install Scoop
 RUN powershell.exe [Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12 ; (New-Object System.Net.WebClient).DownloadFile('https://get.scoop.sh', 'install_scoop.ps1'); .\install_scoop.ps1 -RunAsAdmin
 
+# Use devel branch of scoop due to https://github.com/ScoopInstaller/Scoop/issues/4792
+RUN scoop config SCOOP_BRANCH develop ; scoop update
 
 # Install Git & other tools
 RUN powershell.exe scoop install git curl wget openssh unzip make sed;
