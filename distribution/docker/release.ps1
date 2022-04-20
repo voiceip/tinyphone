@@ -33,7 +33,7 @@ cd E:\lib\cryptopp
 msbuild /m cryptlib.vcxproj /p:Configuration=$BuildMode /p:Platform=Win32 /p:PlatformToolset=v142
 
 #portaudio
-curl -L "https://download.steinberg.net/sdk_downloads/asiosdk_2.3.3_2019-06-14.zip" -o "E:\lib\portaudio\src\hostapi\asio\asiosdk_2.3.3_2019-06-14.zip"
+curl "https://download.steinberg.net/sdk_downloads/asiosdk_2.3.3_2019-06-14.zip" -o "E:\lib\portaudio\src\hostapi\asio\asiosdk_2.3.3_2019-06-14.zip"
 cd E:\lib\portaudio\src\hostapi\asio
 unzip asiosdk_2.3.3_2019-06-14.zip
 mv asiosdk_2.3.3_2019-06-14 ASIOSDK
