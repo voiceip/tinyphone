@@ -104,14 +104,14 @@ namespace tp {
             pj_logerror(pjsip_endpt_create_resolver(endpt, &resolver),"pjsip_endpt_create_resolver");
 
             struct pj_str_t servers[MAX_DNS_SERVERS];
-            int dnsServersCount = static_cast<int>(dnsServers.size());
-            for (unsigned int i = 0; i < min(dnsServersCount, MAX_DNS_SERVERS); ++i) {
+            int dnsServersCount = min(static_cast<int>(dnsServers.size()), MAX_DNS_SERVERS);
+            for (unsigned int i = 0; i < dnsServersCount; ++i) {
                 pj_cstr(&servers[i], dnsServers.at(i).c_str());
             }
 
-            pj_dns_resolver_set_ns(resolver, dnsServers.size(), servers, NULL);
+            pj_dns_resolver_set_ns(resolver, dnsServersCount, servers, NULL);
             pjsip_endpt_set_resolver(endpt, resolver);
-            CROW_LOG_INFO << "PJSUA2 Set DNS Resolvers Done... : " << dnsServers.size();
+            CROW_LOG_INFO << "PJSUA2 Set DNS Resolvers Done... : " << dnsServersCount;
         }
         catch (Error & err) {
             CROW_LOG_ERROR << "Exception: " << err.info();
