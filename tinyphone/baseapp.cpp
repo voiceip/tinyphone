@@ -17,7 +17,6 @@ using namespace pj;
 
 #define MAX_DNS_SERVERS 4
 
-
 inline void  pj_logerror(pj_status_t status, char * message) {
     if (status != PJ_SUCCESS) {
         CROW_LOG_ERROR << "pjsua returned error : " << status;
