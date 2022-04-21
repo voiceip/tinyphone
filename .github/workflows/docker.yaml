@@ -15,7 +15,7 @@ jobs:
   tinyphone_docker_job:
     if: github.event.label.name == 'ci/github' || github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'release'
     name: Build Tinyphone
-    runs-on: windows-2016
+    runs-on: windows-2019
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -45,9 +45,8 @@ jobs:
     - name: Build and Push tinyphone_base  to registry
       if: contains(steps.changed_files.outputs.modified, 'Dockerfile.base')
       run: |
-        docker build --file=./distribution/docker/Dockerfile.base -t ghcr.io/${{ github.repository_owner }}/tinyphone_base:latest -t ghcr.io/${{ github.repository_owner }}/tinyphone_base:${{ steps.vars.outputs.sha_short }} ./distribution/docker
-        docker push ghcr.io/${{ github.repository_owner }}/tinyphone_base:latest
-        docker push ghcr.io/${{ github.repository_owner }}/tinyphone_base:${{ steps.vars.outputs.sha_short }}
+        docker build --file=./distribution/docker/Dockerfile.base -t ghcr.io/${{ github.repository_owner }}/tinyphone_base:vc2019 -t ghcr.io/${{ github.repository_owner }}/tinyphone_base:${{ steps.vars.outputs.sha_short }} ./distribution/docker
+        docker push ghcr.io/${{ github.repository_owner }}/tinyphone_base:vc2019
     - name: Update CodeDir
       run : |
         sed -i 's/$env:CodeDir/C:\\Code\\tinyphone/g' ./distribution/docker/release.ps1
@@ -55,7 +54,7 @@ jobs:
       shell : bash
     - name: Build tinyphone
       run: |
-        cat ./distribution/docker/release.ps1 | docker run -v ${PWD}:"C:\Code\tinyphone" -i  ghcr.io/${{ github.repository_owner }}/tinyphone_base:latest
+        cat ./distribution/docker/release.ps1 | docker run -v ${PWD}:"C:\Code\tinyphone" -i  ghcr.io/${{ github.repository_owner }}/tinyphone_base:vc2019
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
