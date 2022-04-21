@@ -1,8 +1,8 @@
 #include "stdafx.h"
+#include <boost/format.hpp> 
 #include "config.h"
 #include "net.h"
 #include "utils.h"
-#include <boost/format.hpp> 
 #include "crypt.h"
 
 #ifdef __APPLE__
