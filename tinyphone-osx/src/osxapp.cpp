@@ -45,7 +45,6 @@ namespace tp {
             if (family == AF_INET) { // IPV4 address
                 char str[INET_ADDRSTRLEN]; // String representation of address
                 inet_ntop(AF_INET, & (res->nsaddr_list[i].sin_addr.s_addr), str, INET_ADDRSTRLEN);
-                // std::cout << "DNS: " << str << std::endl ;
                 dnsServers.push_back(str);
 
             } else if (family == AF_INET6) { // IPV6 address
