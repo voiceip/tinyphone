@@ -42,10 +42,6 @@ jobs:
     - name: Set vars
       id: vars
       run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-    - name: Fetch Existing Docker Image
-      run : |
-        docker pull ghcr.io/${{ github.repository_owner }}/tinyphone_base:vc2019
-      continue-on-error: true
     - name: Build and Push tinyphone_base  to registry
       if: contains(steps.changed_files.outputs.modified, 'Dockerfile.base')
       run: |
