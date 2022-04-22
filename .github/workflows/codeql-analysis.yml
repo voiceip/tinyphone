@@ -47,7 +47,7 @@ jobs:
 
         #boost
         pushd tinyphone-osx/vendor/boost
-        ./boost.sh -macos --boost-version 1.68.0
+        ./boost.sh -macos --boost-version 1.74.0
         popd
 
     # Initializes the CodeQL tools for scanning.
