@@ -126,7 +126,7 @@ jobs:
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
         #cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
-    - name: Install dependencies
+    - name: Install Dependencies
       shell: bash
       run : |
         export HOMEBREW_NO_INSTALL_CLEANUP=true

@@ -22,13 +22,13 @@ on:
 
 jobs:
   analyze:
-    name: Analyze
+    name: CodeQL Analyze
     permissions:
       actions: read
       contents: read
       security-events: write
-    runs-on: macos-10.15
 
+    runs-on: macos-10.15
     strategy:
       fail-fast: false
       matrix:
@@ -48,14 +48,18 @@ jobs:
         git submodule sync --recursive
         git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
     
-    - name: Install dependencies
+    - name: Install Dependencies
       shell: bash
       run : |
         export HOMEBREW_NO_INSTALL_CLEANUP=true
         brew install autoconf automake libtool tree wget opencore-amr
         wget https://gist.githubusercontent.com/kingster/1954ead3c38a40cac88c5c1311bb39c5/raw/343da2c7a2a52ee5a1c03902cc5e44ed83b1dd5d/cryptopp.rb
         brew install --build-from-source -f cryptopp.rb 
-        npm install -g appdmg
+
+        #boost
+        pushd tinyphone-osx/vendor/boost
+        ./boost.sh -macos --boost-version 1.68.0
+        popd
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
@@ -72,11 +76,6 @@ jobs:
         #xcode needs to be proper at this point
         xcode-select --print-path
 
-        #boost
-        pushd tinyphone-osx/vendor/boost
-        ./boost.sh -macos --boost-version 1.68.0
-        popd
-
         #stastd
         pushd lib/statsd-cpp
         mkdir build-osx
@@ -90,9 +89,6 @@ jobs:
         pushd tinyphone-osx
         pod install
         xcodebuild -workspace Tinyphone.xcworkspace -scheme Tinyphone -configuration Release CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
-        ./package.sh
-        # Don't sign dmg with developer certificate, throws nasty warning.
-        # codesign --force --sign "Apple Development" tinyphone.dmg 
 
     # # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # # If this step fails, then you should remove it and run the build manually (see below)
