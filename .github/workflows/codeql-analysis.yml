@@ -22,7 +22,7 @@ on:
 
 jobs:
   analyze:
-    name: CodeQL Analyze
+    name: Analyze
     permissions:
       actions: read
       contents: read
