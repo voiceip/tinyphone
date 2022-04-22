@@ -126,7 +126,7 @@ jobs:
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
         #cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
-    - name: Install dependencies
+    - name: Install Dependencies
       shell: bash
       run : |
         export HOMEBREW_NO_INSTALL_CLEANUP=true
@@ -142,7 +142,7 @@ jobs:
 
         #boost
         pushd tinyphone-osx/vendor/boost
-        ./boost.sh -macos --boost-version 1.68.0
+        ./boost.sh -macos --boost-version 1.74.0
         popd
 
         #stastd
