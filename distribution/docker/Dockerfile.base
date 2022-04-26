@@ -1,5 +1,5 @@
 # escape=`
-FROM mcr.microsoft.com/dotnet/framework/runtime:3.5-windowsservercore-ltsc2016
+FROM mcr.microsoft.com/dotnet/framework/runtime:3.5-windowsservercore-ltsc2019
 MAINTAINER Kinshuk B (hi@kinsh.uk)
 
 RUN powershell.exe mkdir C:\BuildTools
@@ -11,15 +11,25 @@ SHELL ["cmd", "/S", "/C"]
 COPY Install.cmd C:\TEMP\
 ADD https://aka.ms/vscollect.exe C:\TEMP\collect.exe
 
-# Download and install Build Tools 14.0
-ADD https://download.microsoft.com/download/E/E/D/EEDF18A8-4AED-4CE0-BEBE-70A83094FC5A/BuildTools_Full.exe C:\TEMP\msbuild14.exe
-RUN start /wait C:\TEMP\msbuild14.exe /q /full /log C:\TEMP\msbuild14.log
+# Install Scoop
+RUN powershell.exe [Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12 ; (New-Object System.Net.WebClient).DownloadFile('https://get.scoop.sh', 'install_scoop.ps1'); .\install_scoop.ps1 -RunAsAdmin
+
+# Use devel branch of scoop due to https://github.com/ScoopInstaller/Scoop/issues/4792
+RUN scoop config SCOOP_BRANCH develop ; scoop update
+
+# Install Git & other tools
+RUN powershell.exe scoop install git curl wget openssh unzip make sed;
+RUN powershell.exe [environment]::setenvironmentvariable('GIT_SSH', (resolve-path (scoop which ssh)), 'USER');
 
 # Download channel for fixed install.
-ADD https://aka.ms/vs/15/release/channel C:\TEMP\VisualStudio.chman
+RUN curl -L  https://aka.ms/vs/16/release/channel -o C:\TEMP\VisualStudio.chman
 
-# Download and install Build Tools for Visual Studio 2017 for native desktop workload.
-ADD https://aka.ms/vs/15/release/vs_buildtools.exe C:\TEMP\vs_buildtools.exe
+# Download channel for fixed install.
+# ADD https://aka.ms/vs/16/release/channel C:\TEMP\VisualStudio.chman
+
+# Download and install Build Tools for Visual Studio 2019 for native desktop workload.
+ADD https://aka.ms/vs/16/release/vs_buildtools.exe C:\TEMP\vs_buildtools.exe
+
 RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --nocache `
     --channelUri C:\TEMP\VisualStudio.chman `
     --installChannelUri C:\TEMP\VisualStudio.chman `
@@ -27,24 +37,22 @@ RUN C:\TEMP\Install.cmd C:\TEMP\vs_buildtools.exe --quiet --wait --norestart --n
     --add Microsoft.Component.MSBuild `
     --add Microsoft.VisualStudio.Component.VC.140 `
     --add Microsoft.VisualStudio.Component.WinXP `
+    --add Microsoft.VisualStudio.Component.VC.ATLMFC `
+    --add Microsoft.VisualStudio.Component.VC.ATL `
+    --add Microsoft.VisualStudio.Component.VC.Modules.x86.x64 `
     # --remove Microsoft.VisualStudio.Component.Windows10SDK.10240 `
     # --remove Microsoft.VisualStudio.Component.Windows10SDK.10586 `
     # --remove Microsoft.VisualStudio.Component.Windows10SDK.14393 `
-    # --remove Microsoft.VisualStudio.Component.Windows81SDK `
+    --remove Microsoft.VisualStudio.Component.Windows81SDK `
     --installPath C:\BuildTools 
+    # --installPath "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\BuildTools" 
 
 # Verify if .NET isn't broken (bug with the ltsc2016 docker image)
 # RUN powershell.exe -Command echo Everything is OK
 
-# Install Scoop
-RUN powershell.exe [Net.ServicePointManager]::SecurityProtocol =[Net.SecurityProtocolType]::Tls12 ; Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh');
 
-# Install Git & other tools
-RUN powershell.exe scoop install git curl wget cmake win32-openssh unzip make;
-RUN powershell.exe [environment]::setenvironmentvariable('GIT_SSH', (resolve-path (scoop which ssh)), 'USER');
-
-ADD https://boost.teeks99.com/bin/1.68.0/boost_1_68_0-msvc-14.0-32.exe C:\TEMP\boost_1_68_0-msvc-14.0-32.exe
-RUN cmd.exe /c C:\TEMP\boost_1_68_0-msvc-14.0-32.exe /SILENT
+ADD https://onboardcloud.dl.sourceforge.net/project/boost/boost-binaries/1.74.0/boost_1_74_0-msvc-14.2-32.exe C:\TEMP\boost.exe
+RUN cmd.exe /c C:\TEMP\boost.exe /SILENT
 
 ADD https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311.exe C:\TEMP\wix311.exe
 RUN powershell.exe C:\TEMP\Install.cmd C:\TEMP\wix311.exe /install /quiet /norestart
@@ -57,11 +65,7 @@ RUN powershell.exe Remove-Item -LiteralPath 'C:\Program Files\WindowsPowerShell\
 
 WORKDIR C:\BuildTools
 
-ADD VsDevCmdPowerShell.bat C:\BuildTools\
-ENTRYPOINT C:\BuildTools\VsDevCmdPowerShell.bat
+# Define the entry point for the Docker container.
+# This entry point starts the developer command prompt and launches the PowerShell shell.
+ENTRYPOINT ["C:\\BuildTools\\Common7\\Tools\\VsDevCmd.bat", "&&", "powershell.exe", "-NoLogo", "-ExecutionPolicy", "Bypass"]
 
-# Start developer command prompt with any other commands specified.
-# ENTRYPOINT C:\BuildTools\Common7\Tools\VsDevCmd.bat &&
-
-# Default to PowerShell if no other command specified.
-# CMD ["powershell.exe", "-NoLogo", "-ExecutionPolicy", "Bypass"]

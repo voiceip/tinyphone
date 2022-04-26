@@ -1,5 +1,5 @@
 version: 1.0.{build}
-image: Visual Studio 2017
+image: Visual Studio 2019
 clone_depth: 5
 init:
 - ps: >-
@@ -10,10 +10,10 @@ branches:
   only:
     - master
 install:
-- appveyor DownloadFile https://master.dl.sourceforge.net/project/boost/boost-binaries/1.68.0/boost_1_68_0-msvc-14.0-32.exe
-- call boost_1_68_0-msvc-14.0-32.exe /SILENT
+- appveyor DownloadFile https://onboardcloud.dl.sourceforge.net/project/boost/boost-binaries/1.74.0/boost_1_74_0-msvc-14.2-32.exe
+- call boost_1_74_0-msvc-14.2-32.exe /SILENT
 - ps : |
-    ls "C:\local\boost_1_68_0"
+    ls "C:\local\boost_1_74_0"
 
     # Install Scoop
     iwr -useb get.scoop.sh -outfile 'install_scoop.ps1'
@@ -34,14 +34,7 @@ build_script:
 
     cmd /c subst E: C:\projects\tinyphone
 
-    cd E:\lib\curl\
-    ls
-    .\buildconf.bat
-    cd E:\lib\curl\winbuild
-
-    ls
-
-    pushd "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools"
+    pushd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools"
     cmd /c "VsDevCmd.bat&set" |
     foreach {
       if ($_ -match "=") {
@@ -49,28 +42,27 @@ build_script:
       }
     }
     popd
-    Write-Host "`nVisual Studio 2017 Command Prompt variables set." -ForegroundColor Yellow
+    Write-Host "`nVisual Studio 2019 Command Prompt variables set." -ForegroundColor Yellow
+
+    cd E:\lib\curl\
+    ls
+    .\buildconf.bat
+    cd E:\lib\curl\winbuild
 
     where.exe msbuild.exe
+    nmake /f Makefile.vc mode=dll VC=19 DEBUG=no
 
-    nmake /f Makefile.vc mode=dll VC=15 DEBUG=no
-
-    cd E:\lib\curl\builds
-
-    ls 
-
-    cmd /c MKLINK /D E:\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl E:\lib\curl\builds\libcurl-vc15-x86-release-dll-ipv6-sspi-winssl
-    ls E:\lib\curl\builds
-    cmd /c .\libcurl-vc15-x86-release-dll-ipv6-sspi-winssl\bin\curl.exe https://wttr.in/bangalore
+    cmd /c MKLINK /D E:\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl E:\lib\curl\builds\libcurl-vc19-x86-release-dll-ipv6-sspi-winssl
+    cmd /c .\libcurl-vc19-x86-release-dll-ipv6-sspi-winssl\bin\curl.exe https://wttr.in/bangalore
 
     #G729
     cd E:\lib\bcg729\build\
-    cmake ..
-    msbuild /m bcg729.sln /p:Configuration=$BuildMode /p:Platform=Win32
+    cmake .. -A Win32
+    msbuild /m bcg729.sln /p:Configuration=$BuildMode /p:Platform=Win32 /p:PlatformToolset=v142
     if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
     cd E:\lib\cryptopp
-    msbuild /m cryptlib.vcxproj /p:Configuration=$BuildMode /p:Platform=Win32 /p:PlatformToolset=v140_xp
+    msbuild /m cryptlib.vcxproj /p:Configuration=$BuildMode /p:Platform=Win32 /p:PlatformToolset=v142
     if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
     $wc = New-Object net.webclient; $wc.Downloadfile("https://download.steinberg.net/sdk_downloads/asiosdk_2.3.3_2019-06-14.zip", "E:\lib\portaudio\src\hostapi\asio\asiosdk_2.3.3_2019-06-14.zip")
@@ -78,23 +70,23 @@ build_script:
     unzip asiosdk_2.3.3_2019-06-14.zip
     mv asiosdk_2.3.3_2019-06-14 ASIOSDK
     cd E:\lib\portaudio\build\msvc
-    msbuild /m portaudio.sln /p:Configuration=$BuildMode /p:Platform=Win32
+    msbuild /m portaudio.sln /p:Configuration=$BuildMode /p:Platform=Win32 /p:PlatformToolset=v142 /p:WindowsTargetPlatformVersion=10.0
     if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
     cd E:\lib\pjproject
-    msbuild /m pjproject-vs14.sln -target:libpjproject:Rebuild /p:Configuration=$BuildMode-Static /p:Platform=Win32
+    msbuild /m pjproject-vs14.sln -target:libpjproject:Rebuild /p:Configuration=$BuildMode-Static /p:Platform=Win32 /p:PlatformToolset=v142
     if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
     cd E:\lib\statsd-cpp
     cmake .
-    msbuild /m statsd-cpp.vcxproj /p:Configuration=$BuildMode /p:Platform=Win32
+    msbuild /m statsd-cpp.vcxproj /p:Configuration=$BuildMode /p:Platform=Win32 /p:PlatformToolset=v142 /p:WindowsTargetPlatformVersion=10.0
     if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
     cd E:\tinyphone
 
     sed -i 's/stampver.inf.*\$/stampver.inf $/g' tinyphone.vcxproj
 
-    msbuild /m tinyphone.sln /p:Configuration=$BuildMode /p:Platform=x86
+    msbuild /m tinyphone.sln /p:Configuration=$BuildMode /p:Platform=x86 /p:PlatformToolset=v142 /p:WindowsTargetPlatformVersion=10.0
     if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
     Write-Host "`nBuild Completed." -ForegroundColor Yellow

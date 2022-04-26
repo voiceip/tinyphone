@@ -1,10 +1,11 @@
 name: Tinyphone Build
 
 on:
-  release:
   push: 
     branches:
       - master
+    tags:
+      - v*
   pull_request:
     branches:
       - master
@@ -12,7 +13,7 @@ on:
 jobs:
   tinyphone_win_job:
     name: Build Tinyphone Windows
-    runs-on: windows-2016
+    runs-on: windows-2019
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -28,15 +29,15 @@ jobs:
       uses: actions/cache@v2
       id: cache-boost
       with:
-        path: C:\local\boost_1_68_0
-        key: boost
+        path: C:\local\boost_1_74_0
+        key: boost-74
     - name: Install Boost
       if: steps.cache-boost.outputs.cache-hit != 'true'
       run: |
-        # Use the boost_1_72_0-msvc-14.1-64.exe for Windows 2016
-        $Url = "https://boost.teeks99.com/bin/1.68.0/boost_1_68_0-msvc-14.0-32.exe"
+        # Use the boost_1_74_0-msvc-14.1-64.exe for Windows 2019
+        $Url = "https://onboardcloud.dl.sourceforge.net/project/boost/boost-binaries/1.74.0/boost_1_74_0-msvc-14.2-32.exe"
         (New-Object System.Net.WebClient).DownloadFile($Url, "$env:TEMP\boost.exe")
-        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost_1_68_0"
+        Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=C:\local\boost_1_74_0"
 
     - name: Install Scoop & Binaries
       run : |
@@ -66,7 +67,7 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: tinyphone
+        name: tinyphone.msi
         path: |
           ./tinyphone-installer/bin/Release/tinyphone_installer.msi
 
@@ -125,7 +126,7 @@ jobs:
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
         #cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
-    - name: Install dependencies
+    - name: Install Dependencies
       shell: bash
       run : |
         export HOMEBREW_NO_INSTALL_CLEANUP=true
@@ -141,7 +142,7 @@ jobs:
 
         #boost
         pushd tinyphone-osx/vendor/boost
-        ./boost.sh -macos --boost-version 1.68.0
+        ./boost.sh -macos --boost-version 1.74.0
         popd
 
         #stastd

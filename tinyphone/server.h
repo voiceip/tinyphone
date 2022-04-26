@@ -2,6 +2,7 @@
 
 #ifndef SERVER_HEADER_FILE_H
 #define SERVER_HEADER_FILE_H
+#define CROW_USE_LOCALTIMEZONE 1
 
 #include <crow.h>
 #include <iostream>
@@ -29,14 +30,15 @@ public:
 		log_writer.close();
 	}
 
-	void log(const std::string &message, crow::LogLevel /*level*/) override {
-		log_writer << message ;
+	void log(const std::string message, crow::LogLevel /*level*/) {
+		log_writer << message << std::endl ;
 #ifdef _DEBUG
-		std::cout << message;
+		std::cout << message << std::endl ;
 #endif
 		log_writer.flush();
 	}
 };
+
 
 struct TinyPhoneMiddleware
 {

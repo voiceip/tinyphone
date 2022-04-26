@@ -22,13 +22,13 @@
     <ProjectGuid>{968AADC8-5E16-44C2-919C-48683EF6729E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>tinyphone</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
@@ -43,13 +43,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -90,14 +90,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>E:\lib\statsd-cpp\include;E:\lib\portaudio\include;..\lib;..\lib\curl\include;..\lib\json\single_include;C:\local\boost_1_68_0;..\lib\crow\include;..\lib\pjproject\pjnath\include;..\lib\pjproject\pjmedia\include;..\lib\pjproject\pjlib-util\include;..\lib\pjproject\pjlib\include;..\lib\pjproject\pjsip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\lib\statsd-cpp\include;E:\lib\portaudio\include;..\lib;..\lib\curl\include;..\lib\json\single_include;C:\local\boost_1_74_0;..\lib\crow\include;..\lib\pjproject\pjnath\include;..\lib\pjproject\pjmedia\include;..\lib\pjproject\pjlib-util\include;..\lib\pjproject\pjlib\include;..\lib\pjproject\pjsip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\lib\portaudio\build\msvc\Win32\Debug;..\lib\cryptopp\Win32\Output\Debug;..\lib\bcg729\build\src\Debug;..\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\lib;C:\local\boost_1_68_0\lib32-msvc-14.0;..\lib\opus\win32\VS2015\Win32\Debug;..\lib\vp8vfw\vp8\lib\Win32;..\lib\pjproject\pjsip\lib;..\lib\pjproject\pjnath\lib;..\lib\pjproject\pjmedia\lib;..\lib\pjproject\pjlib-util\lib;..\lib\pjproject\pjlib\lib;..\lib\pjproject\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib\portaudio\build\msvc\Win32\Debug;..\lib\cryptopp\Win32\Output\Debug;..\lib\bcg729\build\src\Debug;..\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\lib;C:\local\boost_1_74_0\lib32-msvc-14.2;..\lib\opus\win32\VS2015\Win32\Debug;..\lib\vp8vfw\vp8\lib\Win32;..\lib\pjproject\pjsip\lib;..\lib\pjproject\pjnath\lib;..\lib\pjproject\pjmedia\lib;..\lib\pjproject\pjlib-util\lib;..\lib\pjproject\pjlib\lib;..\lib\pjproject\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;libcurl.lib;version.lib;cryptlib.lib;bcg729.lib;winmm.lib;iphlpapi.lib;portaudio_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>false</EnableUAC>
     </Link>
@@ -133,7 +133,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>E:\lib\statsd-cpp\include;E:\lib\portaudio\include;..\lib;..\lib\curl\include;..\lib\json\single_include;C:\local\boost_1_68_0;..\lib\crow\include;..\lib\pjproject\pjnath\include;..\lib\pjproject\pjmedia\include;..\lib\pjproject\pjlib-util\include;..\lib\pjproject\pjlib\include;..\lib\pjproject\pjsip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\lib\statsd-cpp\include;E:\lib\portaudio\include;..\lib;..\lib\curl\include;..\lib\json\single_include;C:\local\boost_1_74_0;..\lib\crow\include;..\lib\pjproject\pjnath\include;..\lib\pjproject\pjmedia\include;..\lib\pjproject\pjlib-util\include;..\lib\pjproject\pjlib\include;..\lib\pjproject\pjsip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -141,7 +141,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\lib\portaudio\build\msvc\Win32\Release;..\lib\cryptopp\Win32\Output\Release;..\lib\bcg729\build\src\Release;..\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\lib;C:\local\boost_1_68_0\lib32-msvc-14.0;..\lib\opus\win32\VS2015\Win32\Debug;..\lib\vp8vfw\vp8\lib\Win32;..\lib\pjproject\pjsip\lib;..\lib\pjproject\pjnath\lib;..\lib\pjproject\pjmedia\lib;..\lib\pjproject\pjlib-util\lib;..\lib\pjproject\pjlib\lib;..\lib\pjproject\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib\portaudio\build\msvc\Win32\Release;..\lib\cryptopp\Win32\Output\Release;..\lib\bcg729\build\src\Release;..\lib\curl\builds\libcurl-vc-x86-release-dll-ipv6-sspi-winssl\lib;C:\local\boost_1_74_0\lib32-msvc-14.2;..\lib\opus\win32\VS2015\Win32\Debug;..\lib\vp8vfw\vp8\lib\Win32;..\lib\pjproject\pjsip\lib;..\lib\pjproject\pjnath\lib;..\lib\pjproject\pjmedia\lib;..\lib\pjproject\pjlib-util\lib;..\lib\pjproject\pjlib\lib;..\lib\pjproject\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Wtsapi32.lib;ws2_32.lib;libcurl.lib;version.lib;cryptlib.lib;bcg729.lib;winmm.lib;iphlpapi.lib;portaudio_x86.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EnableUAC>false</EnableUAC>
     </Link>

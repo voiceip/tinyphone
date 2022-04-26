@@ -20,6 +20,8 @@
 #include "portaudio.h"
 #include <boost/foreach.hpp>
 
+#define CROW_MAIN
+
 using namespace std;
 using namespace pj;
 using json = nlohmann::json;
@@ -184,14 +186,14 @@ void TinyPhoneHttpServer::Start() {
 				tp::MetricsClient.increment("api.login.exists");
 				try {
 					phone.EnableAccount(existing_account);
-					return tp::response(208, {
+					return tp::response(200, {
 						{ "message", "Account already exists" },
 						{ "account_name", account_name },
 						{ "id", existing_account->getId() },
-						{ "result", 202 }
+						{ "result", 200 }
 					});
 				} catch(...) {
-					return tp::response(408, {
+					return tp::response(202, {
 						{ "message", "Account already exists, but login progress, please try again in sometime" },
 						{ "account_name", account_name },
 						{ "id", existing_account->getId() },
@@ -217,7 +219,7 @@ void TinyPhoneHttpServer::Start() {
 						});
 					}
 					else {
-						return tp::response(408, {
+						return tp::response(202, {
 							{ "message", "Account login still in progress" },
 							{ "account_name", account_name },
 							{ "result", 202 }
@@ -716,7 +718,8 @@ void TinyPhoneHttpServer::Start() {
 			auto tar_bytes = file_all_bytes(tmp_file);
 			remove(tmp_file.c_str());
 
-			auto response = crow::response(tar_bytes);
+			std::string data_str(tar_bytes.begin(), tar_bytes.end());
+			auto response = crow::response(data_str);
 			response.set_header("Content-Type", "application/octet-stream"); 
 
 			std::string ip_addr = local_ip_address();
@@ -739,11 +742,11 @@ void TinyPhoneHttpServer::Start() {
 		json response = {
 			{"message", "Server Shutdown Recieved"},
 			{"result", 401},
-			{"source", req.remoteIpAddress},
+			{"source", req.remote_ip_address},
 		};
-		CROW_LOG_INFO << "Shutdown Request from client: " << req.remoteIpAddress;
+		CROW_LOG_INFO << "Shutdown Request from client: " << req.remote_ip_address;
 		tp::MetricsClient.increment("api.exit");
-		if (req.remoteIpAddress.compare("127.0.0.1") == 0) {
+		if (req.remote_ip_address.compare("127.0.0.1") == 0) {
 			CROW_LOG_INFO << "Shutdown Request from localhost authenticated";
 			response["result"] = 200;
 			app.stop();
