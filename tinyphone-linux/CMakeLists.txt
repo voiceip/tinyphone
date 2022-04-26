@@ -3,9 +3,10 @@ cmake_minimum_required(VERSION 3.5)
 set(CMAKE_C_COMPILER "gcc")
 set(CMAKE_CXX_COMPILER "g++")
 set (CMAKE_CXX_STANDARD 14)
-set(CMAKE_WARN_DEPRECATED OFF)
+set(CMAKE_WARN_DEPRECATED FALSE)
 
 project(tinyphone VERSION 0.0.0 LANGUAGES C CXX)
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-deprecated")
 
 
 file(GLOB SOURCES
@@ -31,7 +32,7 @@ list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/winapp.cpp)
 # set(Boost_USE_STATIC_LIBS ON) 
 set(Boost_USE_MULTITHREADED ON)  
 # set(Boost_USE_STATIC_RUNTIME OFF) 
-find_package(Boost 1.73 REQUIRED COMPONENTS date_time filesystem system) 
+find_package(Boost 1.71 REQUIRED COMPONENTS date_time filesystem system) 
 include_directories(${Boost_INCLUDE_DIRS}) 
 
 find_package(PkgConfig REQUIRED) 
@@ -58,12 +59,19 @@ target_link_libraries(tinyphone ${PJSIP_LIBRARIES})
 find_package(nlohmann_json 3.10.5 REQUIRED)
 target_link_libraries(tinyphone nlohmann_json::nlohmann_json)
 
-pkg_check_modules(CRYPTOPP libcrypto++ REQUIRED)
-target_link_libraries(tinyphone ${CRYPTOPP_LIBRARIES})
+add_library(libcryptopp_static STATIC IMPORTED)
+set_target_properties(libcryptopp_static PROPERTIES IMPORTED_LOCATION /usr/local/lib/libcryptopp.a)
+set_target_properties(libcryptopp_static PROPERTIES INTERFACE_INCLUDE_DIRECTORIES /usr/local/include)
+target_link_libraries(tinyphone libcryptopp_static)
+target_link_libraries(tinyphone "cryptopp")
 
-# Typically you don't care so much for a third party library's tests to be
-# run from your own project's code.
-# set(JSON_BuildTests OFF CACHE INTERNAL "")
-# set(JSON_Install OFF CACHE INTERNAL "")
-# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../lib/json build)
-# target_link_libraries(tinyphone PRIVATE nlohmann_json::nlohmann_json)
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../lib/statsd-cpp ${CMAKE_CURRENT_SOURCE_DIR}/../lib/statsd-cpp/build)
+target_link_libraries(tinyphone statsd_static)
+
+pkg_check_modules(CURL libcurl REQUIRED)
+include_directories(${CURL_INCLUDE_DIR})
+target_link_libraries(tinyphone ${CURL_LIBRARIES})
+
+target_link_libraries(tinyphone pthread)
+
