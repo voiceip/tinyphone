@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "bento/ubuntu-18.04"
+  config.vm.box = "bento/ubuntu-20.04"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -65,9 +65,6 @@ Vagrant.configure("2") do |config|
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
-    apt-get install -y build-essential cmake libcurl4-openssl-dev libpjproject-dev pkg-config
-    add-apt-repository ppa:mhier/libboost-latest
-    apt-get update
-    apt-get install -y libboost1.73-dev
+    apt-get install -y build-essential cmake libcurl4-openssl-dev pkg-config libboost1.71-all-dev
   SHELL
 end

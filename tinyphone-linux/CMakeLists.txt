@@ -5,7 +5,7 @@ set(CMAKE_CXX_COMPILER "g++")
 set (CMAKE_CXX_STANDARD 14)
 set(CMAKE_WARN_DEPRECATED FALSE)
 
-project(tinyphone VERSION 0.0.0 LANGUAGES C CXX)
+project(tinyphone LANGUAGES C CXX)
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-deprecated")
 
 
@@ -29,14 +29,14 @@ list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/winapp.cpp)
 # SET(CMAKE_FIND_PACKAGE_SORT_DIRECTION DEC)
 
 
-# set(Boost_USE_STATIC_LIBS ON) 
+set(Boost_USE_STATIC_LIBS ON) 
 set(Boost_USE_MULTITHREADED ON)  
 # set(Boost_USE_STATIC_RUNTIME OFF) 
 find_package(Boost 1.71 REQUIRED COMPONENTS date_time filesystem system) 
 include_directories(${Boost_INCLUDE_DIRS}) 
 
 find_package(PkgConfig REQUIRED) 
-pkg_check_modules(PJSIP libpjproject>=1.14 REQUIRED)
+pkg_check_modules(PJSIP libpjproject REQUIRED)
 include_directories(${PJSIP_INCLUDE_DIRS})
 
 
@@ -64,7 +64,6 @@ set_target_properties(libcryptopp_static PROPERTIES IMPORTED_LOCATION /usr/local
 set_target_properties(libcryptopp_static PROPERTIES INTERFACE_INCLUDE_DIRECTORIES /usr/local/include)
 target_link_libraries(tinyphone libcryptopp_static)
 target_link_libraries(tinyphone "cryptopp")
-
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../lib/statsd-cpp ${CMAKE_CURRENT_SOURCE_DIR}/../lib/statsd-cpp/build)
 target_link_libraries(tinyphone statsd_static)
