@@ -77,7 +77,7 @@ namespace tp {
 			std::cout << "Config Load From Primary Failed :  Response Code " << remoteConfig.code << ", Content-Type: " <<  contentType << std::endl;
 			std::string productVersion;
 			#ifdef _DEBUG
-			productVersion = "HEAD";
+			productVersion = "master";
 			#else
 			GetProductVersion(productVersion);
 			productVersion = "v" + productVersion;
