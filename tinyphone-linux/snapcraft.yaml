@@ -1,0 +1,38 @@
+name: tinyphone # you probably want to 'snapcraft register <name>'
+base: core20 # the base snap is the execution environment for this snap
+version: '0.1' # just for humans, typically '1.2+git' or '1.3.2'
+summary: Tinphone Softphone
+description: |
+  Minimalist SIP Softphone with API Control.
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: devmode # use 'strict' once you have the right plugs and slots
+compression: lzo
+
+apps:
+  tinyphone:
+    command: usr/local/bin/hello
+
+parts:
+  build-deps:
+    plugin: nil
+    after: [gnu-hello]
+    source: "/Volumes/Workspace/code/voice/tinyphone"
+    # source-depth: 1
+    source-type: local
+    override-build: |
+      echo "hello hello-2"
+      
+
+    build-packages:
+      - build-essential
+      - libssl-dev
+      - cmake
+      - libcurl4-openssl-dev 
+      - pkg-config 
+      - libboost1.71-all-dev
+
+  gnu-hello:
+    source: http://ftp.gnu.org/gnu/hello/hello-2.10.tar.gz
+    plugin: autotools
+
