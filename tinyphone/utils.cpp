@@ -340,14 +340,14 @@ namespace tp {
 		return appDir;
 		#else
 		const char * home = getenv ("HOME");
-	    if (home == NULL) {
-	      	throw std::invalid_argument("error: HOME environment variable not set.");
-	    }
-      	auto tiny_dir = string(home) + "/.tinyphone/";
+		if (home == NULL) {
+			throw std::invalid_argument("error: HOME environment variable not set.");
+		}
+		auto tiny_dir = string(home) + "/.tinyphone/";
 		boost::filesystem::path appDir(tiny_dir);
-      	if (!boost::filesystem::exists(appDir))
+		if (!boost::filesystem::exists(appDir))
 			boost::filesystem::create_directory(appDir);
-      	return appDir;
+		return appDir;
 		#endif
 	}
 
