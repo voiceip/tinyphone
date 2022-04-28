@@ -16,15 +16,11 @@ jobs:
     runs-on: windows-2019
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - name: Checkout submodules # checkout rest
-      shell: bash
-      run: |
-        git config --global url."https://github.com/".insteadOf "git@github.com:"
-        auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-        git submodule sync --recursive
-        git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
-
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: '1'
+        submodules: 'recursive'
+        
     - name: Restore Boost Cache
       uses: actions/cache@v2
       id: cache-boost
@@ -85,15 +81,11 @@ jobs:
     runs-on: macos-10.15
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - name: Checkout submodules # checkout rest
-      shell: bash
-      run: |
-        git config --global url."https://github.com/".insteadOf "git@github.com:"
-        auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-        git submodule sync --recursive
-        git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
-    
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: '1'
+        submodules: 'recursive'
+
     - name: Install the Apple certificate and provisioning profile
       env:
         BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
