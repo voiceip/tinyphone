@@ -15,50 +15,10 @@
 #include "app.hpp"
 #include "tpendpoint.h"
 
-#include <qapplication.h>
-#include <QSystemTrayIcon>
-#include <QMenu>
-#include <QAction>
-#include <QMessageBox>
-#include <QCloseEvent>
-
 using namespace std;
 using namespace pj;
 using namespace tp;
 
-
-void showIcon(){
-    // icn=QIcon("icon.png");
-    // icon.setIcon(icn);
-    // icon.show();
-
-    // QMessageBox::StandardButton reply;
-    //   reply = QMessageBox::question("Test", "Quit?",
-    //                                 QMessageBox::Yes|QMessageBox::No);
-    //   if (reply == QMessageBox::Yes) {
-    //     qDebug() << "Yes was clicked";
-    //     QApplication::quit();
-    //   } else {
-    //     qDebug() << "Yes was *not* clicked";
-    //   }
-
-    auto exitAction = new QAction("&Exit");
-    // connect(exitAction, &QAction::triggered, [this]()
-    // {
-    //     // closing = true;
-    //     // close();
-    // });
-
-    auto trayIconMenu = new QMenu();
-    trayIconMenu->addAction(exitAction);
-
-
-    auto sysTrayIcon = new QSystemTrayIcon();
-    sysTrayIcon->setContextMenu(trayIconMenu);
-    sysTrayIcon->setIcon(QIcon("tinyphone.ico"));
-    sysTrayIcon->show();
-
-}
 
 void Start(){
    tp::StartApp();
@@ -72,8 +32,6 @@ void Stop(){
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    showIcon();
     std::cout << "Hello World!\n";
     Start();
     return a.exec();
