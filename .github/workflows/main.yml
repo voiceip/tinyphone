@@ -179,3 +179,62 @@ jobs:
         allowUpdates: true
         token: ${{ secrets.GH_TOKEN }}
 
+  tinyphone_linux_job:
+    name: Build Tinyphone Linux
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: '1'
+        submodules: 'recursive'
+    # - name: Checkout submodules # checkout rest
+    #   shell: bash
+    #   run: |
+    #     submodule update --init --force --recursive --depth=1
+    
+    - name: Install Dependencies
+      shell: bash
+      run : |
+        apt install build-essential cmake libcurl4-openssl-dev pkg-config libboost1.71-all-dev libasound-dev
+
+    - name: Compile Libraries
+      run : |
+        pushd lib/cryptopp/
+        make
+        make install
+        popd
+
+        pushd lib/json
+        mkdir build
+        cd build
+        cmake ..
+        make
+        make install
+        popd 
+
+        pushd lib/portaudio
+        git checkout master #some issue with rb-hotplug-wmme branch
+        ./configure
+        make
+        make install
+        popd
+
+        pushd lib/pjproject
+        ./configure
+        make realclean
+        make dep
+        make
+        make install
+        popd 
+         
+
+    - name: Build Project
+      run : |
+        pushd tinyphone-linux
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release ..
+        make
+
+    
