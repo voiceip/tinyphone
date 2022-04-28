@@ -103,8 +103,4 @@ pkg_check_modules(CURL libcurl REQUIRED)
 include_directories(${CURL_INCLUDE_DIR})
 target_link_libraries(tinyphone ${CURL_LIBRARIES})
 
-# find_package(Qt5 COMPONENTS Widgets REQUIRED)
-# set(CMAKE_AUTOMOC ON)
-# set(CMAKE_AUTORCC ON)
-# set(CMAKE_AUTOUIC ON)
-# target_link_libraries(tinyphone Qt5::Widgets)
+
