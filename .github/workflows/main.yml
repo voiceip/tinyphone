@@ -192,7 +192,7 @@ jobs:
     - name: Install Dependencies
       shell: bash
       run : |
-        apt-get install -y build-essential cmake libcurl4-openssl-dev pkg-config libboost1.71-all-dev libasound-dev
+        sudo apt-get install -y build-essential cmake libcurl4-openssl-dev pkg-config libboost1.71-all-dev libasound-dev
 
     - name: Compile Libraries
       run : |
