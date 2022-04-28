@@ -1,33 +1,48 @@
-cmake_minimum_required(VERSION 3.5)
+# CMakeLists.txt
 
-set(CMAKE_C_COMPILER "gcc")
-set(CMAKE_CXX_COMPILER "g++")
-set (CMAKE_CXX_STANDARD 14)
-set(CMAKE_WARN_DEPRECATED FALSE)
+cmake_minimum_required(VERSION 3.11)
 
 project(tinyphone LANGUAGES C CXX)
+set(PACKAGE "${PROJECT_NAME}")
+set(PACKAGE_NAME "${PROJECT_NAME}")
+set(PACKAGE_VERSION "1.0.0")
+set(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
+set(PACKAGE_BUGREPORT "hi@kinsh.uk")
+set(PACKAGE_TARNAME "${PROJECT_NAME}")
+set(PACKAGE_URL "")
+set(VERSION "${PACKAGE_VERSION}")
+
+# CMake Policies
+
+# CMP0074: find_package() uses <PackageName>_ROOT variables.
+if(POLICY CMP0074)
+    cmake_policy(SET CMP0074 NEW)
+endif()
+
+# CMP0075 Include file check macros honor CMAKE_REQUIRED_LIBRARIES
+if(POLICY CMP0075)
+    cmake_policy(SET CMP0075 NEW)
+endif()
+
+
+# set(CMAKE_C_COMPILER "/usr/bin/gcc")
+# set(CMAKE_CXX_COMPILER "g++")
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_WARN_DEPRECATED FALSE)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wno-deprecated")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
 
+if(CMAKE_VERSION VERSION_LESS "3.7.0")
+    set(CMAKE_INCLUDE_CURRENT_DIR ON)
+endif()
 
-file(GLOB SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/*.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/*.cpp
-)
-
-
-list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/guicon.cpp)
-list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/splash.cpp)
-list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/guicon.h)
-list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/splash.h)
-list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/winapp.cpp)
-
-
-# foreach(file_path ${SOURCES})
-#     message(${file_path})
-# endforeach()
-# SET(CMAKE_FIND_PACKAGE_SORT_ORDER NATURAL)
-# SET(CMAKE_FIND_PACKAGE_SORT_DIRECTION DEC)
+include(CheckLibraryExists)
+include(CheckSymbolExists)
+include(CheckCSourceCompiles)
+# include(CMakePushCheckState)
+# include(GNUInstallDirs)
+# include(CMakeDependentOption)
 
 
 set(Boost_USE_STATIC_LIBS ON) 
@@ -40,6 +55,21 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(PJSIP libpjproject REQUIRED)
 include_directories(${PJSIP_INCLUDE_DIRS})
 
+check_symbol_exists("res_ndestroy" "resolv.h" HAVE_RES_NDESTROY)
+set(CMAKE_REQUIRED_LIBRARIES resolv)
+
+find_package(Threads)
+
+
+file(GLOB SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/*.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/*.cpp
+)
+list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/guicon.cpp)
+list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/splash.cpp)
+list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/guicon.h)
+list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/splash.h)
+list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone/winapp.cpp)
 
 add_executable(tinyphone ${SOURCES} console.cpp)
 target_include_directories(tinyphone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/pjproject/pjlib/include)
@@ -73,5 +103,8 @@ pkg_check_modules(CURL libcurl REQUIRED)
 include_directories(${CURL_INCLUDE_DIR})
 target_link_libraries(tinyphone ${CURL_LIBRARIES})
 
-target_link_libraries(tinyphone pthread)
-
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+target_link_libraries(tinyphone Qt5::Widgets)
