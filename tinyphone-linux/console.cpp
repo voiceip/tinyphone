@@ -29,10 +29,9 @@ void Stop(){
     tp::StopApp();
 }
 
-
 int main(int argc, char *argv[])
 {
-    std::cout << "Hello World!\n";
+    std::cout << "Hello Tinyphone!\n";
     Start();
-    return a.exec();
+    return 0;
 }
