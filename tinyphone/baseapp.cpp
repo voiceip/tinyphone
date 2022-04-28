@@ -59,7 +59,7 @@ namespace tp {
         }
 #ifndef HAVE_RES_NDESTROY 
         res_nclose(res);
-#else 
+#else
         res_ndestroy(res);
 #endif
         return dnsServers;
