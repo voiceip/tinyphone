@@ -198,7 +198,7 @@ jobs:
       run : |
         pushd lib/cryptopp/
         make
-        make install
+        sudo make install
         popd
 
         pushd lib/json
@@ -206,14 +206,14 @@ jobs:
         cd build
         cmake ..
         make
-        make install
+        sudo make install
         popd 
 
         pushd lib/portaudio
         git checkout master #some issue with rb-hotplug-wmme branch
         ./configure
         make
-        make install
+        sudo make install
         popd
 
         pushd lib/pjproject
@@ -221,7 +221,7 @@ jobs:
         make realclean
         make dep
         make
-        make install
+        sudo make install
         popd 
          
 
