@@ -201,13 +201,7 @@ jobs:
         sudo make install
         popd 
 
-        pushd lib/portaudio
-        git checkout master #some issue with rb-hotplug-wmme branch
-        ./configure
-        make
-        sudo make install
-        popd
-
+        
         pushd lib/pjproject
 
         cat >./pjlib/include/pj/config_site.h <<EOL
