@@ -87,7 +87,8 @@ link_directories(tinyphone ${Boost_LIBRARY_DIRS})
 target_link_libraries(tinyphone ${Boost_LIBRARIES})
 target_link_libraries(tinyphone ${PJSIP_LIBRARIES})
 
-find_package(nlohmann_json 3.10.5 REQUIRED)
+set(JSON_Install OFF CACHE INTERNAL "")
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../lib/json ${CMAKE_CURRENT_SOURCE_DIR}/../lib/json/build)
 target_link_libraries(tinyphone nlohmann_json::nlohmann_json)
 
 add_library(libcryptopp_static STATIC IMPORTED)

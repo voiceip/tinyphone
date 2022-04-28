@@ -193,14 +193,6 @@ jobs:
         sudo make install
         popd
 
-        pushd lib/json
-        mkdir build
-        cd build
-        cmake ..
-        make
-        sudo make install
-        popd 
-
         
         pushd lib/pjproject
 
