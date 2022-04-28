@@ -21,6 +21,7 @@
 #include <QAction>
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QtCore/QDebug>
 
 using namespace std;
 using namespace pj;
@@ -72,9 +73,30 @@ void Stop(){
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    showIcon();
+    QApplication app(argc, argv);
+    QPixmap oPixmap(32,32);
+    oPixmap.load ("icon.png");
+    QIcon oIcon(oPixmap);
+
+
+    auto exitAction = new QAction("&Exit");
+    connect(exitAction, &QAction::triggered, [](){
+        // closing = true;
+        // close();
+    });
+
+    auto trayIconMenu = new QMenu();
+    trayIconMenu->addAction(exitAction);
+
+    QSystemTrayIcon *trayIcon = new QSystemTrayIcon(oIcon);
+    qDebug() << trayIcon->isSystemTrayAvailable();
+    trayIcon->setContextMenu( trayIconMenu);
+    trayIcon->setIcon(oIcon);
+    trayIcon->setVisible(true);
+    trayIcon->showMessage("Test Message", "Text", QSystemTrayIcon::Information, 1000);
+
+
     std::cout << "Hello World!\n";
-    Start();
-    return a.exec();
+    // Start();
+    return app.exec();
 }
