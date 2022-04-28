@@ -211,11 +211,12 @@ jobs:
         pushd lib/pjproject
 
         cat >./pjlib/include/pj/config_site.h <<EOL
-#define ENABLE_SIP_TCP 1
-#define PJ_HAS_TCP 1
-#define PJMEDIA_AUDIO_DEV_HAS_WASAPI 0
-#define PJMEDIA_AUDIO_DEV_HAS_WMME 0
-EOL
+        #define ENABLE_SIP_TCP 1
+        #define PJ_HAS_TCP 1
+        #define PJMEDIA_AUDIO_DEV_HAS_WASAPI 0
+        #define PJMEDIA_AUDIO_DEV_HAS_WMME 0
+        EOL
+        
         cat ./pjlib/include/pj/config_site.h
 
         ./configure
