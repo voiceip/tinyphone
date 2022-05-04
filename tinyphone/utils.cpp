@@ -32,7 +32,7 @@
 #include <boost/format.hpp>
 #include <boost/filesystem.hpp>
 
-#ifdef __APPLE__
+#ifndef _WIN32
 #define _T(x) x
 #endif
 
@@ -337,6 +337,16 @@ namespace tp {
 		#elif __APPLE__
 		auto path = GetAppSupportDirectory();
 		boost::filesystem::path appDir(path);
+		return appDir;
+		#else
+		const char * home = getenv ("HOME");
+		if (home == NULL) {
+			throw std::invalid_argument("error: HOME environment variable not set.");
+		}
+		auto tiny_dir = string(home) + "/.tinyphone/";
+		boost::filesystem::path appDir(tiny_dir);
+		if (!boost::filesystem::exists(appDir))
+			boost::filesystem::create_directory(appDir);
 		return appDir;
 		#endif
 	}

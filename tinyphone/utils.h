@@ -93,7 +93,7 @@ namespace tp {
 	I random(I begin, I end)
 	{
 		const unsigned long n = std::distance(begin, end);
-		const unsigned long divisor = (RAND_MAX + 1) / n;
+		const unsigned long divisor = (RAND_MAX + 1l) / n;
 
 		unsigned long k;
 		do { k = std::rand() / divisor; } while (k >= n);

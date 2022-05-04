@@ -16,14 +16,10 @@ jobs:
     runs-on: windows-2019
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - name: Checkout submodules # checkout rest
-      shell: bash
-      run: |
-        git config --global url."https://github.com/".insteadOf "git@github.com:"
-        auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-        git submodule sync --recursive
-        git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: '1'
+        submodules: 'recursive'
 
     - name: Restore Boost Cache
       uses: actions/cache@v2
@@ -85,15 +81,11 @@ jobs:
     runs-on: macos-10.15
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - name: Checkout submodules # checkout rest
-      shell: bash
-      run: |
-        git config --global url."https://github.com/".insteadOf "git@github.com:"
-        auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-        git submodule sync --recursive
-        git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
-    
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: '1'
+        submodules: 'recursive'
+
     - name: Install the Apple certificate and provisioning profile
       env:
         BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
@@ -179,3 +171,58 @@ jobs:
         allowUpdates: true
         token: ${{ secrets.GH_TOKEN }}
 
+  tinyphone_linux_job:
+    name: Build Tinyphone Linux
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: '1'
+        submodules: 'recursive'
+    
+    - name: Install Dependencies
+      shell: bash
+      run : |
+        sudo apt-get install -y build-essential cmake libcurl4-openssl-dev pkg-config libboost1.71-all-dev libasound-dev
+
+    - name: Compile Libraries
+      run : |
+        pushd lib/cryptopp/
+        make
+        sudo make install
+        popd
+
+        
+        pushd lib/pjproject
+
+        cat >./pjlib/include/pj/config_site.h <<EOL
+        #define ENABLE_SIP_TCP 1
+        #define PJ_HAS_TCP 1
+        #define PJMEDIA_AUDIO_DEV_HAS_WASAPI 0
+        #define PJMEDIA_AUDIO_DEV_HAS_WMME 0
+        EOL
+
+        cat ./pjlib/include/pj/config_site.h
+
+        ./configure
+        make realclean
+        make dep
+        make
+        sudo make install
+        popd 
+
+    - name: Build Project
+      run : |
+        pushd tinyphone-linux
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release ..
+        make
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: tinyphone.linux
+        path: |
+          ./tinyphone-linux/build/tinyphone
