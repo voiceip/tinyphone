@@ -25,6 +25,8 @@ namespace tp {
 
 	tp::HttpResponse http_post(std::string url, std::string body) throw (std::exception);
 
+    std::string urldecode(std::string data);
+
 	std::string local_ip_address();
 
 	bool is_tcp_port_in_use(unsigned short port);

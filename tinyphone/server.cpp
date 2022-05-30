@@ -591,10 +591,11 @@ void TinyPhoneHttpServer::Start() {
 
 	CROW_ROUTE(app, "/calls/<int>/dtmf/<string>")
 		.methods("POST"_method)
-		([&phone](int call_id, string dtmf_digits) {
+		([&phone](int call_id, string dtmf_string) {
 		pj_thread_auto_register();
 
 		try {
+            string dtmf_digits = urldecode(dtmf_string);
 			SIPCall* call = phone.CallById(call_id);
 			if (call == nullptr) {
 				return tp::response(400, {
