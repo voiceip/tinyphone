@@ -102,9 +102,9 @@
 		B327CB532551A2FD0092FDB7 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		B337E2C32554468C001696B7 /* config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = config.json; path = ../config.json; sourceTree = "<group>"; };
 		B33839082551D3EF000D6F04 /* osxapp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = osxapp.cpp; sourceTree = "<group>"; };
-		B36B645927E30DB000B011C9 /* libopencore-amrnb.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libopencore-amrnb.0.dylib"; path = "/usr/local/opt/opencore-amr/lib/libopencore-amrnb.0.dylib"; sourceTree = "<absolute>"; };
-		B36B645A27E30DB000B011C9 /* libopencore-amrwb.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libopencore-amrwb.0.dylib"; path = "/usr/local/opt/opencore-amr/lib/libopencore-amrwb.0.dylib"; sourceTree = "<absolute>"; };
-		B392C7B8255412560068492F /* libcryptopp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcryptopp.dylib; path = /usr/local/opt/cryptopp/lib/libcryptopp.dylib; sourceTree = "<absolute>"; };
+		B36B645927E30DB000B011C9 /* libopencore-amrnb.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libopencore-amrnb.0.dylib"; path = "/usr/local/homebrew/lib/libopencore-amrnb.0.dylib"; sourceTree = "<absolute>"; };
+		B36B645A27E30DB000B011C9 /* libopencore-amrwb.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libopencore-amrwb.0.dylib"; path = "/usr/local/homebrew/lib/libopencore-amrwb.0.dylib"; sourceTree = "<absolute>"; };
+		B392C7B8255412560068492F /* libcryptopp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcryptopp.dylib; path = /usr/local/homebrew/lib/libcryptopp.dylib; sourceTree = "<absolute>"; };
 		B39C3B432552C3CE00BBD999 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		B39C3B4A2552E1E700BBD999 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		B39C3B562552EF1900BBD999 /* Tinyphone-C-Interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Tinyphone-C-Interface.h"; sourceTree = "<group>"; };
@@ -620,7 +620,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../lib/statsd-cpp/build-osx/lib",
 					"$(inherited)",
-					"/usr/local/opt/opencore-amr/lib",
+					/usr/local/homebrew/lib/,
 					/usr/local/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;

@@ -190,7 +190,10 @@ namespace tp {
     }
 
     TinyPhone* GetPhone(){
-        return tp::tpHttpServer->tinyPhone;
+        if (tp::tpHttpServer != nullptr)
+            return tp::tpHttpServer->tinyPhone;
+        else
+            return nullptr;
     }
 
 
