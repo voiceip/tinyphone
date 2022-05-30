@@ -173,7 +173,7 @@ namespace tp {
 	}
 
     std::string urldecode(std::string data){
-        std::string out;
+        std::string out = data;
         CURL *curl = curl_easy_init();
         if(curl) {
             char *decoded = curl_easy_unescape(curl,data.c_str(), data.length(), NULL);
