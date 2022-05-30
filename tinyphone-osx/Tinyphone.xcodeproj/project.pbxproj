@@ -620,7 +620,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"../lib/statsd-cpp/build-osx/lib",
 					"$(inherited)",
-					"/usr/local/opt/opencore-amr/lib",
+					/usr/local/homebrew/lib/,
 					/usr/local/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
