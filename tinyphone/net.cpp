@@ -172,6 +172,20 @@ namespace tp {
 		return response;
 	}
 
+	std::string urldecode(std::string data){
+		std::string out = data;
+		CURL *curl = curl_easy_init();
+		if(curl) {
+			char *decoded = curl_easy_unescape(curl,data.c_str(), data.length(), NULL);
+			if(decoded) {
+				out = std::string(decoded);
+				curl_free(decoded);
+			}
+			curl_easy_cleanup(curl);
+		}
+		return out;
+	}
+
 	std::string local_ip_address() {
 		boost::asio::io_service io_service;
 		boost::asio::ip::tcp::resolver resolver(io_service);
