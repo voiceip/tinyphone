@@ -486,7 +486,7 @@ namespace tp {
 			if (c->getId() != call->getId()){
 				try {
 					c->UnHoldCall();
-					aud_med2 = call->getAudioMedia(-1);
+					aud_med2 = c->getAudioMedia(-1);
 					aud_med.startTransmit(aud_med2);
 					aud_med2.startTransmit(aud_med);
 				} catch(...) {
@@ -512,7 +512,7 @@ namespace tp {
 			if (c->getId() != call->getId()){
 				try {
 					c->HoldCall();
-					aud_med2 = call->getAudioMedia(-1);
+					aud_med2 = c->getAudioMedia(-1);
 					aud_med.stopTransmit(aud_med2);
 					aud_med2.stopTransmit(aud_med);
 				} catch(...) {
