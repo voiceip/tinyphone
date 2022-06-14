@@ -527,6 +527,11 @@ void TinyPhoneHttpServer::Start() {
 			json response = {
 				{ "call_id" , call_id }
 			};
+			if (req.method == crow::HTTPMethod::Put && call->HoldState() == +HoldStatus::LOCAL_HOLD ){
+				response["message"] = "Bad Request, CallOnHold Currently";
+				response["status"] = "400";
+				return tp::response(400, response);
+			}
 			switch (req.method)
 			{
 				case crow::HTTPMethod::Put:
