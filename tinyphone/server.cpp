@@ -358,12 +358,6 @@ void TinyPhoneHttpServer::Start() {
 
 		pj_thread_auto_register();
 
-		if (phone.PrimaryAccount() == nullptr) {
-			return tp::response(400, {
-				{ "message", "No Account Registed/Active Yet" },
-			});
-		}
-
 		tp::SIPAccount* account = nullptr;
 		std::string dial_uri, account_name;
 		try {
@@ -378,9 +372,18 @@ void TinyPhoneHttpServer::Start() {
 			//else falback to old behavior.
 			dial_uri = req.body;
 		}
+            
+     //   CROW_LOG_INFO << "Dial Request to " << dial_uri << "via" << account->Name();
 
-		if (account == nullptr) { 
-			account = phone.PrimaryAccount(); //use default account if account_name was not specified
+        
+		if (account == nullptr) {
+            if (phone.PrimaryAccount() == nullptr) {
+                return tp::response(400, {
+                    { "message", "No Account Registed/Active Yet" },
+                });
+            } else {
+                account = phone.PrimaryAccount(); //use default account if account_name was not specified
+            }
 		}
 
 		if (account->calls.size() >= ApplicationConfig.maxCalls) {

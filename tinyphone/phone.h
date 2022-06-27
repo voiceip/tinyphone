@@ -105,6 +105,8 @@ namespace tp {
 		void EnableAccount(SIPAccount* account) throw (std::exception) ;
 
 		std::future<int> AddAccount(AccountConfig& config) throw (std::exception);
+        
+        void AddDefaultAccount() throw (std::exception);
 
 		SIPCall* MakeCall(string uri) throw(pj::Error) ;
 

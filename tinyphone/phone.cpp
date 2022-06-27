@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "json.h"
 #include "config.h"
+#include "net.h"
 #include <iomanip>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string.hpp>
@@ -293,7 +294,9 @@ namespace tp {
 		if(ApplicationConfig.persistAccounts){
 			tp::tpUserConfig uc;
 			BOOST_FOREACH(SIPAccount* acc, Accounts()){
-				uc.accounts.push_back(acc->accConfig);
+                if (acc->accConfig.localAccount == false){
+                    uc.accounts.push_back(acc->accConfig);
+                }
 			}
 			try
 			{
@@ -310,6 +313,36 @@ namespace tp {
 		}
 		return true;
 	}
+
+    void TinyPhone::AddDefaultAccount() throw (std::exception){
+        string headless_account_name = local_ip_address();
+        synchronized(add_acc_mutex){
+            pj::AccountConfig acc_cfg;
+            acc_cfg.idUri = ("sip:" + headless_account_name);
+
+            acc_cfg.videoConfig.autoTransmitOutgoing = PJ_FALSE;
+            acc_cfg.videoConfig.autoShowIncoming = PJ_FALSE;
+            acc_cfg.natConfig.iceEnabled = ApplicationConfig.enableICE ? PJ_TRUE : PJ_FALSE;
+            if(!ApplicationConfig.enableSTUN){
+                acc_cfg.natConfig.sdpNatRewriteUse = PJ_TRUE;
+            }
+            
+            acc_cfg.ipChangeConfig.reinviteFlags = PJSUA_CALL_REINIT_MEDIA | PJSUA_CALL_UPDATE_CONTACT | PJSUA_CALL_UPDATE_VIA ;
+            
+            
+            AccountConfig localConfig;
+            localConfig.localAccount = true;
+            localConfig.domain = headless_account_name;
+            
+            SIPAccount *acc(new SIPAccount(this, headless_account_name, eventStream, localConfig));
+            acc->domain = localConfig.domain;
+            acc->Create(acc_cfg);
+
+            accounts.insert(std::pair<string, SIPAccount*>(headless_account_name, acc));
+        }
+        
+    }
+
 
 	std::future<int> TinyPhone::AddAccount(AccountConfig& config) throw (std::exception) {
 		string account_name = SIP_ACCOUNT_NAME(config.username, config.domain);
@@ -457,6 +490,7 @@ namespace tp {
 			ToneDescVector ringBackTones = { ringbackToneDesc };
 			ringbackTone->createToneGenerator();
 			ringbackTone->play(ringBackTones, true);
+            AddDefaultAccount();
 		}
 		catch (Error& err) {
 			UNUSED_ARG(err);

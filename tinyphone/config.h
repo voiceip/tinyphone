@@ -73,6 +73,8 @@ namespace tp {
 
 		bool handleNOTIFY;
 		long autoAnswerDelay = 0;
+        
+        bool allowNoAccountDial;
 
 		std::string ua(){
 			std::string productVersion;
@@ -119,7 +121,8 @@ namespace tp {
 			{"enableICE", p.enableICE },
 			{"stunServers", p.stunServers },
 			{"handleNOTIFY", p.handleNOTIFY },
-			{"autoAnswerDelay", p.autoAnswerDelay}
+			{"autoAnswerDelay", p.autoAnswerDelay},
+            {"allowNoAccountDial", p.allowNoAccountDial}
 		};
     }
 
@@ -161,6 +164,7 @@ namespace tp {
 		FROM_JSON_OPTIONAL(stunServers);
 		FROM_JSON_OPTIONAL(handleNOTIFY);
 		FROM_JSON_OPTIONAL(autoAnswerDelay);
+        FROM_JSON_OPTIONAL(allowNoAccountDial);
 	}
    
     extern appConfig ApplicationConfig;
@@ -173,6 +177,7 @@ namespace tp {
 		std::string password;
 		std::string proxy;
 		std::string login;
+        bool localAccount;
 	};
 
 	void from_json(const nlohmann::json& j, AccountConfig& p);
