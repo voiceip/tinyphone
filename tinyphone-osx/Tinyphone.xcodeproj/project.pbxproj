@@ -487,6 +487,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
+					/usr/local/opt/cryptopp/include,
 					../lib/crow/include,
 					../lib/json/include/,
 					"/usr/local/opt/boost@1.60/include",
@@ -565,6 +566,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
+					/usr/local/opt/cryptopp/include,
 					../lib/crow/include,
 					../lib/json/include/,
 					"/usr/local/opt/boost@1.60/include",
@@ -626,7 +628,7 @@
 					/usr/local/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 36.0.0.81;
+				MARKETING_VERSION = 36.0.0.82;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DBOOST_SYSTEM_DYN_LINK",
@@ -676,7 +678,7 @@
 					/usr/local/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 36.0.0.81;
+				MARKETING_VERSION = 36.0.0.82;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DBOOST_SYSTEM_DYN_LINK",
