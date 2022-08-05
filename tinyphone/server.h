@@ -23,12 +23,9 @@ private:
 	// boost::iostreams::stream_buffer<LoggerSink> sb;
 public:
 	TinyPhoneHTTPLogHandler(std::string log_file) {
-		try
-		{
+		try {
 			logger = spdlog::basic_logger_mt("http_logger", log_file);
-		}
-		catch (const spdlog::spdlog_ex &ex)
-		{
+		} catch (const spdlog::spdlog_ex &ex) {
 			std::cout << "Log init failed: " << ex.what() << std::endl;
 		}
 		//std::cerr.clear();
