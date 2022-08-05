@@ -83,6 +83,7 @@ target_include_directories(tinyphone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/
 target_include_directories(tinyphone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/portaudio/include)
 target_include_directories(tinyphone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib)
 target_include_directories(tinyphone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../tinyphone)
+target_include_directories(tinyphone PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../lib/spdlog/include)
 link_directories(tinyphone ${Boost_LIBRARY_DIRS})
 target_link_libraries(tinyphone ${Boost_LIBRARIES})
 target_link_libraries(tinyphone ${PJSIP_LIBRARIES})
