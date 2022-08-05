@@ -90,7 +90,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>E:\lib\statsd-cpp\include;E:\lib\portaudio\include;..\lib;..\lib\curl\include;..\lib\json\single_include;C:\local\boost_1_74_0;..\lib\crow\include;..\lib\pjproject\pjnath\include;..\lib\pjproject\pjmedia\include;..\lib\pjproject\pjlib-util\include;..\lib\pjproject\pjlib\include;..\lib\pjproject\pjsip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\spdlog\include;E:\lib\statsd-cpp\include;E:\lib\portaudio\include;..\lib;..\lib\curl\include;..\lib\json\single_include;C:\local\boost_1_74_0;..\lib\crow\include;..\lib\pjproject\pjnath\include;..\lib\pjproject\pjmedia\include;..\lib\pjproject\pjlib-util\include;..\lib\pjproject\pjlib\include;..\lib\pjproject\pjsip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -133,7 +133,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>E:\lib\statsd-cpp\include;E:\lib\portaudio\include;..\lib;..\lib\curl\include;..\lib\json\single_include;C:\local\boost_1_74_0;..\lib\crow\include;..\lib\pjproject\pjnath\include;..\lib\pjproject\pjmedia\include;..\lib\pjproject\pjlib-util\include;..\lib\pjproject\pjlib\include;..\lib\pjproject\pjsip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\lib\spdlog\include;E:\lib\statsd-cpp\include;E:\lib\portaudio\include;..\lib;..\lib\curl\include;..\lib\json\single_include;C:\local\boost_1_74_0;..\lib\crow\include;..\lib\pjproject\pjnath\include;..\lib\pjproject\pjmedia\include;..\lib\pjproject\pjlib-util\include;..\lib\pjproject\pjlib\include;..\lib\pjproject\pjsip\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
