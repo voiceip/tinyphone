@@ -19,33 +19,33 @@
 class TinyPhoneHTTPLogHandler : public crow::ILogHandler {
 private:
 	std::fstream log_writer;
-    std::shared_ptr<spdlog::logger> logger;
+	std::shared_ptr<spdlog::logger> logger;
 	boost::iostreams::stream_buffer<LoggerSink> sb;
 public:
 	TinyPhoneHTTPLogHandler(std::string log_file) {
-        try
-        {
-            logger = spdlog::basic_logger_mt("http_logger", log_file);
-        }
-        catch (const spdlog::spdlog_ex &ex)
-        {
-            std::cout << "Log init failed: " << ex.what() << std::endl;
-        }
-//		std::cerr.clear();
-//		std::cerr.rdbuf(&sb);
+		try
+		{
+			logger = spdlog::basic_logger_mt("http_logger", log_file);
+		}
+		catch (const spdlog::spdlog_ex &ex)
+		{
+			std::cout << "Log init failed: " << ex.what() << std::endl;
+		}
+		//std::cerr.clear();
+		//std::cerr.rdbuf(&sb);
 	};
 
 	~TinyPhoneHTTPLogHandler() {
 		logger->flush();
-        //logger->close();
+		//logger->close();
 	}
 
 	void log(const std::string message, crow::LogLevel /*level*/) {
-        logger->info(message);
+		logger->info(message);
 #ifdef _DEBUG
 		std::cout << message << std::endl ;
 #endif
-        logger->flush();
+		logger->flush();
 	}
 };
 
