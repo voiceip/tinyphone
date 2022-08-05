@@ -18,8 +18,8 @@
 
 class TinyPhoneHTTPLogHandler : public crow::ILogHandler {
 private:
-	std::fstream log_writer;
 	std::shared_ptr<spdlog::logger> logger;
+	// std::fstream log_writer;
 	// boost::iostreams::stream_buffer<LoggerSink> sb;
 public:
 	TinyPhoneHTTPLogHandler(std::string log_file) {
