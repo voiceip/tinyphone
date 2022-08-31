@@ -206,7 +206,7 @@ namespace tp {
 		prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
 
 		//const Call dest = (const Call)dest_call;
-		const Call dest = dynamic_cast<const Call>dest_call;
+		const Call dest = dynamic_cast<const Call>(dest_call);
 		call->xferReplaces(dest,prm);
 	}
 
