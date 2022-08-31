@@ -205,7 +205,7 @@ namespace tp {
 		CallOpParam prm;
 		prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
 
-		Call* dest = (Call*)dest_call;
+		const Call dest = (Call)dest_call;
 		call->xferReplaces(dest,prm);
 	}
 
