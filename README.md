@@ -146,6 +146,11 @@ The softphone exposes the following resources on port `6060`.
 <td>transfer <code>call_id</code> to specified <code>uri</code></td>
 </tr>
 <tr>
+<td><code>/calls/{call_id}/attendedtransfer/{dest_call_id}</code></td>
+<td>POST</td>
+<td></td>
+<td>Initiate attended call transfer <br /><code>call_id</code>=The call id to be transfered <br /><code>dest_call_id</code>=The call id to be replaced</td>
+</tr>
 <tr>
 <td><code>/calls/{call_id}/hangup</code></td>
 <td>POST</td>
