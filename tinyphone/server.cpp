@@ -492,7 +492,7 @@ void TinyPhoneHttpServer::Start() {
 				});
 		}
 		else {
-			//phone.Answer(call);
+			phone.AttendedTransfer(call, dest_call);
 			json response = {
 				{ "message",  "Attended transfer Triggered" },
 				{ "call_id" , call_id },
