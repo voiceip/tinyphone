@@ -207,7 +207,7 @@ namespace tp {
 
 		//const Call dest = (const Call)dest_call;
 		//const Call dest = dynamic_cast<const Call>(dest_call);
-		const Call* dest = dest_call;
+		const Call dest = *dest_call;
 
 		call->xferReplaces(dest,prm);
 	}
