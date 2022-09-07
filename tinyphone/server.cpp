@@ -483,13 +483,13 @@ void TinyPhoneHttpServer::Start() {
 			return tp::response(400, {
 				{ "message", "Call Not Found" },
 				{"call_id" , call_id}
-				});
+			});
 		}
 		else if(dest_call==nullptr) {
 			return tp::response(400, {
 				{ "message", "Call Not Found" },
 				{"call_id" , dest_call_id}
-				});
+			});
 		}
 		else {
 			phone.AttendedTransfer(call, dest_call);
