@@ -500,7 +500,7 @@ void TinyPhoneHttpServer::Start() {
 			};
 			return tp::response(200, response);
 		}
-			});
+	});
 
 	CROW_ROUTE(app, "/calls/<int>/hold")
 		.methods("PUT"_method, "DELETE"_method)
