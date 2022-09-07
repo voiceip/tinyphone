@@ -472,7 +472,7 @@ void TinyPhoneHttpServer::Start() {
 		}
 	});
 
-	CROW_ROUTE(app, "/calls/<int>/attendedtransfer/<int>")
+	CROW_ROUTE(app, "/calls/<int>/attended-transfer/<int>")
 		.methods("POST"_method)
 		([&phone](int call_id,int dest_call_id) {
 		pj_thread_auto_register();
