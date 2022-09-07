@@ -205,11 +205,7 @@ namespace tp {
 		CallOpParam prm;
 		prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
 
-		//const Call dest = (const Call)dest_call;
-		//const Call dest = dynamic_cast<const Call>(dest_call);
-		const Call dest = *dest_call;
-
-		call->xferReplaces(dest,prm);
+		call->xferReplaces(*dest_call,prm);
 	}
 
 	void TinyPhone::Hangup(SIPCall* call) {
