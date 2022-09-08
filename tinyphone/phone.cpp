@@ -201,6 +201,13 @@ namespace tp {
 		call->answer(prm);
 	}
 
+	void TinyPhone::AttendedTransfer(SIPCall* call, SIPCall* dest_call) {
+		CallOpParam prm;
+		prm.statusCode = pjsip_status_code::PJSIP_SC_OK;
+
+		call->xferReplaces(*dest_call,prm);
+	}
+
 	void TinyPhone::Hangup(SIPCall* call) {
 		call->Hangup();
 	}

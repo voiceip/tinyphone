@@ -117,6 +117,7 @@ namespace tp {
 		void HoldOtherCalls(SIPCall* call);
 
 		void Answer(SIPCall* call);
+		void AttendedTransfer(SIPCall* call, SIPCall* dest_call);
 		void Hangup(SIPCall* call);
 
 		bool Conference(SIPCall* call);

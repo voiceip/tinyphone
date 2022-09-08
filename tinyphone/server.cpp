@@ -472,6 +472,36 @@ void TinyPhoneHttpServer::Start() {
 		}
 	});
 
+	CROW_ROUTE(app, "/calls/<int>/attended-transfer/<int>")
+		.methods("POST"_method)
+		([&phone](int call_id,int dest_call_id) {
+		pj_thread_auto_register();
+
+		SIPCall* call = phone.CallById(call_id);
+		SIPCall* dest_call = phone.CallById(dest_call_id);
+		if (call == nullptr) {
+			return tp::response(400, {
+				{ "message", "Call Not Found" },
+				{"call_id" , call_id}
+			});
+		}
+		else if(dest_call==nullptr) {
+			return tp::response(400, {
+				{ "message", "Call Not Found" },
+				{"call_id" , dest_call_id}
+			});
+		}
+		else {
+			phone.AttendedTransfer(call, dest_call);
+			json response = {
+				{ "message",  "Attended transfer Triggered" },
+				{ "call_id" , call_id },
+				{ "dest_call_id" , dest_call_id },
+			};
+			return tp::response(200, response);
+		}
+	});
+
 	CROW_ROUTE(app, "/calls/<int>/hold")
 		.methods("PUT"_method, "DELETE"_method)
 		([&phone](const crow::request& req, int call_id) {
