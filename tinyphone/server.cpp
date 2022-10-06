@@ -83,6 +83,19 @@ void TinyPhoneHttpServer::Start() {
 		};
 		return tp::response(200, response);
 	});
+    
+    
+    CROW_ROUTE(app, "/config")([]() {
+        std::string productVersion;
+        GetProductVersion(productVersion);
+        json response = {
+            { "version", productVersion },
+            { "config", tp::ApplicationConfig},
+            { "sip-log-file", tp::sipLogFile},
+            { "http-log-file", tp::httpLogFile},
+        };
+        return tp::response(200, response);
+    });
 
 	std::unordered_set<crow::websocket::connection*> subscribers;
 
