@@ -68,8 +68,8 @@ struct TinyPhoneMiddleware
 		if (req.method == crow::HTTPMethod::Options){
 			res.add_header("Access-Control-Allow-Origin", "*");
 			res.add_header("Access-Control-Allow-Methods", "OPTIONS, GET, HEAD, POST, PUT, DELETE");
-            res.add_header("Access-Control-Request-Headers", "Content-Type");
-            res.add_header("Access-Control-Allow-Headers", "Content-Type");
+			res.add_header("Access-Control-Request-Headers", "Content-Type");
+			res.add_header("Access-Control-Allow-Headers", "Content-Type");
 			res.end();
 		}
 	}
