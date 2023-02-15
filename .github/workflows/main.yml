@@ -22,7 +22,7 @@ jobs:
         submodules: 'recursive'
 
     - name: Restore Boost Cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       id: cache-boost
       with:
         path: C:\local\boost_1_74_0
@@ -49,7 +49,7 @@ jobs:
         Start-Process -Wait -FilePath "$env:TEMP\wix311.exe" "/install","/quiet","/norestart"
 
     - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v1.1
     - name: Configure build for Windows MSVC
       uses: ilammy/msvc-dev-cmd@v1
       with:
@@ -61,7 +61,7 @@ jobs:
         .\distribution\docker\release.ps1 -ErrorAction Stop
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: tinyphone.msi
         path: |
@@ -156,7 +156,7 @@ jobs:
         # codesign --force --sign "Apple Development" tinyphone.dmg 
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: tinyphone.dmg
         path: |
@@ -222,7 +222,7 @@ jobs:
         make
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: tinyphone.linux
         path: |
