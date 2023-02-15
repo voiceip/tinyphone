@@ -37,7 +37,7 @@ jobs:
       continue-on-error: true
     - name: Set vars
       id: vars
-      run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+      run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
     - name: Build and Push tinyphone_base  to registry
       if: contains(steps.changed_files.outputs.modified, 'Dockerfile.base')
       run: |
