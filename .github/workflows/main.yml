@@ -22,7 +22,7 @@ jobs:
         submodules: 'recursive'
 
     - name: Restore Boost Cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       id: cache-boost
       with:
         path: C:\local\boost_1_74_0
