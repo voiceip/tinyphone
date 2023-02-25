@@ -17,7 +17,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   pjsip:
-    :commit: 83d540dbbb3f09d2f3d5542f94cafe6f6b2a8cf5
+    :commit: 7eddcc25826333170bc69a3b2fc4a725c7209cec
     :git: https://github.com/voiceip/cocoapod-pjsip
 
 SPEC CHECKSUMS:
