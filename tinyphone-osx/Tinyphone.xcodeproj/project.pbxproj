@@ -628,7 +628,7 @@
 					/usr/local/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 36.0.0.83;
+				MARKETING_VERSION = "36.0.0.84-pre";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DBOOST_SYSTEM_DYN_LINK",
@@ -678,7 +678,7 @@
 					/usr/local/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 36.0.0.83;
+				MARKETING_VERSION = "36.0.0.84-pre";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DBOOST_SYSTEM_DYN_LINK",
