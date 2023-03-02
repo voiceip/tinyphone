@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6B07F5E2BD9B3AE651158F53 /* Pods_Tinyphone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59720BC22BD39E9D5F820B31 /* Pods_Tinyphone.framework */; };
 		B3025C2025530D7E00C331CA /* Tinyphone-OC.mm in Sources */ = {isa = PBXBuildFile; fileRef = B3025C1E25530D7E00C331CA /* Tinyphone-OC.mm */; };
 		B327CAF32551784A0092FDB7 /* call.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B327CAD2255178480092FDB7 /* call.cpp */; };
 		B327CAF52551784A0092FDB7 /* microtar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B327CAD8255178480092FDB7 /* microtar.cpp */; };
@@ -32,7 +31,7 @@
 		B3AD62CB27E327C600F6A499 /* libopencore-amrnb.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B36B645927E30DB000B011C9 /* libopencore-amrnb.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B3AD62CC27E327C600F6A499 /* libopencore-amrwb.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B36B645A27E30DB000B011C9 /* libopencore-amrwb.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B3B92C3E2568152A0095EF2C /* mod_notify.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3B92C3D2568152A0095EF2C /* mod_notify.cpp */; };
-		B3C9365527E34ED300CE2CDB /* Pods_Tinyphone.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 59720BC22BD39E9D5F820B31 /* Pods_Tinyphone.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B3C9365527E34ED300CE2CDB /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B3D53FC92551696600523D5F /* AccountsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3D53FC82551696600523D5F /* AccountsView.xib */; };
 		B3D53FCC255169CF00523D5F /* AccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D53FCB255169CF00523D5F /* AccountsView.swift */; };
 		B3D53FCE25516A4200523D5F /* LoadableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D53FCD25516A4200523D5F /* LoadableView.swift */; };
@@ -41,6 +40,7 @@
 		B3DDA56125515DF900D269C9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3DDA56025515DF900D269C9 /* Assets.xcassets */; };
 		B3DDA56425515DF900D269C9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3DDA56225515DF900D269C9 /* Main.storyboard */; };
 		B3F31832256EC23E00A3B272 /* baseapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3F31831256EC23D00A3B272 /* baseapp.cpp */; };
+		C145C4C50401915FBEE05B6D /* Pods_Tinyphone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5DA457C98267B6EC1DF7E93 /* Pods_Tinyphone.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -50,7 +50,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B3C9365527E34ED300CE2CDB /* Pods_Tinyphone.framework in Embed Frameworks */,
+				B3C9365527E34ED300CE2CDB /* BuildFile in Embed Frameworks */,
 				B3AD62CB27E327C600F6A499 /* libopencore-amrnb.0.dylib in Embed Frameworks */,
 				B3AD62CC27E327C600F6A499 /* libopencore-amrwb.0.dylib in Embed Frameworks */,
 				B392C7B9255412560068492F /* libcryptopp.dylib in Embed Frameworks */,
@@ -61,9 +61,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		4E450987E9E5A20FE837795B /* Pods-Tinyphone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tinyphone.release.xcconfig"; path = "Target Support Files/Pods-Tinyphone/Pods-Tinyphone.release.xcconfig"; sourceTree = "<group>"; };
-		59720BC22BD39E9D5F820B31 /* Pods_Tinyphone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tinyphone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		99885DBDCF2EAFE3FAA8AF7C /* Pods-Tinyphone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tinyphone.debug.xcconfig"; path = "Target Support Files/Pods-Tinyphone/Pods-Tinyphone.debug.xcconfig"; sourceTree = "<group>"; };
+		16D8BC54D525754431110FF1 /* Pods-Tinyphone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tinyphone.release.xcconfig"; path = "Target Support Files/Pods-Tinyphone/Pods-Tinyphone.release.xcconfig"; sourceTree = "<group>"; };
+		3D7A979CDB9519776336DB6B /* Pods-Tinyphone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tinyphone.debug.xcconfig"; path = "Target Support Files/Pods-Tinyphone/Pods-Tinyphone.debug.xcconfig"; sourceTree = "<group>"; };
 		B3025C1E25530D7E00C331CA /* Tinyphone-OC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "Tinyphone-OC.mm"; sourceTree = "<group>"; };
 		B3025C1F25530D7E00C331CA /* Tinyphone-OC.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "Tinyphone-OC.hpp"; sourceTree = "<group>"; };
 		B327CAD0255178470092FDB7 /* Tinyphone-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tinyphone-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -124,6 +123,7 @@
 		B3F3182F256EC23100A3B272 /* osxapp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = osxapp.h; sourceTree = "<group>"; };
 		B3F31831256EC23D00A3B272 /* baseapp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = baseapp.cpp; path = ../../tinyphone/baseapp.cpp; sourceTree = "<group>"; };
 		B3F31833256EC2E100A3B272 /* app.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = app.hpp; path = ../../tinyphone/app.hpp; sourceTree = "<group>"; };
+		C5DA457C98267B6EC1DF7E93 /* Pods_Tinyphone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tinyphone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,7 +140,7 @@
 				B3AD62C827E3174300F6A499 /* boost.xcframework in Frameworks */,
 				B327CB502551A2940092FDB7 /* CoreAudio.framework in Frameworks */,
 				B327CB032551973A0092FDB7 /* libstatsd_static.a in Frameworks */,
-				6B07F5E2BD9B3AE651158F53 /* Pods_Tinyphone.framework in Frameworks */,
+				C145C4C50401915FBEE05B6D /* Pods_Tinyphone.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,8 +150,8 @@
 		9EDB4E7B95299CB02F683BF7 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				99885DBDCF2EAFE3FAA8AF7C /* Pods-Tinyphone.debug.xcconfig */,
-				4E450987E9E5A20FE837795B /* Pods-Tinyphone.release.xcconfig */,
+				3D7A979CDB9519776336DB6B /* Pods-Tinyphone.debug.xcconfig */,
+				16D8BC54D525754431110FF1 /* Pods-Tinyphone.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -212,7 +212,7 @@
 				B327CB4C2551A2940092FDB7 /* CoreAudioKit.framework */,
 				B327CB4B2551A2940092FDB7 /* CoreAudioTypes.framework */,
 				B327CB01255195BD0092FDB7 /* libstatsd_static.a */,
-				59720BC22BD39E9D5F820B31 /* Pods_Tinyphone.framework */,
+				C5DA457C98267B6EC1DF7E93 /* Pods_Tinyphone.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -271,13 +271,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B3DDA56925515DF900D269C9 /* Build configuration list for PBXNativeTarget "Tinyphone" */;
 			buildPhases = (
-				023F5C8B0DBB33BA59EBED3F /* [CP] Check Pods Manifest.lock */,
+				29A7D52E371764FBB29D1F23 /* [CP] Check Pods Manifest.lock */,
 				B3DDA55525515DF700D269C9 /* Sources */,
 				B3DDA55625515DF700D269C9 /* Frameworks */,
 				B3DDA55725515DF700D269C9 /* Resources */,
 				B327CB0825519E550092FDB7 /* Embed Frameworks */,
 				B392C7A52554035D0068492F /* Run Script */,
-				627FED5B7A017D9C4A84B04C /* [CP] Embed Pods Frameworks */,
+				896443F6A4B218BA6302E72F /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -337,7 +337,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		023F5C8B0DBB33BA59EBED3F /* [CP] Check Pods Manifest.lock */ = {
+		29A7D52E371764FBB29D1F23 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -359,7 +359,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		627FED5B7A017D9C4A84B04C /* [CP] Embed Pods Frameworks */ = {
+		896443F6A4B218BA6302E72F /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -600,7 +600,7 @@
 		};
 		B3DDA56A25515DF900D269C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 99885DBDCF2EAFE3FAA8AF7C /* Pods-Tinyphone.debug.xcconfig */;
+			baseConfigurationReference = 3D7A979CDB9519776336DB6B /* Pods-Tinyphone.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
@@ -628,7 +628,7 @@
 					/usr/local/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = "36.0.0.84-pre";
+				MARKETING_VERSION = "36.0.0.84";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DBOOST_SYSTEM_DYN_LINK",
@@ -651,7 +651,7 @@
 		};
 		B3DDA56B25515DF900D269C9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4E450987E9E5A20FE837795B /* Pods-Tinyphone.release.xcconfig */;
+			baseConfigurationReference = 16D8BC54D525754431110FF1 /* Pods-Tinyphone.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
@@ -678,7 +678,7 @@
 					/usr/local/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = "36.0.0.84-pre";
+				MARKETING_VERSION = "36.0.0.84";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DBOOST_SYSTEM_DYN_LINK",
