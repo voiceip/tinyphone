@@ -1,9 +1,9 @@
 PODS:
-  - pjsip (2.9.0.2)
+  - pjsip (2.9.0.3)
   - YbridOpus (0.8.0)
 
 DEPENDENCIES:
-  - pjsip (from `https://github.com/voiceip/cocoapod-pjsip`, branch `no-libopus`)
+  - pjsip (from `https://github.com/voiceip/cocoapod-pjsip`, branch `g729`)
   - YbridOpus
 
 SPEC REPOS:
@@ -12,18 +12,18 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   pjsip:
-    :branch: no-libopus
+    :branch: g729
     :git: https://github.com/voiceip/cocoapod-pjsip
 
 CHECKOUT OPTIONS:
   pjsip:
-    :commit: 80a177661d3ec4bfe3aa6be2d2767c62871c4965
+    :commit: 7eddcc25826333170bc69a3b2fc4a725c7209cec
     :git: https://github.com/voiceip/cocoapod-pjsip
 
 SPEC CHECKSUMS:
-  pjsip: d74b5ea51bd4181581049de2833a61b060dd5063
+  pjsip: 00619cf90b5562f38a5e5ebc3e78aa7a0fb3416e
   YbridOpus: e9af373b9b38acff3702d9a3bd97cae3c232887c
 
-PODFILE CHECKSUM: 33875e5fc3d98200609b13b063ae004b7b7b6c59
+PODFILE CHECKSUM: ec3de4fc2591ea7eda6382b5c1b373579bc62204
 
 COCOAPODS: 1.11.3
