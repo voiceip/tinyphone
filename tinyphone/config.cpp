@@ -4,6 +4,7 @@
 #include "net.h"
 #include "utils.h"
 #include "crypt.h"
+#include <boost/algorithm/string.hpp>
 
 #ifdef __APPLE__
 #include "Tinyphone-C-Interface.h"
@@ -62,7 +63,7 @@ namespace tp {
 		//	std::cout << i->first << ":" << i->second << ' ' << std::endl;
 
 		auto contentTypeIt = std::find_if(remoteConfig.headers.rbegin(), remoteConfig.headers.rend(),
-			[](const std::pair<std::string, std::string>& element) { return element.first == "Content-Type"; });
+			[](const std::pair<std::string, std::string>& element) { return boost::iequals(element.first,"Content-Type"); });
 		
 		if (contentTypeIt != remoteConfig.headers.rend()){
 			contentType = contentTypeIt->second;
