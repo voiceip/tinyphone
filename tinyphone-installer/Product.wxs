@@ -67,7 +67,7 @@
             <RegistryValue Type="integer" Name="CpuPriorityClass" Value="3"/>
           </RegistryKey>
       </Component> 
-      <Component Id="cmpFirewallException" Guid="{DB1A8DBF-47DE-40DC-A5A2-3E08ECBA5D5B}" 
+      <Component Id="cmpFirewallException" Guid="{AE75A17D-3EBF-4B68-AA32-73D18D983319}" 
            KeyPath="yes">
         <fw:FirewallException Id="TinyphoneFirewallException"
           Program="[#TinyPhone.exe]" 
