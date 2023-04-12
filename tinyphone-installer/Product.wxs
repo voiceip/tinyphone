@@ -73,7 +73,7 @@
           Program="[#TinyPhone.exe]" 
           Description="Allow TinyPhone to communicate" 
           Name="TinyPhone Firewall Exception" 
-          Scope="any" Protocol="any" />
+          Scope="any"/>
       </Component>
 
     </ComponentGroup>
