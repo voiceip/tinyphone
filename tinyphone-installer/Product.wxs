@@ -7,7 +7,8 @@
 <?define ShortcutName = $(var.BaseName) ?>
 <?endif?>
 <?define ProductVersion=!(bind.FileVersion.TinyPhone.exe)?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+  xmlns:fw="http://schemas.microsoft.com/wix/FirewallExtension" >
   <Product Id="*" Name="$(var.BaseName)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="Flipkart India" UpgradeCode="$(var.UpgradeCode)">
     <Package InstallerVersion="200" Compressed="yes" Description="$(var.ShortcutName) $(var.ProductVersion) Installer" InstallScope="perMachine" />
     <?if $(var.tinyphone.Configuration) != "Debug" ?>
@@ -66,6 +67,15 @@
             <RegistryValue Type="integer" Name="CpuPriorityClass" Value="3"/>
           </RegistryKey>
       </Component> 
+      <Component Id="cmpFirewallException" Guid="{DB1A8DBF-47DE-40DC-A5A2-3E08ECBA5D5B}" 
+           KeyPath="yes">
+        <fw:FirewallException Id="TinyphoneFirewallException"
+          Program="[#TinyPhone.exe]" 
+          Description="Allow TinyPhone to communicate" 
+          Name="TinyPhone Firewall Exception" 
+          Scope="any" Protocol="any" />
+      </Component>
+
     </ComponentGroup>
     <ComponentGroup Id="ProductSystemComponents" Directory="SystemFolder" >
       <Component Id="DLLComponent" Guid="{AE75A17D-3EBF-4B68-AA32-73D18D983315}">
