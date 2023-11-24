@@ -531,5 +531,32 @@ namespace tp {
 		return true;
 	}
 
-}
+	bool TinyPhone::Join(SIPCall* call, SIPCall* call_to_join) {
+		try {
+			call_to_join->UnHoldCall();   
+		} catch(...) {
+			PJ_LOG(3, (__FILENAME__, "TinyPhone::Join UnHoldCall Error"));
+			return false;
+		}
 
+		AudioMedia aud_med, aud_med2;
+		try {
+			aud_med = call->getAudioMedia(-1);
+			aud_med2 = call_to_join->getAudioMedia(-1);
+		} catch(...) {
+			PJ_LOG(3, (__FILENAME__, "TinyPhone::Join getAudioMedia Error"));
+			return false;
+		}
+
+		try {
+			// start bidirectional audio
+			aud_med.startTransmit(aud_med2);
+			aud_med2.startTransmit(aud_med);
+		} catch(...) {
+			PJ_LOG(3, (__FILENAME__, "TinyPhone::Join startTransmit Error"));
+			return false;
+		}
+
+		return true;
+	}
+}
