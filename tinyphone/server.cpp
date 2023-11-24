@@ -591,7 +591,44 @@ void TinyPhoneHttpServer::Start() {
 			return tp::response(200, response);
 		}
 	});
-	
+
+	CROW_ROUTE(app, "/calls/<int>/join/<int>")
+		.methods("POST"_method)
+		([&phone](int call_id, int call_to_join_id) {
+		pj_thread_auto_register();
+
+		SIPCall* call = phone.CallById(call_id);
+		SIPCall* call_to_join = phone.CallById(call_to_join_id);
+
+		if (call == nullptr) {
+			return tp::response(400, {
+				{ "message", "Current Call Not Found" },
+				{ "call_id" , call_id }
+			});
+		}
+		else if (call_to_join == nullptr) {
+			return tp::response(400, {
+				{ "message", "Call To Join Not Found" },
+				{ "call_id" , call_to_join_id }
+			});
+		}
+		else if (call->HoldState() == +HoldStatus::LOCAL_HOLD) {
+				response["message"] = "Bad Request, CallOnHold Currently";
+				response["status"] = "400";
+				return tp::response(400, response);
+		}
+		else {
+			json response = {
+				{ "message",  "Calls Join Triggered" },
+				{ "call_id" , call_id },
+				{ "call_id_ToJoin" , call_to_join_id },
+				{ "response", phone.Join(call, call_to_join) }
+			};
+
+			return tp::response(200, response);
+		}
+	});
+
 	CROW_ROUTE(app, "/calls/<int>/transfer")
 	.methods("POST"_method)
 	([&phone](const crow::request& req, int call_id) {
