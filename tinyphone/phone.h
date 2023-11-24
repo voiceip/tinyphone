@@ -122,6 +122,8 @@ namespace tp {
 
 		bool Conference(SIPCall* call);
 		bool BreakConference(SIPCall* call);
+		
+		bool Join(SIPCall* call, SIPCall* call_to_join);
 
 		void HangupAllCalls();
 
