@@ -603,25 +603,32 @@ void TinyPhoneHttpServer::Start() {
 		if (call == nullptr) {
 			return tp::response(400, {
 				{ "message", "Current Call Not Found" },
-				{ "call_id" , call_id }
+				{ "call_id" , call_id },
+				{ "call_to_join_id" , call_to_join_id },
 			});
 		}
 		else if (call_to_join == nullptr) {
 			return tp::response(400, {
 				{ "message", "Call To Join Not Found" },
-				{ "call_id" , call_to_join_id }
+				{ "call_id" , call_id },
+				{ "call_to_join_id" , call_to_join_id }
 			});
 		}
 		else if (call->HoldState() == +HoldStatus::LOCAL_HOLD) {
-				response["message"] = "Bad Request, CallOnHold Currently";
-				response["status"] = "400";
-				return tp::response(400, response);
+			json response = {
+				{ "message",  "Bad Request, CallOnHold Currently" },
+				{ "call_id" , call_id },
+				{ "call_to_join_id" , call_to_join_id },
+				{ "status", "400" }
+			};
+
+			return tp::response(400, response);
 		}
 		else {
 			json response = {
 				{ "message",  "Calls Join Triggered" },
 				{ "call_id" , call_id },
-				{ "call_id_ToJoin" , call_to_join_id },
+				{ "call_to_join_id" , call_to_join_id },
 				{ "response", phone.Join(call, call_to_join) }
 			};
 
