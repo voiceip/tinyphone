@@ -143,7 +143,7 @@ The softphone exposes the following resources on port `6060`.
 <td><code>/calls/{call_id}/unjoin/{call_to_unjoin_id}</code></td>
 <td>POST</td>
 <td></td>
-<td>Break specified <code>call_id</code> out of conference with <code>call_to_join_id</code></td>
+<td>Break specified <code>call_id</code> out of conference with <code>call_to_unjoin_id</code></td>
 </tr>
 <tr>
 <td><code>/calls/{call_id}/transfer</code></td>
