@@ -636,6 +636,50 @@ void TinyPhoneHttpServer::Start() {
 		}
 	});
 
+	CROW_ROUTE(app, "/calls/<int>/unjoin/<int>")
+		.methods("POST"_method)
+		([&phone](int call_id, int call_to_unjoin_id) {
+		pj_thread_auto_register();
+
+		SIPCall* call = phone.CallById(call_id);
+		SIPCall* call_to_unjoin = phone.CallById(call_to_unjoin_id);
+
+		if (call == nullptr) {
+			return tp::response(400, {
+				{ "message", "Current Call Not Found" },
+				{ "call_id" , call_id },
+				{ "call_to_unjoin_id" , call_to_unjoin_id },
+			});
+		}
+		else if (call_to_unjoin == nullptr) {
+			return tp::response(400, {
+				{ "message", "Call To Unjoin Not Found" },
+				{ "call_id" , call_id },
+				{ "call_to_unjoin_id" , call_to_unjoin_id }
+			});
+		}
+		else if (call->HoldState() == +HoldStatus::LOCAL_HOLD) {
+			json response = {
+				{ "message",  "Bad Request, CallOnHold Currently" },
+				{ "call_id" , call_id },
+				{ "call_to_unjoin_id" , call_to_unjoin_id },
+				{ "status", "400" }
+			};
+
+			return tp::response(400, response);
+		}
+		else {
+			json response = {
+				{ "message",  "Calls Unjoin Triggered" },
+				{ "call_id" , call_id },
+				{ "call_to_unjoin_id" , call_to_unjoin_id },
+				{ "response", phone.Unjoin(call, call_to_unjoin) }
+			};
+
+			return tp::response(200, response);
+		}
+	});
+
 	CROW_ROUTE(app, "/calls/<int>/transfer")
 	.methods("POST"_method)
 	([&phone](const crow::request& req, int call_id) {

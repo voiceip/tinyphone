@@ -549,7 +549,6 @@ namespace tp {
 		}
 
 		try {
-			// start bidirectional audio
 			aud_med.startTransmit(aud_med2);
 			aud_med2.startTransmit(aud_med);
 		} catch(...) {
@@ -558,5 +557,33 @@ namespace tp {
 		}
 
 		return true;
+	}
+
+	bool TinyPhone::Unjoin(SIPCall* call, SIPCall* call_to_unjoin) {
+		try {
+			call_to_unjoin->HoldCall();   
+		} catch(...) {
+			PJ_LOG(3, (__FILENAME__, "TinyPhone::Unjoin HoldCall Error"));
+			return false;
+		}
+
+		AudioMedia aud_med, aud_med2;
+		try {
+			aud_med = call->getAudioMedia(-1);
+			aud_med2 = call_to_unjoin->getAudioMedia(-1);
+		} catch(...) {
+			PJ_LOG(3, (__FILENAME__, "TinyPhone::Unjoin getAudioMedia Error"));
+			return false;
+		}
+
+		try {
+			aud_med.stopTransmit(aud_med2);
+			aud_med2.stopTransmit(aud_med);
+		} catch(...) {
+			PJ_LOG(3, (__FILENAME__, "TinyPhone::Unjoin stopTransmit Error"));
+			return false;
+		}
+
+		return true;		
 	}
 }
