@@ -789,7 +789,7 @@ void TinyPhoneHttpServer::Start() {
 		([this](const crow::request& req) {
 		auto it = req.headers.find(HEADER_SECURITY_CODE);
 		json response = {
-			{"message", "Server Shutdown Recieved"},
+			{"message", "Server Shutdown Received"},
 			{"result", 401},
 			{"source", req.remote_ip_address},
 		};
