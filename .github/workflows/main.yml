@@ -20,7 +20,10 @@ jobs:
       with:
         fetch-depth: '1'
         submodules: 'recursive'
-
+    - name: Disable IPv6
+      shell: bash -l {0}
+      run: echo "DISABLE_IPV6=1" >> $GITHUB_ENV 
+      
     - name: Restore Boost Cache
       uses: actions/cache@v3
       id: cache-boost
@@ -85,7 +88,9 @@ jobs:
       with:
         fetch-depth: '1'
         submodules: 'recursive'
-
+    - name: Disable IPv6
+      shell: bash -l {0}
+      run: echo "DISABLE_IPV6=1" >> $GITHUB_ENV 
     - name: Install the Apple certificate and provisioning profile
       env:
         BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
@@ -93,6 +98,7 @@ jobs:
         #BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
         KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
       run: |
+
         # create variables
         CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
         PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
@@ -180,7 +186,9 @@ jobs:
       with:
         fetch-depth: '1'
         submodules: 'recursive'
-    
+    - name: Disable IPv6
+      shell: bash -l {0}
+      run: echo "DISABLE_IPV6=1" >> $GITHUB_ENV    
     - name: Install Dependencies
       shell: bash
       run : |
