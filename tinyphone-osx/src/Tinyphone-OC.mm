@@ -66,7 +66,7 @@ const char* GetAppSupportFilePath(const char * name){
     NSString* file = @(name);
     NSString* basePath = @(GetAppSupportDirectory());
     NSString* finalPath = [basePath stringByAppendingPathComponent:file];
-    return [finalPath UTF8String];;
+    return [finalPath UTF8String];
 }
 
 const char* GetResourceFilePath(const char * name){

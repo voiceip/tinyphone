@@ -81,7 +81,7 @@ jobs:
 
   tinyphone_osx_job:
     name: Build Tinyphone macOS
-    runs-on: macos-11
+    runs-on: macos-13
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -105,8 +105,8 @@ jobs:
         KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
 
         # import certificate and provisioning profile from secrets
-        echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode --output $CERTIFICATE_PATH
-        #echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode --output $PP_PATH
+        echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+        #echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
 
         # create temporary keychain
         security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
@@ -128,7 +128,7 @@ jobs:
       shell: bash
       run : |
         export HOMEBREW_NO_INSTALL_CLEANUP=true
-        brew install autoconf automake libtool tree wget opencore-amr
+        brew install autoconf automake libtool opencore-amr tree
         wget https://gist.githubusercontent.com/kingster/1954ead3c38a40cac88c5c1311bb39c5/raw/343da2c7a2a52ee5a1c03902cc5e44ed83b1dd5d/cryptopp.rb
         brew install --build-from-source -f cryptopp.rb 
         npm install -g appdmg
@@ -140,8 +140,11 @@ jobs:
 
         #boost
         pushd tinyphone-osx/vendor/boost
-        ./boost.sh -macos --boost-version 1.74.0
+        ./boost.sh -macos --boost-version 1.84.0 --no-thinning
         popd
+
+        # dump the content of the framework
+        # tree tinyphone-osx/vendor/boost/dist/boost.xcframework
 
         #stastd
         pushd lib/statsd-cpp

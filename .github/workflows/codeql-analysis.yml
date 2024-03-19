@@ -17,7 +17,7 @@ jobs:
       contents: read
       security-events: write
 
-    runs-on: macos-11
+    runs-on: macos-13
     strategy:
       fail-fast: false
       matrix:
@@ -51,7 +51,7 @@ jobs:
 
         #boost
         pushd tinyphone-osx/vendor/boost
-        ./boost.sh -macos --boost-version 1.74.0
+        ./boost.sh -macos --boost-version 1.84.0 --no-thinning
         popd
 
     # Initializes the CodeQL tools for scanning.
