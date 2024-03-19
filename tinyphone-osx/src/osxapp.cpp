@@ -57,7 +57,7 @@ struct UIAccountInfoArray Accounts(){
                 acc.active = account->getInfo().regIsActive;
                 accounts.push_back(acc);
             }
-            arrInfo.count = accounts.size();
+            arrInfo.count = (int) accounts.size();
             if (accounts.size() < 10 ) {
                 std::copy(accounts.begin(), accounts.end(), arrInfo.accounts);
             }

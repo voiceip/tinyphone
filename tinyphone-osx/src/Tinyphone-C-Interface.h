@@ -19,6 +19,8 @@ const char* GetOSXProductVersion();
 
 const char* GetResourceFilePath(const char * name);
 
+const char* GetAppSupportFilePath(const char * name);
+
 const char* GetLogsDirectory();
 
 #endif /* Tinyphone_C_Interface_h */
