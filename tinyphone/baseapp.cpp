@@ -21,6 +21,15 @@
 using namespace std;
 using namespace pj;
 
+/**
+ * @file baseapp.cpp
+ * @brief Implementation of the base application functionality for TinyPhone.
+ * 
+ * This file contains the implementation of the base application functionality for TinyPhone.
+ * It includes functions for initializing the PJSUA endpoint, starting and stopping the application,
+ * and retrieving the phone object.
+ */
+
 #define MAX_DNS_SERVERS 4
 
 inline void  pj_logerror(pj_status_t status, char * message) {
