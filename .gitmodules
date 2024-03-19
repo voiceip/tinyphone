@@ -33,7 +33,7 @@
 	url = https://github.com/voiceip/statsd-cpp.git
 [submodule "tinyphone-osx/vendor/boost"]
 	path = tinyphone-osx/vendor/boost
-	url = https://github.com/faithfracture/Apple-Boost-BuildScript.git
+	url = https://github.com/mathieugarcia/Apple-Boost-BuildScript.git
 [submodule "lib/spdlog"]
 	path = lib/spdlog
 	url = https://github.com/gabime/spdlog.git
