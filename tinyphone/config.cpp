@@ -107,13 +107,16 @@ namespace tp {
 		}
 
 #ifdef ALLOW_OFFLINE_CONFIG
-        std::string local_file_path = LOCAL_CONFIG_FILE;
+		std::string local_file_path = LOCAL_CONFIG_FILE;
 #ifdef __APPLE__
-        auto apple_config_file = GetResourceFilePath(local_file_path.c_str());
-        if(apple_config_file != nullptr){
-            std::string lp(apple_config_file);
-            local_file_path.swap(lp);
-        }
+		auto apple_config_file = GetAppSupportFilePath(local_file_path.c_str());
+		
+		if (apple_config_file != nullptr) {
+			std::cout << "Checking if Local File Exists " << apple_config_file << std::endl;
+			std::string lp(apple_config_file);
+			local_file_path.swap(lp);
+		}
+		
 #endif
 		if(file_exists(local_file_path)){
 			jsonConfig = file_get_contents(local_file_path);
