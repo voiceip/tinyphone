@@ -181,9 +181,14 @@ You can view the postman collection of the APIs [here](https://documenter.getpos
 ## Building Locally
 
 ### Pre Requsite
-
+**Boost Libraries**
 You must have boost libraries installed on your system. Incase you don't have you can either download the [sources](https://www.boost.org/users/download/) and build it, or install a precompiled binaries from [here](https://sourceforge.net/projects/boost/files/boost-binaries/).
 
+**Vcpkg for Dependency Management**
+Vcpkg is a C++ Library Manager for Windows, Linux, and MacOS. It simplifies the installation of software libraries.
+
+You can find instructions for installing on Windows [here](https://github.com/Microsoft/vcpkg?tab=readme-ov-file#quick-start-windows)
+**Note:** I recommend cloning the repo in `C:/Tools` contrary to the documentation 
 
 ### Manual Compiling
 
@@ -196,6 +201,14 @@ git submodule update --init --recursive
 #open tinyphone/tinyphone.sln in visual studio 2015 and compile it (you will need to compile the dependencies in lib/* folder)
 run tinyphone/Debug/tinyphone.exe
 ```
+
+### Fixing the LIBPATH Issue
+Ensure the LIBPATH in Visual Studio project properties for tinyphone accurately points to the directories where the compiled libraries are located, including the correct path for libcurl and other dependencies.
+
+**Note for Visual Studio 2019** 
+double check the `E:\lib\curl\builds` directory and verify that sub directory `libcurl-vc-x86-release-dll-ipv6-sspi-winssl` matches the LIBPATH Visual Studio tends to create the directory: `libcurl-vc**19**-x86-release-dll-ipv6-sspi-winssl`
+You can update the LIBPATH to match `libcurl-vc**19**-x86-release-dll-ipv6-sspi-winssl` (doc)[https://learn.microsoft.com/en-us/cpp/build/reference/libpath-additional-libpath?view=msvc-170]
+or manually rename the folder to match what is in your LIBPATH
 
 ## Issues & Contribution
 
