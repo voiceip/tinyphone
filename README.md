@@ -206,9 +206,10 @@ run tinyphone/Debug/tinyphone.exe
 Ensure the LIBPATH in Visual Studio project properties for tinyphone accurately points to the directories where the compiled libraries are located, including the correct path for libcurl and other dependencies.
 
 **Note for Visual Studio 2019** 
-double check the `E:\lib\curl\builds` directory and verify that sub directory `libcurl-vc-x86-release-dll-ipv6-sspi-winssl` matches the LIBPATH Visual Studio tends to create the directory: `libcurl-vc**19**-x86-release-dll-ipv6-sspi-winssl`
-You can update the LIBPATH to match `libcurl-vc**19**-x86-release-dll-ipv6-sspi-winssl` (doc)[https://learn.microsoft.com/en-us/cpp/build/reference/libpath-additional-libpath?view=msvc-170]
-or manually rename the folder to match what is in your LIBPATH
+double check the `E:\lib\curl\builds` directory and verify that sub directory `libcurl-vc-x86-release-dll-ipv6-sspi-winssl` or `libcurl-vc**19**-x86-release-dll-ipv6-sspi-winssl` matches with what is on you LIBPATH.
+1. You can update the LIBPATH so that they match (doc)[https://learn.microsoft.com/en-us/cpp/build/reference/libpath-additional-libpath?view=msvc-170]
+
+2. or manually rename the folder to match what is in your LIBPATH
 
 ## Issues & Contribution
 
