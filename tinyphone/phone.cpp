@@ -227,19 +227,30 @@ namespace tp {
 		}
 		if (ApplicationConfig.useDefaultAudioDevice) {
 			PJ_LOG(3, (__FILENAME__, "Using Default Audio Device(s)"));
+
+			// the below code is to set the default audio device to -1 and -2 which tells pjsua to use the default audio device
 			input_audio_dev = -1;
 			output_audio_dev = -2;
 		} else {
+			// iterate through the preferred audio devices array
 			BOOST_FOREACH(string& search_string, ApplicationConfig.prefferedAudioDevices) {
+				PJ_LOG(3, (__FILENAME__, "Searching for Audio Device %s", search_string.c_str()));
+				// initialize index to 0
 				int dev_idx = 0;
+				// iterate through the audio devices
 				BOOST_FOREACH(AudioDevInfo* info, devices) {
+					// convert the device name to lower case
 					string dev_name = info->name;
 					boost::to_lower(dev_name);
+					// check if the search string is in the device name
 					if (dev_name.find(search_string) != string::npos) {
+						PJ_LOG(3, (__FILENAME__, "Found Audio Device %s", search_string.c_str()));
+						// if the device is an input device and the input audio device is not set, set the input audio device
 						if (info->inputCount > 0 && input_audio_dev <= 0) {
 							input_audio_dev = dev_idx;
 							PJ_LOG(3, (__FILENAME__, "Selected Input #%d %s", dev_idx, info->name.c_str()));
 						}
+						// if the device is an output device and the output audio device is not set, set the output audio device
 						if (info->outputCount > 0 && output_audio_dev <= 0) {
 							output_audio_dev = dev_idx;
 							PJ_LOG(3, (__FILENAME__, "Selected Output #%d %s", dev_idx, info->name.c_str()));
@@ -251,6 +262,31 @@ namespace tp {
 		}
 		audio_manager.setCaptureDev(input_audio_dev);
 		audio_manager.setPlaybackDev(output_audio_dev);
+	}
+
+	selectedAudioDevices TinyPhone::GetSelectedAudioDevices() {
+		// initialize the selected audio devices struct
+		selectedAudioDevices devices;
+		
+		// get an instance of the audio device manager
+		AudDevManager& audio_manager = Endpoint::instance().audDevManager();
+
+		// get default audio devices
+		int input_dev_index = audio_manager.getCaptureDev();
+		int output_dev_index = audio_manager.getPlaybackDev();
+
+		// get the audio device info
+		AudioDevInfo input_dev_info = audio_manager.getDevInfo(input_dev_index);
+		AudioDevInfo output_dev_info = audio_manager.getDevInfo(output_dev_index);
+
+		// return the selected audio devices
+		devices.inputDeviceIndex = input_dev_index;
+		devices.inputDeviceName = input_dev_info.name;
+		devices.outputDeviceIndex = output_dev_index;
+		devices.outputDeviceName = output_dev_info.name;
+
+		return devices;
+		
 	}
 
 	void TinyPhone::refreshDevices() {
