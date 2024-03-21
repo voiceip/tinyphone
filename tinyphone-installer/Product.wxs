@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?define UpgradeCode = "2bbe32a2-1e37-4663-97d4-cb9e5c7dfde3"?>
-<?define BaseName = "Strowger Tinyphone"?>
+<?define BaseName = "RS Tinyphone"?>
 <?if $(var.tinyphone.Configuration) = "Debug" ?>
 <?define ShortcutName = "$(var.BaseName) Debug" ?>
 <?else?>
@@ -86,7 +86,7 @@
     </ComponentGroup>
     <ComponentGroup Id="ProductSupportComponents" Directory="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut" Guid="{AE75A17D-3EBF-4B68-AA32-73D18D983317}">
-        <Shortcut Id="ApplicationStartMenuShortcut" Name="$(var.ShortcutName)" Description="Strowger Softphone" Target="[#TinyPhone.exe]" WorkingDirectory="INSTALLFOLDER" />
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="$(var.ShortcutName)" Description="RS Softphone" Target="[#TinyPhone.exe]" WorkingDirectory="INSTALLFOLDER" />
         <Shortcut Id="UninstallProduct"	Name="Uninstall $(var.ShortcutName)" Description="Uninstalls $(var.ShortcutName)" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]"/>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
         <RegistryValue Root="HKCU" Key="Software\Flipkart\TinyPhone" Name="installed" Type="integer" Value="1" KeyPath="yes" />

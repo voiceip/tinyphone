@@ -13,7 +13,7 @@
 #include "splash.h"
 #include "tpendpoint.h"
 #include <iphlpapi.h>
-#include <algorithm> 
+#include <algorithm>
 #include "app.hpp"
 
 #ifdef _DEBUG
@@ -39,7 +39,7 @@ UINT WM_TASKBAR = 0;
 HWND Hwnd;
 HMENU Hmenu;
 NOTIFYICONDATA notifyIconData;
-TCHAR szTIP[MAX_TOOLTIP_LENGTH] = TEXT("Strowger TinyPhone");
+TCHAR szTIP[MAX_TOOLTIP_LENGTH] = TEXT("RS TinyPhone");
 char szClassName[] = "TinyPhone";
 SPLASH splashScreen;
 
@@ -49,17 +49,17 @@ void InitNotifyIconData();
 void ExitApplication();
 
 
-int WINAPI WinMain(HINSTANCE hThisInstance,		
-	HINSTANCE hPrevInstance,
-	LPSTR lpszArgument,
-	int nCmdShow)
+int WINAPI WinMain(HINSTANCE hThisInstance,
+									 HINSTANCE hPrevInstance,
+									 LPSTR lpszArgument,
+									 int nCmdShow)
 {
 	MSG messages;
 	Hwnd = CreateDialog(
-		hThisInstance,
-		MAKEINTRESOURCE(IDD_EMPTY_DIALOG),
-		NULL,
-		(DLGPROC)WindowProcedure
+			hThisInstance,
+			MAKEINTRESOURCE(IDD_EMPTY_DIALOG),
+			NULL,
+			(DLGPROC)WindowProcedure
 	);
 
 	HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
@@ -163,7 +163,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, LPARAM 
 				cout << "Open Folder " << GetLogDir() << endl;
 				BrowseToFile(tp::sipLogFile.c_str());
 			}
-				break;
+			break;
 			default:
 				break;
 			}
@@ -229,59 +229,59 @@ void InitNotifyIconData()
 
 namespace tp {
 
-std::vector<std::string> GetLocalDNSServers() {
-	FIXED_INFO *pFixedInfo;
-	ULONG ulOutBufLen;
-	DWORD dwRetVal;
-	IP_ADDR_STRING *pIPAddr;
-	std::vector <std::string> dnsServers;
+	std::vector<std::string> GetLocalDNSServers() {
+		FIXED_INFO *pFixedInfo;
+		ULONG ulOutBufLen;
+		DWORD dwRetVal;
+		IP_ADDR_STRING *pIPAddr;
+		std::vector <std::string> dnsServers;
 
 
-	pFixedInfo = (FIXED_INFO *)MALLOC(sizeof(FIXED_INFO));
-	if (pFixedInfo == NULL) {
-		printf("Error allocating memory needed to call GetNetworkParams\n");
-		return dnsServers;
-	}
-	ulOutBufLen = sizeof(FIXED_INFO);
-
-	// Make an initial call to GetAdaptersInfo to get
-	// the necessary size into the ulOutBufLen variable
-	if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW) {
-		FREE(pFixedInfo);
-		pFixedInfo = (FIXED_INFO *)MALLOC(ulOutBufLen);
+		pFixedInfo = (FIXED_INFO *)MALLOC(sizeof(FIXED_INFO));
 		if (pFixedInfo == NULL) {
 			printf("Error allocating memory needed to call GetNetworkParams\n");
 			return dnsServers;
 		}
-	}
+		ulOutBufLen = sizeof(FIXED_INFO);
 
-	if (dwRetVal = GetNetworkParams(pFixedInfo, &ulOutBufLen) == NO_ERROR) {
-
-		printf("Host Name: %s\n", pFixedInfo->HostName);
-		
-		printf("DNS Servers:\n");
-		dnsServers.push_back(pFixedInfo->DnsServerList.IpAddress.String);
-		printf("\t%s\n", pFixedInfo->DnsServerList.IpAddress.String);
-
-		pIPAddr = pFixedInfo->DnsServerList.Next;
-		while (pIPAddr != NULL) {
-			printf("\t%s\n", pIPAddr->IpAddress.String);
-			dnsServers.push_back(pIPAddr->IpAddress.String);
-			pIPAddr = pIPAddr->Next;
+		// Make an initial call to GetAdaptersInfo to get
+		// the necessary size into the ulOutBufLen variable
+		if (GetNetworkParams(pFixedInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW) {
+			FREE(pFixedInfo);
+			pFixedInfo = (FIXED_INFO *)MALLOC(ulOutBufLen);
+			if (pFixedInfo == NULL) {
+				printf("Error allocating memory needed to call GetNetworkParams\n");
+				return dnsServers;
+			}
 		}
-	}
-	else {
-		printf("GetNetworkParams failed with error: %d\n", dwRetVal);
+
+		if (dwRetVal = GetNetworkParams(pFixedInfo, &ulOutBufLen) == NO_ERROR) {
+
+			printf("Host Name: %s\n", pFixedInfo->HostName);
+
+			printf("DNS Servers:\n");
+			dnsServers.push_back(pFixedInfo->DnsServerList.IpAddress.String);
+			printf("\t%s\n", pFixedInfo->DnsServerList.IpAddress.String);
+
+			pIPAddr = pFixedInfo->DnsServerList.Next;
+			while (pIPAddr != NULL) {
+				printf("\t%s\n", pIPAddr->IpAddress.String);
+				dnsServers.push_back(pIPAddr->IpAddress.String);
+				pIPAddr = pIPAddr->Next;
+			}
+		}
+		else {
+			printf("GetNetworkParams failed with error: %d\n", dwRetVal);
+			return dnsServers;
+		}
+
+
+		if (pFixedInfo != NULL)
+			FREE(pFixedInfo);
+
+
 		return dnsServers;
 	}
-
-
-	if (pFixedInfo != NULL)
-		FREE(pFixedInfo);
-
-
-	return dnsServers;
-}
 
 }
 
