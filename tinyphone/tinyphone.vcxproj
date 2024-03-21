@@ -118,7 +118,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-    </ClCompile>
+          </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -146,7 +146,7 @@
       <EnableUAC>false</EnableUAC>
     </Link>
     <CustomBuildStep>
-      <Command>$(SolutionDir)..\bin\StampVer.exe -v$(SolutionDir)stampver.inf -i4 -j4 $(TargetPath)</Command>
+      <Command>$(SolutionDir)..\bin\StampVer.exe -v$(SolutionDir)stampver.inf $(TargetPath)</Command>
     </CustomBuildStep>
     <CustomBuildStep>
       <Outputs>$(TargetDir)dummy;%(Outputs)</Outputs>
