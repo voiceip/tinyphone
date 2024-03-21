@@ -17,6 +17,12 @@
 
 
 namespace tp {
+		struct selectedAudioDevices {
+			int inputDeviceIndex;
+			std::string inputDeviceName;
+			int outputDeviceIndex;
+			std::string outputDeviceName;
+		} ;
 
     enum RingTune
     {   IncomingRing = 0,
@@ -48,7 +54,7 @@ namespace tp {
 
 	public:
 		int input_audio_dev = 0, output_audio_dev = 0;
-
+		
 		TinyPhone(pj::Endpoint* ep) {
 			endpoint = ep;
 
@@ -81,6 +87,8 @@ namespace tp {
 		bool TestAudioDevice();
 
 		void ConfigureAudioDevices();
+
+		selectedAudioDevices GetSelectedAudioDevices();
 
 		void refreshDevices();
 
