@@ -63,7 +63,7 @@ void TinyPhoneHttpServer::Start() {
 
 	phone.ConfigureAudioDevices();
 	phone.InitMetricsClient();
-	
+
 	phone.CreateEventStream(&updates);
 	phone.RestoreAccounts();
 
@@ -77,13 +77,22 @@ void TinyPhoneHttpServer::Start() {
 	CROW_ROUTE(app, "/")([]() {
 		std::string productVersion;
 		GetProductVersion(productVersion);
-		json response = {
-			{ "message", "Hi!" },
-			{ "version", productVersion },
-		};
-		return tp::response(200, response);
+		try {
+			json response = {
+				{ "message", "Hi!" },
+				{ "version", productVersion },
+			};
+			return tp::response(200, response);
+		} catch (
+			const exception& e
+		) {
+			// log error
+			CROW_LOG_ERROR << "Error in / endpoint" << e.what();
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
+		}
+
 	});
-	
+
 	
 	CROW_ROUTE(app, "/config")([]() {
 		std::string productVersion;
@@ -103,8 +112,8 @@ void TinyPhoneHttpServer::Start() {
 		CROW_LOG_INFO << "Enabling WebSocket Endpoint";
 
 		CROW_ROUTE(app, "/events")
-			.websocket()
-			.onopen([&](crow::websocket::connection& conn) {
+				.websocket()
+				.onopen([&](crow::websocket::connection& conn) {
 			CROW_LOG_INFO << "new websocket connection";
 			std::lock_guard<std::mutex> _(mtx);
 			subscribers.insert(&conn);
@@ -114,18 +123,18 @@ void TinyPhoneHttpServer::Start() {
 			};
 			conn.send_text(message.dump());
 		})
-			.onclose([&](crow::websocket::connection& conn, const std::string& reason) {
+				.onclose([&](crow::websocket::connection& conn, const std::string& reason) {
 			CROW_LOG_INFO << "websocket connection closed: %s" << reason;
 			std::lock_guard<std::mutex> _(mtx);
 			subscribers.erase(&conn);
 		})
-			.onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary) {
+				.onmessage([&](crow::websocket::connection& conn, const std::string& data, bool is_binary) {
 			json message = {
 				{ "message", "nothing here" },
 			};
 			conn.send_text(message.dump());
 		});
-	
+
 		auto _thread = std::thread([&updates, &subscribers]() {
 			std::string data;
 			while (!updates.is_closed()) {
@@ -140,9 +149,9 @@ void TinyPhoneHttpServer::Start() {
 		});
 		ws_publisher_thread = std::move(_thread);
 	}
-	
+
 	CROW_ROUTE(app, "/devices")
-		.methods("GET"_method)
+			.methods("GET"_method)
 		([&phone]() {
 		try {
 			pj_thread_auto_register();
@@ -155,21 +164,26 @@ void TinyPhoneHttpServer::Start() {
 				{ "devices",{} },
 			};
 			int dev_idx = 0;
+
 			BOOST_FOREACH(AudioDevInfo* info, devices) {
+				bool isActive = audio_manager.sndIsActive();
 				json dev_info = {
 					{ "name",info->name },
 					{ "driver",info->driver },
 					{ "id", dev_idx },
 					{ "inputCount" ,  info->inputCount },
+					{	"isInput", info->inputCount > 0	},
 					{ "outputCount" ,  info->outputCount },
+					{	"isOutput", info->outputCount > 0	},
+					// { "isActive" , isActive }, // is this device currently active
 				};
-				#ifdef _WIN32
+#ifdef _WIN32
 				if (std::string("PA").compare(info->driver) == 0) {
 					const PaDeviceInfo *deviceInfo = Pa_GetDeviceInfo(dev_idx);
 					const PaHostApiInfo *hostApiInfo = Pa_GetHostApiInfo(deviceInfo->hostApi);
 					dev_info["pa-api"] = hostApiInfo->name;
 				}
-				#endif
+#endif
 				response["devices"].push_back(dev_info);
 				dev_idx++;
 			}
@@ -181,8 +195,155 @@ void TinyPhoneHttpServer::Start() {
 		}
 	});
 
+	// a route to get the default audio devices
+	CROW_ROUTE(app, "/devices/default")
+			.methods("GET"_method)
+		([&phone]() {
+		try {
+			pj_thread_auto_register();
+			selectedAudioDevices devices = phone.GetSelectedAudioDevices();
+			json response = {
+				{ "message", "Success" },
+				{ "error", nullptr },
+				{
+					"data", {
+						{
+							"input", {
+								{"id", devices.inputDeviceIndex},
+								{"name", devices.inputDeviceName}
+							}
+						},
+						{
+							"output", {
+								{"id", devices.outputDeviceIndex},
+								{"name", devices.outputDeviceName}
+							}
+						}
+					}
+				}
+			};
+			
+			return tp::response(200, response);
+		}
+		catch (...) {
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
+		}
+	});
+
+	// a route to set the default audio devices
+	CROW_ROUTE(app, "/devices/default")
+			.methods("POST"_method)
+		([&phone](const crow::request& req) {
+		try {
+			pj_thread_auto_register();
+
+			// initialize the audio device manager instance
+			AudDevManager& audio_manager = Endpoint::instance().audDevManager();
+			// refresh the audio devices
+			audio_manager.refreshDevs();
+			// get the audio devices list
+			AudioDevInfoVector devices = audio_manager.enumDev();
+
+			// parse the json request
+			json j = json::parse(req.body);
+			
+			// validate json request, make sure it has input and output and they are integers
+			if (j.find("input") == j.end() || j.find("output") == j.end() || !j.at("input").is_number() || !j.at("output").is_number()) {
+				return tp::response(400, {
+					{ "error", "Invalid Request: input and output must be a valid id Valid ids: 0 to " + std::to_string(devices.size() - 1) },
+					{ "message", "Failed" },
+					{	"data", nullptr	}
+				});
+			}
+			// initial variables to hold the input and output index
+			int inputIdx, outputIdx;
+			j.at("input").get_to(inputIdx);
+			j.at("output").get_to(outputIdx);
+			
+			// validate the input and output index to make sure they are not out of bounds
+			if(inputIdx >= devices.size() || outputIdx >= devices.size()) {
+				return tp::response(400, {
+					{ "error", "Invalid Request: input and output must be a valid id. Valid ids: 0 to " + std::to_string(devices.size() - 1) },
+					{ "message", "Failed" },
+					{	"data", nullptr	}
+				});
+			}
+
+			// validate that the devices are input and output devices respectively
+			if (devices[inputIdx]->inputCount == 0) {
+				return tp::response(400, {
+					{ "error", "Invalid Request: The device with Id " + std::to_string(inputIdx) + " is not an input device." },
+					{ "message", "Failed" },
+					{	"data", nullptr	}
+				});
+			}
+
+			if (devices[outputIdx]->outputCount == 0) {
+				return tp::response(400, {
+					{ "error", "Invalid Request: The device with Id " + std::to_string(outputIdx) + " is not an output device." },
+					{ "message", "Failed" },
+					{	"data", nullptr	}					
+				});
+			}
+			// if index are negative set respective dev index to the current active devices
+			if (inputIdx < 0) {
+				inputIdx = audio_manager.getCaptureDev();
+			}
+			if (outputIdx < 0) {
+				outputIdx = audio_manager.getPlaybackDev();
+			}
+			// set the default audio devices
+			audio_manager.setCaptureDev(inputIdx);
+			audio_manager.setPlaybackDev(outputIdx);
+
+			// get the name of the selected audio devices
+			std::string inputName = devices[inputIdx]->name;
+			std::string outputName = devices[outputIdx]->name;
+
+			// test the audio devices that were set
+			bool res = phone.TestAudioDevice();
+			if (!res) {
+				// if the test fails, return an error response and set the default audio devices back to the previous ones
+				audio_manager.setCaptureDev(-1);
+				audio_manager.setPlaybackDev(-2);
+				json test_response = {
+					{ "error", "Failed to set default audio devices, Please try different devices. The Output device " + outputName + " and Input device " + inputName + " failed while testing." },
+					{ "message", "Failed" },
+					{ "data", nullptr }
+				};
+				return tp::response(500, test_response);
+			}
+			
+			
+			json response = {
+				{ "message",  "Success" },
+				{"error", nullptr},
+				{
+					"data", {
+						{
+							"input", {
+								{"id", inputIdx},
+								{"name", inputName}
+							}
+						},
+						{
+							"output", {
+								{"id", outputIdx},
+								{"name", outputName}
+							}
+						}
+					}
+				}
+			};
+			return tp::response(200, response);
+		}
+		catch (...) {
+			return tp::response(500, DEFAULT_HTTP_SERVER_ERROR_REPONSE);
+		}
+	});
+
 	CROW_ROUTE(app, "/login")
-		.methods("POST"_method)
+			.methods("POST"_method)
 		([&phone](const crow::request& req) {
 		try {
 
@@ -275,7 +436,7 @@ void TinyPhoneHttpServer::Start() {
 	});
 
 	CROW_ROUTE(app, "/accounts")
-		.methods("GET"_method)
+			.methods("GET"_method)
 		([&phone]() {
 		try {
 			json response = {
@@ -301,7 +462,7 @@ void TinyPhoneHttpServer::Start() {
 	});
 
 	CROW_ROUTE(app, "/accounts/<string>/reregister")
-		.methods("POST"_method)
+			.methods("POST"_method)
 		([&phone](string account_name) {
 		try {
 			pj_thread_auto_register();
@@ -328,7 +489,7 @@ void TinyPhoneHttpServer::Start() {
 	});
 
 	CROW_ROUTE(app, "/accounts/<string>/logout")
-		.methods("POST"_method)
+			.methods("POST"_method)
 		([&phone](string account_name) {
 		try {
 			pj_thread_auto_register();
@@ -426,7 +587,7 @@ void TinyPhoneHttpServer::Start() {
 	});
 
 	CROW_ROUTE(app, "/calls")
-		.methods("GET"_method)
+			.methods("GET"_method)
 		([&phone]() {
 		try {
 			pj_thread_auto_register();
@@ -464,7 +625,7 @@ void TinyPhoneHttpServer::Start() {
 
 
 	CROW_ROUTE(app, "/calls/<int>/answer")
-		.methods("POST"_method)
+			.methods("POST"_method)
 		([&phone](int call_id) {
 		pj_thread_auto_register();
 
@@ -486,7 +647,7 @@ void TinyPhoneHttpServer::Start() {
 	});
 
 	CROW_ROUTE(app, "/calls/<int>/attended-transfer/<int>")
-		.methods("POST"_method)
+			.methods("POST"_method)
 		([&phone](int call_id,int dest_call_id) {
 		pj_thread_auto_register();
 
@@ -516,7 +677,7 @@ void TinyPhoneHttpServer::Start() {
 	});
 
 	CROW_ROUTE(app, "/calls/<int>/hold")
-		.methods("PUT"_method, "DELETE"_method)
+			.methods("PUT"_method, "DELETE"_method)
 		([&phone](const crow::request& req, int call_id) {
 
 		pj_thread_auto_register();
@@ -555,7 +716,7 @@ void TinyPhoneHttpServer::Start() {
 	});
 
 	CROW_ROUTE(app, "/calls/<int>/conference")
-		.methods("PUT"_method, "DELETE"_method)
+			.methods("PUT"_method, "DELETE"_method)
 		([&phone](const crow::request& req,int call_id) {
 		pj_thread_auto_register();
 
@@ -591,9 +752,9 @@ void TinyPhoneHttpServer::Start() {
 			return tp::response(200, response);
 		}
 	});
-	
+
 	CROW_ROUTE(app, "/calls/<int>/transfer")
-	.methods("POST"_method)
+			.methods("POST"_method)
 	([&phone](const crow::request& req, int call_id) {
 		pj_thread_auto_register();
 		
@@ -638,7 +799,7 @@ void TinyPhoneHttpServer::Start() {
 	});
 
 	CROW_ROUTE(app, "/calls/<int>/dtmf/<string>")
-		.methods("POST"_method)
+			.methods("POST"_method)
 		([&phone](int call_id, string dtmf_string) {
 		pj_thread_auto_register();
 
@@ -667,7 +828,7 @@ void TinyPhoneHttpServer::Start() {
 	});
 
 	CROW_ROUTE(app, "/calls/<int>/hangup")
-		.methods("POST"_method)
+			.methods("POST"_method)
 		([&phone](int call_id) {
 		pj_thread_auto_register();
 
@@ -690,7 +851,7 @@ void TinyPhoneHttpServer::Start() {
 
 
 	CROW_ROUTE(app, "/hangup_all")
-		.methods("POST"_method)
+			.methods("POST"_method)
 		([&phone]() {
 		pj_thread_auto_register();
 		phone.HangupAllCalls();
@@ -701,7 +862,7 @@ void TinyPhoneHttpServer::Start() {
 	});
 
 	CROW_ROUTE(app, "/logout")
-		.methods("POST"_method)
+			.methods("POST"_method)
 		([&phone]() {
 		try {
 			pj_thread_auto_register();
@@ -740,7 +901,7 @@ void TinyPhoneHttpServer::Start() {
 
 
 	CROW_ROUTE(app, "/logs")
-		.methods("GET"_method)
+			.methods("GET"_method)
 		([](const crow::request& req) {
 		try {
 			std::string tmp_file = boost::filesystem::temp_directory_path().string() + "/" + boost::filesystem::unique_path().string() + ".tar";
@@ -785,7 +946,7 @@ void TinyPhoneHttpServer::Start() {
 
 
 	CROW_ROUTE(app, "/exit")
-		.methods("POST"_method)
+			.methods("POST"_method)
 		([this](const crow::request& req) {
 		auto it = req.headers.find(HEADER_SECURITY_CODE);
 		json response = {
@@ -815,26 +976,26 @@ void TinyPhoneHttpServer::Start() {
 		return tp::response(200, response);
 	});
 
-	#ifdef _WIN32
+#ifdef _WIN32
 	if (is_tcp_port_in_use(http_port)) {
 		const int result = MessageBoxW(NULL, L"Failed to Start! Tinyphone is already running.\n\nDo you want to quit the other instance ?", L"Tinyphone Error",  MB_YESNO);
 		switch (result)
 		{
 		case IDYES:
-			{
+		{
 			std::string url = "http://localhost:" + std::to_string(http_port) + std::string("/exit");
 			auto response = http_post(url, "");
 			tp::MetricsClient.increment("api.autokill");
 			CROW_LOG_INFO << "Kill Response: " << response.body;
 			std::this_thread::sleep_for(2s);
-			}
-			break;
+		}
+		break;
 		case IDNO:
 			return;
 			break;
 		}
 	}
-	#endif
+#endif
 
 	if (is_tcp_port_in_use(http_port)) {
 		tp::DisplayError("Failed to Bind Port!\n\nPlease ensure port " + std::to_string(http_port) + " is not used by any other application.", OPS::SYNC);
@@ -842,15 +1003,15 @@ void TinyPhoneHttpServer::Start() {
 	else {
 		running = true;
 		app.bindaddr("0.0.0.0")
-			.port(http_port)
-			.multithreaded()
-			.run();
+				.port(http_port)
+				.multithreaded()
+				.run();
 	}
 
 	Stop();
 
 	CROW_LOG_INFO << "Server has been shutdown... Will Exit now....";
-	
+
 	updates.close();
 
 	if (tp::ApplicationConfig.enableWSEvents) {
@@ -866,7 +1027,7 @@ void TinyPhoneHttpServer::Stop(){
 	CROW_LOG_INFO << "TinyPhoneHttpServer::Stop.....";
 
 	if (running) {
-		running = false; 
+		running = false;
 		CROW_LOG_INFO << "Terminating current running call(s) if any...";
 
 		pj_thread_auto_register();
