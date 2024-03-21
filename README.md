@@ -37,6 +37,79 @@ The softphone exposes the following resources on port `6060`.
 <td>Returns <code>hi</code> and the app <code>version</code></td>
 </tr>
 <tr>
+  <td><code>/devices</code></td>
+  <td>GET</td>
+  <td></td>
+  <td>Returns <code>count</code> of devices and list of connected <code>devices</code></td>
+</tr>
+<tr>
+  <td><code>/logs</code></td>
+  <td>GET</td>
+  <td></td>
+  <td>Returns <code>logs</code> as text</td>
+</tr>
+<tr>
+  <td><code>/config</code></td>
+  <td>GET</td>
+  <td></td>
+  <td>Returns <code>config</code></td>
+</tr>
+<tr>
+  <td><code>/devices/default</code></td>
+  <td>GET</td>
+  <td></td>
+  <td>
+    Returns <code>error, message, data</code> with default input and output device information
+    <pre lang="json">
+{
+  "data": {
+    "input": {
+      "id": number,
+      "name": string
+    },
+    "output": {
+      "id": number,
+      "name": string
+    }
+  } | null,
+  "error": string | null,
+  "message": string | null
+}
+    </pre>
+  </td>
+</tr>
+<tr>
+  <td><code>/devices/default</code></td>
+  <td>POST</td>
+  <td>
+    <pre lang="json">
+{
+  "output": number, // output device id required
+  "input": number // input device id required
+}
+    </pre>
+  </td>
+  <td>
+    Returns <code>error, message, data</code> with default input and output device information
+    <pre lang="json">
+{
+  "data": {
+    "input": {
+      "id": number,
+      "name": string
+    },
+    "output": {
+      "id": number,
+      "name": string
+    }
+  } | null,
+  "error": string | null,
+  "message": string | null
+}
+    </pre>
+  </td>
+</tr>
+<tr>
 <td><code>/events</code></td>
 <td>WS</td>
 <td></td>
