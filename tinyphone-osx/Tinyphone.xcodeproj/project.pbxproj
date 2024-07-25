@@ -294,6 +294,7 @@
 		B3DDA55125515DF700D269C9 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1110;
 				LastUpgradeCheck = 1320;
 				ORGANIZATIONNAME = "Kinshuk  Bairagi";
@@ -630,7 +631,7 @@
 					/usr/local/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = "36.0.0.84";
+				MARKETING_VERSION = 36.0.0.84;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DBOOST_SYSTEM_DYN_LINK",
@@ -682,7 +683,7 @@
 					/usr/local/lib,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = "36.0.0.84";
+				MARKETING_VERSION = 36.0.0.84;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DBOOST_SYSTEM_DYN_LINK",
