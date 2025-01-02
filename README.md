@@ -11,7 +11,7 @@ Checkout the repo and follow the building process to compile your own, or just d
 
 You can download the latest msi installer from [here](https://ci.appveyor.com/project/kingster/tinyphone/build/artifacts) or from the [releases section](https://github.com/voiceip/tinyphone/releases).
 
-*[Optional]* After Installing you can customise the tinyphone properties by downloading and placing the [config file](https://raw.githubusercontent.com/voiceip/tinyphone/HEAD/config.json) in the folder `C:\Program Files (x86)\Tinyphone\`.
+*[Optional]* After Installing you can customise the tinyphone properties by downloading and placing the [config file](https://raw.githubusercontent.com/voiceip/tinyphone/HEAD/config.json) in the folder `C:\Program Files (x86)\Tinyphone\` (Windows) or at `~/Library/Application Support/com.github.voiceip.tphone/` (MacOS).
 
 
 ## APIs 
