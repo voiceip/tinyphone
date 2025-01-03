@@ -81,7 +81,7 @@ jobs:
 
   tinyphone_osx_job:
     name: Build Tinyphone macOS
-    runs-on: macos-11
+    runs-on: macos-12
     steps:
     - name: Checkout
       uses: actions/checkout@v3
