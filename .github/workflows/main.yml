@@ -91,6 +91,17 @@ jobs:
     - name: Disable IPv6
       shell: bash -l {0}
       run: echo "DISABLE_IPV6=1" >> $GITHUB_ENV 
+    
+    - name: Install Dependencies
+      shell: bash
+      run : |
+        export HOMEBREW_NO_INSTALL_CLEANUP=true
+        brew install autoconf automake libtool tree wget opencore-amr
+        # wget https://gist.githubusercontent.com/kingster/1954ead3c38a40cac88c5c1311bb39c5/raw/343da2c7a2a52ee5a1c03902cc5e44ed83b1dd5d/cryptopp.rb
+        # brew install --build-from-source -f cryptopp.rb 
+        brew install cryptopp
+        npm install -g appdmg
+
     - name: Install the Apple certificate and provisioning profile
       env:
         BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
@@ -105,7 +116,7 @@ jobs:
         KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
 
         # import certificate and provisioning profile from secrets
-        echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode --output $CERTIFICATE_PATH
+        echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
         #echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode --output $PP_PATH
 
         # create temporary keychain
@@ -123,15 +134,6 @@ jobs:
         # apply provisioning profile
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
         #cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
-
-    - name: Install Dependencies
-      shell: bash
-      run : |
-        export HOMEBREW_NO_INSTALL_CLEANUP=true
-        brew install autoconf automake libtool tree wget opencore-amr
-        wget https://gist.githubusercontent.com/kingster/1954ead3c38a40cac88c5c1311bb39c5/raw/343da2c7a2a52ee5a1c03902cc5e44ed83b1dd5d/cryptopp.rb
-        brew install --build-from-source -f cryptopp.rb 
-        npm install -g appdmg
 
     - name: Compile Libraries
       run : | 
