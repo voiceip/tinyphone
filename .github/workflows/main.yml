@@ -179,7 +179,7 @@ jobs:
 
   tinyphone_linux_job:
     name: Build Tinyphone Linux
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -193,7 +193,7 @@ jobs:
       shell: bash
       run : |
         sudo apt-get update
-        sudo apt-get install -y build-essential cmake libcurl4-openssl-dev pkg-config libboost1.71-all-dev libasound-dev
+        sudo apt-get install -y build-essential cmake libcurl4-openssl-dev pkg-config libboost1.83-all-dev libasound-dev
 
     - name: Compile Libraries
       run : |
