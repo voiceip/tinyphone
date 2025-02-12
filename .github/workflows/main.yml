@@ -64,7 +64,7 @@ jobs:
         .\distribution\docker\release.ps1 -ErrorAction Stop
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: tinyphone.msi
         path: |
@@ -162,7 +162,7 @@ jobs:
         # codesign --force --sign "Apple Development" tinyphone.dmg 
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: tinyphone.dmg
         path: |
@@ -230,7 +230,7 @@ jobs:
         make
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: tinyphone.linux
         path: |
