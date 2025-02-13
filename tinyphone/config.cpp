@@ -69,7 +69,9 @@ namespace tp {
 			contentType = contentTypeIt->second;
 		}
 
-		if (remoteConfig.code / 100 != 2 || contentType.rfind("application/json", 0) != 0 ) {
+		// Disable the content-type check. raw.githubusercontent.com doesn't return valid content-type
+		// if (remoteConfig.code / 100 != 2 ) || contentType.rfind("application/json", 0) != 0 ) {
+		if (remoteConfig.code / 100 != 2 ) {
 			//Try Secondary Location
 			message = "ERROR: Failed to fetch Remote Config from Primary!";
 			if (remoteConfig.error != "")
