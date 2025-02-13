@@ -17,7 +17,7 @@ jobs:
       contents: read
       security-events: write
 
-    runs-on: macos-13
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -28,35 +28,21 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-
-    - name: Checkout submodules # checkout rest
-      shell: bash
-      run: |
-        git config --global url."https://github.com/".insteadOf "git@github.com:"
-        auth_header="$(git config --local --get http.https://github.com/.extraheader)"
-        git submodule sync --recursive
-        git -c "http.extraheader=$auth_header" -c protocol.version=2 submodule update --init --force --recursive --depth=1
-
+      with:
+        fetch-depth: '1'
+        submodules: 'recursive'
     - name: Disable IPv6
       shell: bash -l {0}
-      run: echo "DISABLE_IPV6=1" >> $GITHUB_ENV
-          
+      run: echo "DISABLE_IPV6=1" >> $GITHUB_ENV    
     - name: Install Dependencies
       shell: bash
       run : |
-        export HOMEBREW_NO_INSTALL_CLEANUP=true
-        brew install autoconf automake libtool tree wget opencore-amr
-        wget https://gist.githubusercontent.com/kingster/1954ead3c38a40cac88c5c1311bb39c5/raw/343da2c7a2a52ee5a1c03902cc5e44ed83b1dd5d/cryptopp.rb
-        brew install --build-from-source -f cryptopp.rb 
-
-        #boost
-        pushd tinyphone-osx/vendor/boost
-        ./boost.sh -macos --boost-version 1.84.0 --no-thinning
-        popd
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake libcurl4-openssl-dev pkg-config libboost1.83-all-dev libasound-dev
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
         # If you wish to specify custom queries, you can do so here or in a config file.
@@ -66,23 +52,38 @@ jobs:
 
     - name: Compile Libraries
       run : |
-        #xcode needs to be proper at this point
-        xcode-select --print-path
-
-        #stastd
-        pushd lib/statsd-cpp
-        mkdir build-osx
-        cd build-osx
-        cmake ..
+        pushd lib/cryptopp/
         make
+        sudo make install
         popd
+
+        
+        pushd lib/pjproject
+
+        cat >./pjlib/include/pj/config_site.h <<EOL
+        #define ENABLE_SIP_TCP 1
+        #define PJ_HAS_TCP 1
+        #define PJMEDIA_AUDIO_DEV_HAS_WASAPI 0
+        #define PJMEDIA_AUDIO_DEV_HAS_WMME 0
+        EOL
+
+        cat ./pjlib/include/pj/config_site.h
+
+        ./configure
+        make realclean
+        make dep
+        make
+        sudo make install
+        popd 
 
     - name: Build Project
       run : |
-        pushd tinyphone-osx
-        pod install
-        xcodebuild -workspace Tinyphone.xcworkspace -scheme Tinyphone -configuration Release CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
-
+        pushd tinyphone-linux
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release ..
+        make
+        
     # # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
     # # If this step fails, then you should remove it and run the build manually (see below)
     # - name: Autobuild
@@ -100,4 +101,4 @@ jobs:
     #   make release
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
