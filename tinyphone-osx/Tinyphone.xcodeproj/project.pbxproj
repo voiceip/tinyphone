@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -24,6 +24,10 @@
 		B33839092551D3EF000D6F04 /* osxapp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B33839082551D3EF000D6F04 /* osxapp.cpp */; };
 		B36B645B27E30DB100B011C9 /* libopencore-amrnb.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B36B645927E30DB000B011C9 /* libopencore-amrnb.0.dylib */; };
 		B36B645C27E30DB100B011C9 /* libopencore-amrwb.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B36B645A27E30DB000B011C9 /* libopencore-amrwb.0.dylib */; };
+		B3742D522D5DB4AE00E0DFC8 /* libcrypto.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B3742D512D5DB4AE00E0DFC8 /* libcrypto.3.dylib */; };
+		B3742D542D5DB4D800E0DFC8 /* libssl.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B3742D532D5DB4D800E0DFC8 /* libssl.3.dylib */; };
+		B3742D552D5DB4E500E0DFC8 /* libssl.3.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B3742D532D5DB4D800E0DFC8 /* libssl.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B3742D562D5DB4E500E0DFC8 /* libcrypto.3.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B3742D512D5DB4AE00E0DFC8 /* libcrypto.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B392C7B9255412560068492F /* libcryptopp.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B392C7B8255412560068492F /* libcryptopp.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B39C3B442552C3CE00BBD999 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = B39C3B432552C3CE00BBD999 /* libresolv.tbd */; };
 		B39C3B4B2552E1E700BBD999 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B39C3B4A2552E1E700BBD999 /* AppKit.framework */; };
@@ -31,7 +35,6 @@
 		B3AD62CB27E327C600F6A499 /* libopencore-amrnb.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B36B645927E30DB000B011C9 /* libopencore-amrnb.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B3AD62CC27E327C600F6A499 /* libopencore-amrwb.0.dylib in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B36B645A27E30DB000B011C9 /* libopencore-amrwb.0.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B3B92C3E2568152A0095EF2C /* mod_notify.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B3B92C3D2568152A0095EF2C /* mod_notify.cpp */; };
-		B3C9365527E34ED300CE2CDB /* BuildFile in Embed Frameworks */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B3D53FC92551696600523D5F /* AccountsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3D53FC82551696600523D5F /* AccountsView.xib */; };
 		B3D53FCC255169CF00523D5F /* AccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D53FCB255169CF00523D5F /* AccountsView.swift */; };
 		B3D53FCE25516A4200523D5F /* LoadableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D53FCD25516A4200523D5F /* LoadableView.swift */; };
@@ -50,7 +53,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B3C9365527E34ED300CE2CDB /* BuildFile in Embed Frameworks */,
+				B3742D552D5DB4E500E0DFC8 /* libssl.3.dylib in Embed Frameworks */,
+				B3742D562D5DB4E500E0DFC8 /* libcrypto.3.dylib in Embed Frameworks */,
 				B3AD62CB27E327C600F6A499 /* libopencore-amrnb.0.dylib in Embed Frameworks */,
 				B3AD62CC27E327C600F6A499 /* libopencore-amrwb.0.dylib in Embed Frameworks */,
 				B392C7B9255412560068492F /* libcryptopp.dylib in Embed Frameworks */,
@@ -103,6 +107,8 @@
 		B33839082551D3EF000D6F04 /* osxapp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = osxapp.cpp; sourceTree = "<group>"; };
 		B36B645927E30DB000B011C9 /* libopencore-amrnb.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libopencore-amrnb.0.dylib"; path = "/usr/local/opt/opencore-amr/lib/libopencore-amrnb.0.dylib"; sourceTree = "<absolute>"; };
 		B36B645A27E30DB000B011C9 /* libopencore-amrwb.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libopencore-amrwb.0.dylib"; path = "/usr/local/opt/opencore-amr/lib/libopencore-amrwb.0.dylib"; sourceTree = "<absolute>"; };
+		B3742D512D5DB4AE00E0DFC8 /* libcrypto.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.3.dylib; path = "/usr/local/opt/openssl@3/lib/libcrypto.3.dylib"; sourceTree = "<absolute>"; };
+		B3742D532D5DB4D800E0DFC8 /* libssl.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.3.dylib; path = "/usr/local/opt/openssl@3/lib/libssl.3.dylib"; sourceTree = "<absolute>"; };
 		B392C7B8255412560068492F /* libcryptopp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcryptopp.dylib; path = /usr/local/opt/cryptopp/lib/libcryptopp.dylib; sourceTree = "<absolute>"; };
 		B39C3B432552C3CE00BBD999 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		B39C3B4A2552E1E700BBD999 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -137,6 +143,8 @@
 				B39C3B442552C3CE00BBD999 /* libresolv.tbd in Frameworks */,
 				B327CB542551A2FD0092FDB7 /* AudioToolbox.framework in Frameworks */,
 				B327CB522551A2F40092FDB7 /* AudioUnit.framework in Frameworks */,
+				B3742D542D5DB4D800E0DFC8 /* libssl.3.dylib in Frameworks */,
+				B3742D522D5DB4AE00E0DFC8 /* libcrypto.3.dylib in Frameworks */,
 				B3AD62C827E3174300F6A499 /* boost.xcframework in Frameworks */,
 				B327CB502551A2940092FDB7 /* CoreAudio.framework in Frameworks */,
 				B327CB032551973A0092FDB7 /* libstatsd_static.a in Frameworks */,
@@ -230,6 +238,8 @@
 		B3DDA55025515DF700D269C9 = {
 			isa = PBXGroup;
 			children = (
+				B3742D532D5DB4D800E0DFC8 /* libssl.3.dylib */,
+				B3742D512D5DB4AE00E0DFC8 /* libcrypto.3.dylib */,
 				B36B645927E30DB000B011C9 /* libopencore-amrnb.0.dylib */,
 				B36B645A27E30DB000B011C9 /* libopencore-amrwb.0.dylib */,
 				B337E2C32554468C001696B7 /* config.json */,
@@ -278,6 +288,7 @@
 				B327CB0825519E550092FDB7 /* Embed Frameworks */,
 				B392C7A52554035D0068492F /* Run Script */,
 				896443F6A4B218BA6302E72F /* [CP] Embed Pods Frameworks */,
+				B3AF374D2D5DDA47001AD835 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -393,7 +404,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nEXECFILE=${BUILT_PRODUCTS_DIR}/${EXECUTABLE_PATH}\ndeclare -a TARGETS=(\"libcryptopp.dylib\"  \"libopencore-amrnb.0.dylib\" \"libopencore-amrwb.0.dylib\") # \"libopus.0.dylib\"\nfor TARGET in \"${TARGETS[@]}\" ; do\necho \"Running for $TARGET\"\nFULLTARGET=`otool -LD ${EXECFILE} | grep $TARGET | awk '{ print $1 }'`\necho $FULLTARGET\ninstall_name_tool -change ${FULLTARGET} \"@rpath/${TARGET}\" ${EXECFILE}\ndone\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nEXECFILE=${BUILT_PRODUCTS_DIR}/${EXECUTABLE_PATH}\n\n\ndeclare -a TARGETS=(\"libcryptopp.dylib\"  \"libopencore-amrnb.0.dylib\" \"libopencore-amrwb.0.dylib\" \"libcrypto.3.dylib\" \"libssl.3.dylib\") # \"libopus.0.dylib\"\nfor TARGET in \"${TARGETS[@]}\" ; do\necho \"Running for $TARGET\"\nFULLTARGET=`otool -LD ${EXECFILE} | grep $TARGET | awk '{ print $1 }'`\necho $FULLTARGET\ninstall_name_tool -change ${FULLTARGET} \"@rpath/${TARGET}\" ${EXECFILE}\ndone\n\n\n\n";
+		};
+		B3AF374D2D5DDA47001AD835 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\n#patch libssl.3.dylib\necho \"Patching SSL Libraries\"\n\nEXECFILE=${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/libssl.3.dylib\n\ndeclare -a TARGETS=(\"libcrypto.3.dylib\") \nfor TARGET in \"${TARGETS[@]}\" ; do\necho \"Patching for $TARGET\"\nFULLTARGET=`otool -LD ${EXECFILE} | grep $TARGET | awk '{ print $1 }'`\necho $FULLTARGET\ninstall_name_tool -change ${FULLTARGET} \"@rpath/${TARGET}\" ${EXECFILE}\ndone\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
